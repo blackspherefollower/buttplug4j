@@ -1,18 +1,16 @@
-package org.metafetish.buttplug.core.Messages;
+package org.metafetish.buttplug.core.Messages.Parts;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.metafetish.buttplug.core.ButtplugConsts;
-import org.metafetish.buttplug.core.ButtplugDeviceMessage;
 import org.metafetish.buttplug.core.Messages.Parts.DeviceMessage;
 import org.metafetish.buttplug.core.Messages.Parts.DeviceMessagesDeserializer;
 import org.metafetish.buttplug.core.Messages.Parts.DeviceMessagesSerializer;
 
 import java.util.ArrayList;
 
-public class DeviceAdded extends ButtplugDeviceMessage {
+public class DeviceMessageInfo {
 
     @JsonProperty(value = "DeviceIndex", required = true)
     public long deviceIndex;
@@ -26,24 +24,27 @@ public class DeviceAdded extends ButtplugDeviceMessage {
 
     @JsonProperty(value = "DeviceDisplayName")
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    public String deviceDisplayName ;
+    public String deviceDisplayName;
 
     @JsonProperty(value = "DeviceMessages", required = true)
     @JsonDeserialize(using = DeviceMessagesDeserializer.class)
     @JsonSerialize(using = DeviceMessagesSerializer.class)
     public ArrayList<DeviceMessage> deviceMessages;
 
-    public DeviceAdded(long deviceIndex, String deviceName, ArrayList<DeviceMessage> deviceMessages) {
-        super(ButtplugConsts.SystemMsgId, deviceIndex);
-
+    public DeviceMessageInfo(long deviceIndex, String deviceName, ArrayList<DeviceMessage> deviceMessages, int deviceMessageTimingGap, String deviceDisplayName) {
         this.deviceName = deviceName;
+        this.deviceIndex = deviceIndex;
         this.deviceMessages = deviceMessages;
+        this.deviceMessageTimingGap = deviceMessageTimingGap;
+        this.deviceDisplayName = deviceDisplayName;
     }
 
     @SuppressWarnings("unused")
-    private DeviceAdded() {
-        super(ButtplugConsts.SystemMsgId, 0);
+    private DeviceMessageInfo() {
         this.deviceName = "";
+        this.deviceIndex = -1;
         this.deviceMessages = new ArrayList<>();
+        this.deviceMessageTimingGap = null;
+        this.deviceDisplayName = "";
     }
 }

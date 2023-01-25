@@ -12,7 +12,7 @@ public class RequestServerInfoTest {
 
     @Test
     public void test() throws IOException {
-        String testStr = "[{\"RequestServerInfo\":{\"Id\":7,\"ClientName\":\"UnitTest\"}}]";
+        String testStr = "[{\"RequestServerInfo\":{\"Id\":7,\"ClientName\":\"UnitTest\",\"MessageVersion\":3}}]";
 
         ButtplugJsonMessageParser parser = new ButtplugJsonMessageParser();
         List<ButtplugMessage> msgs = parser.parseJson(testStr);

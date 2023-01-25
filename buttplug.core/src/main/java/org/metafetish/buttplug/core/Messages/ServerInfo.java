@@ -5,14 +5,6 @@ import org.metafetish.buttplug.core.ButtplugConsts;
 import org.metafetish.buttplug.core.ButtplugMessage;
 
 public class ServerInfo extends ButtplugMessage {
-    @JsonProperty(value = "MajorVersion", required = true)
-    public int majorVersion;
-
-    @JsonProperty(value = "MinorVersion", required = true)
-    public int minorVersion;
-
-    @JsonProperty(value = "BuildVersion", required = true)
-    public int buildVersion;
 
     @JsonProperty(value = "MessageVersion", required = true)
     public int messageVersion;
@@ -29,9 +21,6 @@ public class ServerInfo extends ButtplugMessage {
         this.serverName = serverName;
         this.messageVersion = messageVersion;
         this.maxPingTime = maxPingTime;
-        this.majorVersion = 0;
-        this.minorVersion = 0;
-        this.buildVersion = 1;
     }
 
     @SuppressWarnings("unused")
@@ -41,8 +30,5 @@ public class ServerInfo extends ButtplugMessage {
         this.serverName = "";
         this.messageVersion = 1;
         this.maxPingTime = 0;
-        this.majorVersion = 0;
-        this.minorVersion = 0;
-        this.buildVersion = 1;
     }
 }

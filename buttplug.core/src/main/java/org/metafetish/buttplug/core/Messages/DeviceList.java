@@ -3,13 +3,16 @@ package org.metafetish.buttplug.core.Messages;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.metafetish.buttplug.core.ButtplugConsts;
 import org.metafetish.buttplug.core.ButtplugMessage;
+import org.metafetish.buttplug.core.Messages.Parts.DeviceMessageInfo;
+
+import java.util.ArrayList;
 
 public class DeviceList extends ButtplugMessage {
 
     @JsonProperty(value = "Devices", required = true)
-    public DeviceMessageInfo[] devices;
+    public ArrayList<DeviceMessageInfo> devices;
 
-    public DeviceList(DeviceMessageInfo[] devices, long id) {
+    public DeviceList(ArrayList<DeviceMessageInfo> devices, long id) {
         super(id);
         this.devices = devices;
     }
@@ -17,6 +20,6 @@ public class DeviceList extends ButtplugMessage {
     @SuppressWarnings("unused")
     private DeviceList() {
         super(ButtplugConsts.DefaultMsgId);
-        this.devices = new DeviceMessageInfo[]{};
+        this.devices = new ArrayList<>();
     }
 }

@@ -4,19 +4,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.metafetish.buttplug.core.ButtplugConsts;
 import org.metafetish.buttplug.core.ButtplugDeviceMessage;
 
-public class LovenseCmd extends ButtplugDeviceMessage {
+public class SensorUnsubscribeCmd extends ButtplugDeviceMessage {
 
-    @JsonProperty(value = "Command", required = true)
-    public String deviceCmd;
+    @JsonProperty(value = "SensorIndex", required = true)
+    private int sensorIndex;
+    @JsonProperty(value = "SensorType", required = true)
+    private String sensorType;
 
-    public LovenseCmd(long deviceIndex, String deviceCmd, long id) {
+    public SensorUnsubscribeCmd(long deviceIndex, long id) {
         super(id, deviceIndex);
-        this.deviceCmd = deviceCmd;
     }
 
     @SuppressWarnings("unused")
-    private LovenseCmd() {
+    private SensorUnsubscribeCmd() {
         super(ButtplugConsts.DefaultMsgId, -1);
-        this.deviceCmd = "";
     }
 }
