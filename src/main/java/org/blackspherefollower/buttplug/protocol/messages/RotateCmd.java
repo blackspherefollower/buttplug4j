@@ -4,14 +4,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.blackspherefollower.buttplug.protocol.ButtplugConsts;
 import org.blackspherefollower.buttplug.protocol.ButtplugDeviceMessage;
 
-import java.util.Map;
-
-public class RotateCmd extends ButtplugDeviceMessage {
+public final class RotateCmd extends ButtplugDeviceMessage {
 
     @JsonProperty(value = "Rotations", required = true)
     private RotateSubCmd[] rotations;
 
-    public RotateCmd(long deviceIndex, RotateSubCmd[] rotations, long id) {
+    public RotateCmd(final long deviceIndex, final RotateSubCmd[] rotations, final long id) {
         super(id, deviceIndex);
         this.rotations = rotations;
     }
@@ -21,7 +19,7 @@ public class RotateCmd extends ButtplugDeviceMessage {
         super(ButtplugConsts.DefaultMsgId, -1);
     }
 
-    public static class RotateSubCmd {
+    public static final class RotateSubCmd {
         @JsonProperty(value = "Index", required = true)
         private long index;
 
@@ -30,6 +28,18 @@ public class RotateCmd extends ButtplugDeviceMessage {
 
         @JsonProperty(value = "Clockwise", required = true)
         private boolean clockwise;
+
+        public RotateSubCmd(final long index, final double speed, final boolean clockwise) {
+            this.index = index;
+            this.clockwise = clockwise;
+            SetSpeed(speed);
+        }
+
+        public RotateSubCmd() {
+            this.index = -1;
+            this.clockwise = true;
+            this.speed = 0;
+        }
 
         public double GetPosition() {
             if (speed > 1 || speed < 0) {
@@ -50,20 +60,6 @@ public class RotateCmd extends ButtplugDeviceMessage {
             }
 
             this.speed = speed;
-        }
-
-        public RotateSubCmd(long index, double speed, boolean clockwise)
-        {
-            this.index = index;
-            this.clockwise = clockwise;
-            SetSpeed(speed);
-        }
-
-        public RotateSubCmd()
-        {
-            this.index = -1;
-            this.clockwise = true;
-            this.speed = 0;
         }
     }
 }

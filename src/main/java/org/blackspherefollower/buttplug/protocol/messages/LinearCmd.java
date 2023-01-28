@@ -4,12 +4,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.blackspherefollower.buttplug.protocol.ButtplugConsts;
 import org.blackspherefollower.buttplug.protocol.ButtplugDeviceMessage;
 
-public class LinearCmd extends ButtplugDeviceMessage {
+public final class LinearCmd extends ButtplugDeviceMessage {
 
     @JsonProperty(value = "Vectors", required = true)
     private LinearSubCmd[] vectors;
 
-    public LinearCmd(long deviceIndex, LinearSubCmd[] vectors, long id) {
+    public LinearCmd(final long deviceIndex, final LinearSubCmd[] vectors, final long id) {
         super(id, deviceIndex);
         this.vectors = vectors;
     }
@@ -19,7 +19,7 @@ public class LinearCmd extends ButtplugDeviceMessage {
         super(ButtplugConsts.DefaultMsgId, -1);
     }
 
-    public static class LinearSubCmd {
+    public static final class LinearSubCmd {
         @JsonProperty(value = "Index", required = true)
         private long index;
 
@@ -29,6 +29,18 @@ public class LinearCmd extends ButtplugDeviceMessage {
         @JsonProperty(value = "Duration", required = true)
         private long duration;
 
+        public LinearSubCmd(final long index, final double position, final long duration) {
+            this.index = index;
+            this.duration = duration;
+            SetPosition(position);
+        }
+
+        public LinearSubCmd() {
+            this.index = -1;
+            this.duration = 0;
+            SetPosition(0);
+        }
+
         public double GetPosition() {
             if (position > 1 || position < 0) {
                 return 0;
@@ -36,7 +48,7 @@ public class LinearCmd extends ButtplugDeviceMessage {
             return position;
         }
 
-        public void SetPosition(double position) {
+        public void SetPosition(final double position) {
             if (position > 1) {
                 throw new IllegalArgumentException(
                         "Linear position cannot be greater than 1!");
@@ -48,19 +60,6 @@ public class LinearCmd extends ButtplugDeviceMessage {
             }
 
             this.position = position;
-        }
-
-        public LinearSubCmd(long index, double position, long duration )
-        {
-            this.index = index;
-            this.duration = duration;
-            SetPosition(position);
-        }
-        public LinearSubCmd()
-        {
-            this.index = -1;
-            this.duration = 0;
-            SetPosition(0);
         }
     }
 }

@@ -22,17 +22,17 @@ import java.util.concurrent.Future;
 
 
 public class ButtplugClientDevice {
-    private long deviceIndex;
+    private final long deviceIndex;
 
-    private String name;
+    private final String name;
 
-    private String displayName;
+    private final String displayName;
 
-    private Integer messageTimingGap;
+    private final Integer messageTimingGap;
 
-    private Map<String, MessageAttributes> deviceMessages;
+    private final Map<String, MessageAttributes> deviceMessages;
 
-    private ButtplugWSClient client;
+    private final ButtplugWSClient client;
 
     public ButtplugClientDevice(final ButtplugWSClient bpClient, final DeviceMessageInfo deviceMessageInfo) {
         this.client = bpClient;
@@ -166,7 +166,7 @@ public class ButtplugClientDevice {
     }
 
     public final Future<ButtplugMessage> sendRotateCmd(final long index, final double speed,
-                                                 final boolean clockwise)
+                                                       final boolean clockwise)
             throws IOException, ExecutionException, InterruptedException {
 
         MessageAttributes attrs = getDeviceMessages().get("RotateCmd");
@@ -229,7 +229,7 @@ public class ButtplugClientDevice {
     }
 
     public final Future<ButtplugMessage> sendLinearCmd(final long index, final double position,
-                                                 final long duration)
+                                                       final long duration)
             throws IOException, ExecutionException, InterruptedException {
 
         MessageAttributes attrs = getDeviceMessages().get("LinearCmd");

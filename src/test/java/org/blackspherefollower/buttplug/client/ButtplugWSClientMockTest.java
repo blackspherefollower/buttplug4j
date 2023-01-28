@@ -2,7 +2,6 @@ package org.blackspherefollower.buttplug.client;
 
 import org.blackspherefollower.buttplug.client.client.ButtplugClientDevice;
 import org.blackspherefollower.buttplug.client.client.ButtplugWSClient;
-import org.blackspherefollower.buttplug.protocol.messages.Ok;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 

@@ -241,6 +241,7 @@ public class ButtplugWSClient {
     public final boolean startScanning() throws ExecutionException, InterruptedException, IOException {
         return waitForOk(startScanningAsync());
     }
+
     public final Future<ButtplugMessage> startScanningAsync()
             throws ExecutionException, InterruptedException, IOException {
         return sendMessage(new StartScanning(msgId.incrementAndGet()));
@@ -249,6 +250,7 @@ public class ButtplugWSClient {
     public final boolean stopScanning() throws ExecutionException, InterruptedException, IOException {
         return waitForOk(stopScanningAsync());
     }
+
     public final Future<ButtplugMessage> stopScanningAsync()
             throws ExecutionException, InterruptedException, IOException {
         return sendMessage(new StopScanning(msgId.incrementAndGet()));
