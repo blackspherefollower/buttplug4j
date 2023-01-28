@@ -1,8 +1,8 @@
-package org.blacksphere.protocol.messages;
+package org.blackspherefollower.protocol.messages;
 
 import org.blackspherefollower.buttplug.protocol.ButtplugJsonMessageParser;
 import org.blackspherefollower.buttplug.protocol.ButtplugMessage;
-import org.blackspherefollower.buttplug.protocol.messages.StopAllDevices;
+import org.blackspherefollower.buttplug.protocol.messages.ServerInfo;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -10,18 +10,21 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class StopAllDevicesTest {
+public class ServerInfoTest {
 
     @Test
     public void test() throws IOException {
-        String testStr = "[{\"StopAllDevices\":{\"Id\":7}}]";
+        String testStr = "[{\"ServerInfo\":{\"Id\":1,\"MessageVersion\":3,\"MaxPingTime\":500,\"ServerName\":\"Websocket Server\"}}]";
 
         ButtplugJsonMessageParser parser = new ButtplugJsonMessageParser();
         List<ButtplugMessage> msgs = parser.parseJson(testStr);
 
-        assertEquals(msgs.size(), 1);
-        assertEquals(msgs.get(0).getClass(), StopAllDevices.class);
-        assertEquals(msgs.get(0).id, 7);
+        assertEquals(1, msgs.size());
+        assertEquals(ServerInfo.class, msgs.get(0).getClass());
+        assertEquals(1, msgs.get(0).id, 1);
+        assertEquals(3, ((ServerInfo) msgs.get(0)).messageVersion);
+        assertEquals(500, ((ServerInfo) msgs.get(0)).maxPingTime);
+        assertEquals("Websocket Server", ((ServerInfo) msgs.get(0)).serverName);
 
         String jsonOut = parser.formatJson(msgs);
         assertEquals(testStr, jsonOut);
@@ -29,5 +32,4 @@ public class StopAllDevicesTest {
         jsonOut = parser.formatJson(msgs.get(0));
         assertEquals(testStr, jsonOut);
     }
-
 }

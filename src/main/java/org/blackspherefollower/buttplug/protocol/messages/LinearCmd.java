@@ -9,8 +9,9 @@ public class LinearCmd extends ButtplugDeviceMessage {
     @JsonProperty(value = "Vectors", required = true)
     private LinearSubCmd[] vectors;
 
-    public LinearCmd(long deviceIndex, long id) {
+    public LinearCmd(long deviceIndex, LinearSubCmd[] vectors, long id) {
         super(id, deviceIndex);
+        this.vectors = vectors;
     }
 
     @SuppressWarnings("unused")
@@ -18,7 +19,7 @@ public class LinearCmd extends ButtplugDeviceMessage {
         super(ButtplugConsts.DefaultMsgId, -1);
     }
 
-    public class LinearSubCmd {
+    public static class LinearSubCmd {
         @JsonProperty(value = "Index", required = true)
         private long index;
 
@@ -47,6 +48,19 @@ public class LinearCmd extends ButtplugDeviceMessage {
             }
 
             this.position = position;
+        }
+
+        public LinearSubCmd(long index, double position, long duration )
+        {
+            this.index = index;
+            this.duration = duration;
+            SetPosition(position);
+        }
+        public LinearSubCmd()
+        {
+            this.index = -1;
+            this.duration = 0;
+            SetPosition(0);
         }
     }
 }

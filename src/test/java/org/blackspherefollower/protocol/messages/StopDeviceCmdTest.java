@@ -1,8 +1,8 @@
-package org.blacksphere.protocol.messages;
+package org.blackspherefollower.protocol.messages;
 
 import org.blackspherefollower.buttplug.protocol.ButtplugJsonMessageParser;
 import org.blackspherefollower.buttplug.protocol.ButtplugMessage;
-import org.blackspherefollower.buttplug.protocol.messages.DeviceRemoved;
+import org.blackspherefollower.buttplug.protocol.messages.StopDeviceCmd;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -10,19 +10,19 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DeviceRemovedTest {
+public class StopDeviceCmdTest {
 
     @Test
     public void test() throws IOException {
-        String testStr = "[{\"DeviceRemoved\":{\"Id\":3,\"DeviceIndex\":2}}]";
+        String testStr = "[{\"StopDeviceCmd\":{\"Id\":7,\"DeviceIndex\":3}}]";
 
         ButtplugJsonMessageParser parser = new ButtplugJsonMessageParser();
         List<ButtplugMessage> msgs = parser.parseJson(testStr);
 
-        assertEquals(1, msgs.size());
-        assertEquals(DeviceRemoved.class, msgs.get(0).getClass());
-        assertEquals(3, msgs.get(0).id);
-        assertEquals(2, ((DeviceRemoved) msgs.get(0)).deviceIndex);
+        assertEquals(msgs.size(), 1);
+        assertEquals(msgs.get(0).getClass(), StopDeviceCmd.class);
+        assertEquals(msgs.get(0).id, 7);
+        assertEquals(((StopDeviceCmd) msgs.get(0)).deviceIndex, 3);
 
         String jsonOut = parser.formatJson(msgs);
         assertEquals(testStr, jsonOut);

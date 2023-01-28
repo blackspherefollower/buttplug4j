@@ -1,4 +1,4 @@
-package org.blacksphere.protocol.messages;
+package org.blackspherefollower.protocol.messages;
 
 import org.blackspherefollower.buttplug.protocol.ButtplugJsonMessageParser;
 import org.blackspherefollower.buttplug.protocol.ButtplugMessage;

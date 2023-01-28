@@ -4,13 +4,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.blackspherefollower.buttplug.protocol.ButtplugConsts;
 import org.blackspherefollower.buttplug.protocol.ButtplugDeviceMessage;
 
+import java.util.Map;
+
 public class RotateCmd extends ButtplugDeviceMessage {
 
     @JsonProperty(value = "Rotations", required = true)
     private RotateSubCmd[] rotations;
 
-    public RotateCmd(long deviceIndex, long id) {
+    public RotateCmd(long deviceIndex, RotateSubCmd[] rotations, long id) {
         super(id, deviceIndex);
+        this.rotations = rotations;
     }
 
     @SuppressWarnings("unused")
@@ -18,7 +21,7 @@ public class RotateCmd extends ButtplugDeviceMessage {
         super(ButtplugConsts.DefaultMsgId, -1);
     }
 
-    public class RotateSubCmd {
+    public static class RotateSubCmd {
         @JsonProperty(value = "Index", required = true)
         private long index;
 
@@ -47,6 +50,20 @@ public class RotateCmd extends ButtplugDeviceMessage {
             }
 
             this.speed = speed;
+        }
+
+        public RotateSubCmd(long index, double speed, boolean clockwise)
+        {
+            this.index = index;
+            this.clockwise = clockwise;
+            SetSpeed(speed);
+        }
+
+        public RotateSubCmd()
+        {
+            this.index = -1;
+            this.clockwise = true;
+            this.speed = 0;
         }
     }
 }

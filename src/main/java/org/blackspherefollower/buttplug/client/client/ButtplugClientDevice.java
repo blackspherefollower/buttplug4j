@@ -1,11 +1,8 @@
 package org.blackspherefollower.buttplug.client.client;
 
 import org.blackspherefollower.buttplug.protocol.ButtplugMessage;
-import org.blackspherefollower.buttplug.protocol.messages.DeviceAdded;
-import org.blackspherefollower.buttplug.protocol.messages.DeviceRemoved;
+import org.blackspherefollower.buttplug.protocol.messages.*;
 import org.blackspherefollower.buttplug.protocol.messages.Parts.*;
-import org.blackspherefollower.buttplug.protocol.messages.ScalarCmd;
-import org.blackspherefollower.buttplug.protocol.messages.StopDeviceCmd;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -67,7 +64,7 @@ public class ButtplugClientDevice {
 
     public long GetScalarCount(String actuatorType) {
         MessageAttributes attrs = deviceMessages.get("ScalarCmd");
-        if (attrs == null || !(attrs instanceof GenericMessageAttributes)) {
+        if (!(attrs instanceof GenericMessageAttributes)) {
             return 0;
         }
         GenericMessageAttributes gattrs = (GenericMessageAttributes) attrs;
@@ -77,7 +74,7 @@ public class ButtplugClientDevice {
     public Future<ButtplugMessage> SendScalarCmd(String actuatorType, double scalar) throws IOException, ExecutionException, InterruptedException {
 
         MessageAttributes attrs = deviceMessages.get("ScalarCmd");
-        if (attrs == null || !(attrs instanceof GenericMessageAttributes)) {
+        if (!(attrs instanceof GenericMessageAttributes)) {
             throw new IOException("Device doesn't support ScalarCmd!");
         }
 
@@ -122,5 +119,121 @@ public class ButtplugClientDevice {
 
     public long GetScalarOscillateCount() {
         return GetScalarCount("Oscillate");
+    }
+
+
+    public Future<ButtplugMessage> SendRotateCmd(double speed, boolean clockwise) throws IOException, ExecutionException, InterruptedException {
+
+        MessageAttributes attrs = deviceMessages.get("RotateCmd");
+        if (!(attrs instanceof GenericMessageAttributes)) {
+            throw new IOException("Device doesn't support RotateCmd!");
+        }
+
+        long count = 0;
+
+        ArrayList<RotateCmd.RotateSubCmd> values = new ArrayList<>();
+        GenericMessageAttributes gattrs = (GenericMessageAttributes) attrs;
+        for (GenericFeatureAttributes attr : gattrs.features) {
+            values.add(new RotateCmd.RotateSubCmd(count++, speed, clockwise));
+        }
+        if (count == 0) {
+            throw new IOException("Device doesn't have any ScalarCmd features that support Rotate!");
+        }
+
+        return client.sendDeviceMessage(this, new RotateCmd(index, values.toArray(new RotateCmd.RotateSubCmd[]{}), client.getNextMsgId()));
+    }
+
+    public Future<ButtplugMessage> SendRotateCmd(long index, double speed, boolean clockwise) throws IOException, ExecutionException, InterruptedException {
+
+        MessageAttributes attrs = deviceMessages.get("RotateCmd");
+        if (!(attrs instanceof GenericMessageAttributes)) {
+            throw new IOException("Device doesn't support RotateCmd!");
+        }
+
+        long count = 0;
+
+        ArrayList<RotateCmd.RotateSubCmd> values = new ArrayList<>();
+        GenericMessageAttributes gattrs = (GenericMessageAttributes) attrs;
+        if(index < 0 || index >= gattrs.features.size()) {
+            throw new IOException("Device doesn't have a RotateCmd feature at index " + index + "!");
+        }
+
+        for (GenericFeatureAttributes attr : gattrs.features) {
+            if(count == index) {
+                values.add(new RotateCmd.RotateSubCmd(count++, speed, clockwise));
+            } else {
+                values.add(null);
+                count++;
+            }
+        }
+
+        return client.sendDeviceMessage(this, new RotateCmd(index, values.toArray(new RotateCmd.RotateSubCmd[]{}), client.getNextMsgId()));
+    }
+
+    public long GetRotateCount() {
+        MessageAttributes attrs = deviceMessages.get("RotateCmd");
+        if (!(attrs instanceof GenericMessageAttributes)) {
+            return 0;
+        }
+        GenericMessageAttributes gattrs = (GenericMessageAttributes) attrs;
+        return gattrs.features.size();
+    }
+
+
+    public Future<ButtplugMessage> SendLinearCmd(double position, long duration) throws IOException, ExecutionException, InterruptedException {
+
+        MessageAttributes attrs = deviceMessages.get("LinearCmd");
+        if (!(attrs instanceof GenericMessageAttributes)) {
+            throw new IOException("Device doesn't support LinearCmd!");
+        }
+
+        long count = 0;
+
+        ArrayList<LinearCmd.LinearSubCmd> values = new ArrayList<>();
+        GenericMessageAttributes gattrs = (GenericMessageAttributes) attrs;
+        for (GenericFeatureAttributes attr : gattrs.features) {
+            values.add(new LinearCmd.LinearSubCmd(count++, position, duration));
+        }
+        if (count == 0) {
+            throw new IOException("Device doesn't have any ScalarCmd features that support Rotate!");
+        }
+
+        return client.sendDeviceMessage(this, new LinearCmd(index, values.toArray(new LinearCmd.LinearSubCmd[]{}), client.getNextMsgId()));
+    }
+
+    public Future<ButtplugMessage> SendLinearCmd(long index, double position, long duration) throws IOException, ExecutionException, InterruptedException {
+
+        MessageAttributes attrs = deviceMessages.get("LinearCmd");
+        if (!(attrs instanceof GenericMessageAttributes)) {
+            throw new IOException("Device doesn't support LinearCmd!");
+        }
+
+        long count = 0;
+
+        ArrayList<LinearCmd.LinearSubCmd> values = new ArrayList<>();
+        GenericMessageAttributes gattrs = (GenericMessageAttributes) attrs;
+        if(index < 0 || index >= gattrs.features.size()) {
+            throw new IOException("Device doesn't have a LinearCmd feature at index " + index + "!");
+        }
+
+        for (GenericFeatureAttributes attr : gattrs.features) {
+            if(count == index) {
+                values.add(new LinearCmd.LinearSubCmd(count++, position, duration));
+            } else {
+                values.add(null);
+                count++;
+            }
+        }
+
+        return client.sendDeviceMessage(this, new LinearCmd(index, values.toArray(new LinearCmd.LinearSubCmd[]{}), client.getNextMsgId()));
+    }
+
+    public long GetLinearCount() {
+        MessageAttributes attrs = deviceMessages.get("LinearCmd");
+        if (!(attrs instanceof GenericMessageAttributes)) {
+            return 0;
+        }
+        GenericMessageAttributes gattrs = (GenericMessageAttributes) attrs;
+        return gattrs.features.size();
     }
 }
