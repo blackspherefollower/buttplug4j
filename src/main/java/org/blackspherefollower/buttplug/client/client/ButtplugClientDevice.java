@@ -1,8 +1,17 @@
 package org.blackspherefollower.buttplug.client.client;
 
 import org.blackspherefollower.buttplug.protocol.ButtplugMessage;
-import org.blackspherefollower.buttplug.protocol.messages.*;
-import org.blackspherefollower.buttplug.protocol.messages.Parts.*;
+import org.blackspherefollower.buttplug.protocol.messages.DeviceAdded;
+import org.blackspherefollower.buttplug.protocol.messages.DeviceRemoved;
+import org.blackspherefollower.buttplug.protocol.messages.LinearCmd;
+import org.blackspherefollower.buttplug.protocol.messages.Parts.DeviceMessage;
+import org.blackspherefollower.buttplug.protocol.messages.Parts.DeviceMessageInfo;
+import org.blackspherefollower.buttplug.protocol.messages.Parts.GenericFeatureAttributes;
+import org.blackspherefollower.buttplug.protocol.messages.Parts.GenericMessageAttributes;
+import org.blackspherefollower.buttplug.protocol.messages.Parts.MessageAttributes;
+import org.blackspherefollower.buttplug.protocol.messages.RotateCmd;
+import org.blackspherefollower.buttplug.protocol.messages.ScalarCmd;
+import org.blackspherefollower.buttplug.protocol.messages.StopDeviceCmd;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,67 +22,75 @@ import java.util.concurrent.Future;
 
 
 public class ButtplugClientDevice {
-    public long index;
+    private long deviceIndex;
 
-    public String name;
+    private String name;
 
-    public String displayName;
+    private String displayName;
 
-    public Integer messageTimingGap;
+    private Integer messageTimingGap;
 
-    public Map<String, MessageAttributes> deviceMessages;
+    private Map<String, MessageAttributes> deviceMessages;
 
-    public ButtplugWSClient client;
+    private ButtplugWSClient client;
 
-    public ButtplugClientDevice(ButtplugWSClient client, DeviceMessageInfo aDevInfo) {
-        this.client = client;
-        index = aDevInfo.deviceIndex;
-        name = aDevInfo.deviceName;
-        displayName = aDevInfo.deviceDisplayName != null && !aDevInfo.deviceDisplayName.isEmpty() ? aDevInfo.deviceDisplayName : aDevInfo.deviceName;
-        messageTimingGap = aDevInfo.deviceMessageTimingGap;
-        deviceMessages = new HashMap<>();
-        for (DeviceMessage deviceMessage : aDevInfo.deviceMessages) {
-            deviceMessages.put(deviceMessage.message, deviceMessage.attributes);
+    public ButtplugClientDevice(final ButtplugWSClient bpClient, final DeviceMessageInfo deviceMessageInfo) {
+        this.client = bpClient;
+        this.deviceIndex = deviceMessageInfo.deviceIndex;
+        this.name = deviceMessageInfo.deviceName;
+        this.displayName = deviceMessageInfo.deviceDisplayName != null
+                && !deviceMessageInfo.deviceDisplayName.isEmpty()
+                ? deviceMessageInfo.deviceDisplayName : deviceMessageInfo.deviceName;
+        this.messageTimingGap = deviceMessageInfo.deviceMessageTimingGap;
+        this.deviceMessages = new HashMap<>();
+        for (DeviceMessage deviceMessage : deviceMessageInfo.deviceMessages) {
+            this.deviceMessages.put(deviceMessage.message, deviceMessage.attributes);
         }
     }
 
-    public ButtplugClientDevice(ButtplugWSClient client, DeviceAdded aDevInfo) {
-        this.client = client;
-        index = aDevInfo.deviceIndex;
-        name = aDevInfo.deviceName;
-        displayName = aDevInfo.deviceDisplayName != null && !aDevInfo.deviceDisplayName.isEmpty() ? aDevInfo.deviceDisplayName : aDevInfo.deviceName;
-        messageTimingGap = aDevInfo.deviceMessageTimingGap;
-        deviceMessages = new HashMap<>();
-        for (DeviceMessage deviceMessage : aDevInfo.deviceMessages) {
-            deviceMessages.put(deviceMessage.message, deviceMessage.attributes);
+    public ButtplugClientDevice(final ButtplugWSClient bpClient, final DeviceAdded deviceAdded) {
+        this.client = bpClient;
+        this.deviceIndex = deviceAdded.deviceIndex;
+        this.name = deviceAdded.deviceName;
+        this.displayName = deviceAdded.deviceDisplayName != null
+                && !deviceAdded.deviceDisplayName.isEmpty()
+                ? deviceAdded.deviceDisplayName : deviceAdded.deviceName;
+        this.messageTimingGap = deviceAdded.deviceMessageTimingGap;
+        this.deviceMessages = new HashMap<>();
+        for (DeviceMessage deviceMessage : deviceAdded.deviceMessages) {
+            this.deviceMessages.put(deviceMessage.message, deviceMessage.attributes);
         }
     }
 
-    public ButtplugClientDevice(ButtplugWSClient client, DeviceRemoved aDevInfo) {
-        this.client = client;
-        index = aDevInfo.deviceIndex;
-        name = "";
-        displayName = "";
-        messageTimingGap = null;
-        deviceMessages = new HashMap<>();
+    public ButtplugClientDevice(final ButtplugWSClient bpClient, final DeviceRemoved deviceRemoved) {
+        this.client = bpClient;
+        this.deviceIndex = deviceRemoved.deviceIndex;
+        this.name = "";
+        this.displayName = "";
+        this.messageTimingGap = null;
+        this.deviceMessages = new HashMap<>();
     }
 
-    public Future<ButtplugMessage> SendStopDeviceCmd() throws IOException, ExecutionException, InterruptedException {
-        return client.sendDeviceMessage(this, new StopDeviceCmd(index, client.getNextMsgId()));
+    public final Future<ButtplugMessage> sendStopDeviceCmd()
+            throws IOException, ExecutionException, InterruptedException {
+        return client.sendDeviceMessage(this, new StopDeviceCmd(getDeviceIndex(),
+                client.getNextMsgId()));
     }
 
-    public long GetScalarCount(String actuatorType) {
-        MessageAttributes attrs = deviceMessages.get("ScalarCmd");
+    public final long getScalarCount(final String actuatorType) {
+        MessageAttributes attrs = getDeviceMessages().get("ScalarCmd");
         if (!(attrs instanceof GenericMessageAttributes)) {
             return 0;
         }
         GenericMessageAttributes gattrs = (GenericMessageAttributes) attrs;
-        return gattrs.features.stream().filter(genericFeatureAttributes -> genericFeatureAttributes.actuatorType.contentEquals(actuatorType)).count();
+        return gattrs.features.stream().filter(genericFeatureAttributes ->
+                genericFeatureAttributes.actuatorType.contentEquals(actuatorType)).count();
     }
 
-    public Future<ButtplugMessage> SendScalarCmd(String actuatorType, double scalar) throws IOException, ExecutionException, InterruptedException {
+    public final Future<ButtplugMessage> sendScalarCmd(final String actuatorType, final double scalar)
+            throws IOException, ExecutionException, InterruptedException {
 
-        MessageAttributes attrs = deviceMessages.get("ScalarCmd");
+        MessageAttributes attrs = getDeviceMessages().get("ScalarCmd");
         if (!(attrs instanceof GenericMessageAttributes)) {
             throw new IOException("Device doesn't support ScalarCmd!");
         }
@@ -94,37 +111,41 @@ public class ButtplugClientDevice {
             throw new IOException("Device doesn't have any ScalarCmd features that support Rotate!");
         }
 
-        return client.sendDeviceMessage(this, new ScalarCmd(index, values.toArray(new Double[]{}), actuatorType, client.getNextMsgId()));
+        return client.sendDeviceMessage(this, new ScalarCmd(getDeviceIndex(),
+                values.toArray(new Double[]{}), actuatorType, client.getNextMsgId()));
     }
 
-    public Future<ButtplugMessage> SendScalarVibrateCmd(double scalar) throws IOException, ExecutionException, InterruptedException {
-        return SendScalarCmd("Vibrate", scalar);
+    public final Future<ButtplugMessage> sendScalarVibrateCmd(final double scalar)
+            throws IOException, ExecutionException, InterruptedException {
+        return sendScalarCmd("Vibrate", scalar);
     }
 
-    public long GetScalarVibrateCount() {
-        return GetScalarCount("Vibrate");
+    public final long getScalarVibrateCount() {
+        return getScalarCount("Vibrate");
     }
 
-    public Future<ButtplugMessage> SendScalarRotateCmd(double scalar) throws IOException, ExecutionException, InterruptedException {
-        return SendScalarCmd("Rotate", scalar);
+    public final Future<ButtplugMessage> sendScalarRotateCmd(final double scalar)
+            throws IOException, ExecutionException, InterruptedException {
+        return sendScalarCmd("Rotate", scalar);
     }
 
-    public long GetScalarRotateCount() {
-        return GetScalarCount("Rotate");
+    public final long getScalarRotateCount() {
+        return getScalarCount("Rotate");
     }
 
-    public Future<ButtplugMessage> SendScalarOscillateCmd(double scalar) throws IOException, ExecutionException, InterruptedException {
-        return SendScalarCmd("Oscillate", scalar);
+    public final Future<ButtplugMessage> sendScalarOscillateCmd(final double scalar)
+            throws IOException, ExecutionException, InterruptedException {
+        return sendScalarCmd("Oscillate", scalar);
     }
 
-    public long GetScalarOscillateCount() {
-        return GetScalarCount("Oscillate");
+    public final long getScalarOscillateCount() {
+        return getScalarCount("Oscillate");
     }
 
+    public final Future<ButtplugMessage> sendRotateCmd(final double speed, final boolean clockwise)
+            throws IOException, ExecutionException, InterruptedException {
 
-    public Future<ButtplugMessage> SendRotateCmd(double speed, boolean clockwise) throws IOException, ExecutionException, InterruptedException {
-
-        MessageAttributes attrs = deviceMessages.get("RotateCmd");
+        MessageAttributes attrs = getDeviceMessages().get("RotateCmd");
         if (!(attrs instanceof GenericMessageAttributes)) {
             throw new IOException("Device doesn't support RotateCmd!");
         }
@@ -140,12 +161,15 @@ public class ButtplugClientDevice {
             throw new IOException("Device doesn't have any ScalarCmd features that support Rotate!");
         }
 
-        return client.sendDeviceMessage(this, new RotateCmd(index, values.toArray(new RotateCmd.RotateSubCmd[]{}), client.getNextMsgId()));
+        return client.sendDeviceMessage(this, new RotateCmd(getDeviceIndex(),
+                values.toArray(new RotateCmd.RotateSubCmd[]{}), client.getNextMsgId()));
     }
 
-    public Future<ButtplugMessage> SendRotateCmd(long index, double speed, boolean clockwise) throws IOException, ExecutionException, InterruptedException {
+    public final Future<ButtplugMessage> sendRotateCmd(final long index, final double speed,
+                                                 final boolean clockwise)
+            throws IOException, ExecutionException, InterruptedException {
 
-        MessageAttributes attrs = deviceMessages.get("RotateCmd");
+        MessageAttributes attrs = getDeviceMessages().get("RotateCmd");
         if (!(attrs instanceof GenericMessageAttributes)) {
             throw new IOException("Device doesn't support RotateCmd!");
         }
@@ -154,12 +178,12 @@ public class ButtplugClientDevice {
 
         ArrayList<RotateCmd.RotateSubCmd> values = new ArrayList<>();
         GenericMessageAttributes gattrs = (GenericMessageAttributes) attrs;
-        if(index < 0 || index >= gattrs.features.size()) {
+        if (index < 0 || index >= gattrs.features.size()) {
             throw new IOException("Device doesn't have a RotateCmd feature at index " + index + "!");
         }
 
         for (GenericFeatureAttributes attr : gattrs.features) {
-            if(count == index) {
+            if (count == index) {
                 values.add(new RotateCmd.RotateSubCmd(count++, speed, clockwise));
             } else {
                 values.add(null);
@@ -167,11 +191,12 @@ public class ButtplugClientDevice {
             }
         }
 
-        return client.sendDeviceMessage(this, new RotateCmd(index, values.toArray(new RotateCmd.RotateSubCmd[]{}), client.getNextMsgId()));
+        return client.sendDeviceMessage(this, new RotateCmd(index,
+                values.toArray(new RotateCmd.RotateSubCmd[]{}), client.getNextMsgId()));
     }
 
-    public long GetRotateCount() {
-        MessageAttributes attrs = deviceMessages.get("RotateCmd");
+    public final long getRotateCount() {
+        MessageAttributes attrs = getDeviceMessages().get("RotateCmd");
         if (!(attrs instanceof GenericMessageAttributes)) {
             return 0;
         }
@@ -180,9 +205,10 @@ public class ButtplugClientDevice {
     }
 
 
-    public Future<ButtplugMessage> SendLinearCmd(double position, long duration) throws IOException, ExecutionException, InterruptedException {
+    public final Future<ButtplugMessage> sendLinearCmd(final double position, final long duration)
+            throws IOException, ExecutionException, InterruptedException {
 
-        MessageAttributes attrs = deviceMessages.get("LinearCmd");
+        MessageAttributes attrs = getDeviceMessages().get("LinearCmd");
         if (!(attrs instanceof GenericMessageAttributes)) {
             throw new IOException("Device doesn't support LinearCmd!");
         }
@@ -198,12 +224,15 @@ public class ButtplugClientDevice {
             throw new IOException("Device doesn't have any ScalarCmd features that support Rotate!");
         }
 
-        return client.sendDeviceMessage(this, new LinearCmd(index, values.toArray(new LinearCmd.LinearSubCmd[]{}), client.getNextMsgId()));
+        return client.sendDeviceMessage(this, new LinearCmd(getDeviceIndex(),
+                values.toArray(new LinearCmd.LinearSubCmd[]{}), client.getNextMsgId()));
     }
 
-    public Future<ButtplugMessage> SendLinearCmd(long index, double position, long duration) throws IOException, ExecutionException, InterruptedException {
+    public final Future<ButtplugMessage> sendLinearCmd(final long index, final double position,
+                                                 final long duration)
+            throws IOException, ExecutionException, InterruptedException {
 
-        MessageAttributes attrs = deviceMessages.get("LinearCmd");
+        MessageAttributes attrs = getDeviceMessages().get("LinearCmd");
         if (!(attrs instanceof GenericMessageAttributes)) {
             throw new IOException("Device doesn't support LinearCmd!");
         }
@@ -212,12 +241,12 @@ public class ButtplugClientDevice {
 
         ArrayList<LinearCmd.LinearSubCmd> values = new ArrayList<>();
         GenericMessageAttributes gattrs = (GenericMessageAttributes) attrs;
-        if(index < 0 || index >= gattrs.features.size()) {
+        if (index < 0 || index >= gattrs.features.size()) {
             throw new IOException("Device doesn't have a LinearCmd feature at index " + index + "!");
         }
 
         for (GenericFeatureAttributes attr : gattrs.features) {
-            if(count == index) {
+            if (count == index) {
                 values.add(new LinearCmd.LinearSubCmd(count++, position, duration));
             } else {
                 values.add(null);
@@ -225,15 +254,36 @@ public class ButtplugClientDevice {
             }
         }
 
-        return client.sendDeviceMessage(this, new LinearCmd(index, values.toArray(new LinearCmd.LinearSubCmd[]{}), client.getNextMsgId()));
+        return client.sendDeviceMessage(this, new LinearCmd(index,
+                values.toArray(new LinearCmd.LinearSubCmd[]{}), client.getNextMsgId()));
     }
 
-    public long GetLinearCount() {
-        MessageAttributes attrs = deviceMessages.get("LinearCmd");
+    public final long getLinearCount() {
+        MessageAttributes attrs = getDeviceMessages().get("LinearCmd");
         if (!(attrs instanceof GenericMessageAttributes)) {
             return 0;
         }
         GenericMessageAttributes gattrs = (GenericMessageAttributes) attrs;
         return gattrs.features.size();
+    }
+
+    public final long getDeviceIndex() {
+        return deviceIndex;
+    }
+
+    public final String getName() {
+        return name;
+    }
+
+    public final String getDisplayName() {
+        return displayName;
+    }
+
+    public final Integer getMessageTimingGap() {
+        return messageTimingGap;
+    }
+
+    public final Map<String, MessageAttributes> getDeviceMessages() {
+        return deviceMessages;
     }
 }

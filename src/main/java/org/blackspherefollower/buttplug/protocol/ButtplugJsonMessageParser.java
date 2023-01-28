@@ -11,30 +11,30 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-public class ButtplugJsonMessageParser {
+public final class ButtplugJsonMessageParser {
 
     private final ObjectMapper mapper;
 
     public ButtplugJsonMessageParser() {
         mapper = new ObjectMapper();
-        TypeResolverBuilder<?> typer = new DefaultTypeResolverBuilder(
-                DefaultTyping.OBJECT_AND_NON_CONCRETE);
+        TypeResolverBuilder<?> typer = DefaultTypeResolverBuilder.construct(DefaultTyping.JAVA_LANG_OBJECT,
+                this.mapper.getPolymorphicTypeValidator());
         typer = typer.init(JsonTypeInfo.Id.NAME, null);
         typer = typer.inclusion(As.WRAPPER_OBJECT);
         mapper.setDefaultTyping(typer);
     }
 
-    public List<ButtplugMessage> parseJson(String json)
+    public List<ButtplugMessage> parseJson(final String json)
             throws IOException {
         return Arrays.asList(mapper.readValue(json, ButtplugMessage[].class));
     }
 
-    public String formatJson(List<ButtplugMessage> msgs)
+    public String formatJson(final List<ButtplugMessage> msgs)
             throws IOException {
         return mapper.writeValueAsString(msgs);
     }
 
-    public String formatJson(ButtplugMessage msgs)
+    public String formatJson(final ButtplugMessage msgs)
             throws IOException {
         return mapper.writeValueAsString(new ButtplugMessage[]{msgs});
     }
