@@ -3,12 +3,12 @@ package org.blackspherefollower.buttplug.client;
 import org.blackspherefollower.buttplug.client.client.ButtplugClientDevice;
 import org.blackspherefollower.buttplug.client.client.ButtplugWSClient;
 import org.blackspherefollower.buttplug.protocol.messages.Ok;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ButtplugWSClientMockTest {
 

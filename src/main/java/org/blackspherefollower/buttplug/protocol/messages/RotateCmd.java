@@ -6,6 +6,18 @@ import org.blackspherefollower.buttplug.protocol.ButtplugDeviceMessage;
 
 public class RotateCmd extends ButtplugDeviceMessage {
 
+    @JsonProperty(value = "Rotations", required = true)
+    private RotateSubCmd[] rotations;
+
+    public RotateCmd(long deviceIndex, long id) {
+        super(id, deviceIndex);
+    }
+
+    @SuppressWarnings("unused")
+    private RotateCmd() {
+        super(ButtplugConsts.DefaultMsgId, -1);
+    }
+
     public class RotateSubCmd {
         @JsonProperty(value = "Index", required = true)
         private long index;
@@ -36,17 +48,5 @@ public class RotateCmd extends ButtplugDeviceMessage {
 
             this.speed = speed;
         }
-    }
-
-    @JsonProperty(value = "Rotations", required = true)
-    private RotateSubCmd[] rotations;
-
-    public RotateCmd(long deviceIndex, long id) {
-        super(id, deviceIndex);
-    }
-
-    @SuppressWarnings("unused")
-    private RotateCmd() {
-        super(ButtplugConsts.DefaultMsgId, -1);
     }
 }

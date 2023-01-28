@@ -13,7 +13,7 @@ import java.util.List;
 
 public class ButtplugJsonMessageParser {
 
-    private ObjectMapper mapper;
+    private final ObjectMapper mapper;
 
     public ButtplugJsonMessageParser() {
         mapper = new ObjectMapper();

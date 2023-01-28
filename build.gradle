@@ -2,10 +2,11 @@ plugins {
     id 'java-library'
     id 'jacoco'
     id 'maven-publish'
+    id 'checkstyle'
 }
 
 group = 'org.blackspherefollower.buttplug'
-version = "3.0." + ( "${System.env.GITHUB_RUN_NUMBER?:1}" ) + ( "${System.env.GITHUB_REF_TYPE}" == "tag" ? "" : "-SNAPSHOT" )
+version = "3.0." + ("${System.env.GITHUB_RUN_NUMBER ?: 1}") + ("${System.env.GITHUB_REF_TYPE}" == "tag" ? "" : "-SNAPSHOT")
 
 repositories {
     mavenCentral()
@@ -26,9 +27,14 @@ java {
     withJavadocJar()
     withSourcesJar()
 }
-
+checkstyle {
+    configFile = file("${rootDir}/checkstyle.xml")
+    showViolations = false
+    ignoreFailures = true
+}
 test {
     finalizedBy jacocoTestReport
+    finalizedBy check
 }
 jacocoTestReport {
     dependsOn test
@@ -43,7 +49,6 @@ jacocoTestReport {
         csv.required = true
     }
 }
-
 
 
 publishing {

@@ -34,7 +34,7 @@ Due to the sensitive nature of Metafetish projects, some community
 members prefer to use anonymous accounts, on message boards as well as
 for contributing to code repos. We understand the need for this, and
 try to be as accepting of that as possible without letting it
-interfere with project progress. 
+interfere with project progress.
 
 Note that vetting by project leads will still need to occur before
 administration rights after given to any account on a project resource
@@ -48,7 +48,7 @@ If there are features you'd like in a project, you may request them by:
 - Otherwise, make a post on the message board in the appropriate
   category, or on the General category if a proper category does not
   exist.
-  
+
 Please be specific in your feature request. We will ask followup
 questions for clarification, but the more information we have, the
 better.
@@ -114,7 +114,8 @@ contact [admin@metafetish.com](mailto:admin@metafetish.com) and a project lead w
 
 As of this writing, Metafetish projects are maintained on
 the [Metafetish Organization on Github](http://github.com/metafetish). 'master' branches on
-Metafetish projects are kept as [Github protected branches](https://help.github.com/articles/about-protected-branches/), with
+Metafetish projects are kept as [Github protected branches](https://help.github.com/articles/about-protected-branches/),
+with
 the following settings.
 
 - All of the following rules apply to both users and administrators.
@@ -137,7 +138,8 @@ this is not possible. Project management will be happy to work with
 you to resolve the issue.
 
 In order to reduce workload of contributors, repo dependencies should
-be brought in by using the [git subtree method](https://developer.atlassian.com/blog/2015/05/the-power-of-git-subtree/) instead of git
+be brought in by using the [git subtree method](https://developer.atlassian.com/blog/2015/05/the-power-of-git-subtree/)
+instead of git
 submodules. As this will require upkeep and documentation, please
 discuss possible repo inclusion with project leads before submitting
 pull requests with subtree merges.

@@ -1,17 +1,16 @@
 package org.blackspherefollower.buttplug.protocol.messages;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.blackspherefollower.buttplug.protocol.ButtplugMessage;
 import org.blackspherefollower.buttplug.protocol.ButtplugConsts;
+import org.blackspherefollower.buttplug.protocol.ButtplugMessage;
 
 import static org.blackspherefollower.buttplug.protocol.ButtplugConsts.MessageVersion;
 
 public class RequestServerInfo extends ButtplugMessage {
-    @JsonProperty(value = "ClientName", required = true)
-    public String clientName;
-
     @JsonProperty(value = "MessageVersion", required = true)
     public final long messageVersion = MessageVersion;
+    @JsonProperty(value = "ClientName", required = true)
+    public String clientName;
 
     public RequestServerInfo(String clientName, long id) {
         super(id);

@@ -1,8 +1,8 @@
 package org.blacksphere.protocol.messages;
 
-import org.blackspherefollower.buttplug.protocol.messages.DeviceList;
 import org.blackspherefollower.buttplug.protocol.ButtplugJsonMessageParser;
 import org.blackspherefollower.buttplug.protocol.ButtplugMessage;
+import org.blackspherefollower.buttplug.protocol.messages.DeviceList;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

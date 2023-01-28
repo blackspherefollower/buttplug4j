@@ -1,13 +1,14 @@
 package org.blacksphere.protocol.messages;
 
-import org.blackspherefollower.buttplug.protocol.messages.StopScanning;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.Test;
 import org.blackspherefollower.buttplug.protocol.ButtplugJsonMessageParser;
 import org.blackspherefollower.buttplug.protocol.ButtplugMessage;
+import org.blackspherefollower.buttplug.protocol.messages.StopScanning;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class StopScanningTest {
 

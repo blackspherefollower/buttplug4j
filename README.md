@@ -32,7 +32,8 @@ In depth testing is still pending, so your mileage may vary.
 
 ## Development
 
-Snapshot libraries from the buttplug4j repo are available via Maven from the following repository: https://packagecloud.io/blackspherefollower/buttplug4j/maven2
+Snapshot libraries from the buttplug4j repo are available via Maven from the following
+repository: https://packagecloud.io/blackspherefollower/buttplug4j/maven2
 
 ```xml
 <repositories>

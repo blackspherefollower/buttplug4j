@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
-import org.blackspherefollower.buttplug.protocol.messages.*;
 import org.blackspherefollower.buttplug.protocol.messages.Error;
+import org.blackspherefollower.buttplug.protocol.messages.*;
 
 @JsonTypeInfo(include = As.WRAPPER_OBJECT, use = Id.NAME)
 @JsonSubTypes({

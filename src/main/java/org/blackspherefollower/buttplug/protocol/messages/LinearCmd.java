@@ -6,6 +6,18 @@ import org.blackspherefollower.buttplug.protocol.ButtplugDeviceMessage;
 
 public class LinearCmd extends ButtplugDeviceMessage {
 
+    @JsonProperty(value = "Vectors", required = true)
+    private LinearSubCmd[] vectors;
+
+    public LinearCmd(long deviceIndex, long id) {
+        super(id, deviceIndex);
+    }
+
+    @SuppressWarnings("unused")
+    private LinearCmd() {
+        super(ButtplugConsts.DefaultMsgId, -1);
+    }
+
     public class LinearSubCmd {
         @JsonProperty(value = "Index", required = true)
         private long index;
@@ -36,17 +48,5 @@ public class LinearCmd extends ButtplugDeviceMessage {
 
             this.position = position;
         }
-    }
-
-    @JsonProperty(value = "Vectors", required = true)
-    private LinearSubCmd[] vectors;
-
-    public LinearCmd(long deviceIndex, long id) {
-        super(id, deviceIndex);
-    }
-
-    @SuppressWarnings("unused")
-    private LinearCmd() {
-        super(ButtplugConsts.DefaultMsgId, -1);
     }
 }

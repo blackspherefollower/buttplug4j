@@ -1,19 +1,20 @@
 package org.blacksphere.protocol.messages;
 
-import org.blackspherefollower.buttplug.protocol.messages.RequestServerInfo;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.Test;
 import org.blackspherefollower.buttplug.protocol.ButtplugJsonMessageParser;
 import org.blackspherefollower.buttplug.protocol.ButtplugMessage;
+import org.blackspherefollower.buttplug.protocol.messages.RequestServerInfo;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RequestServerInfoTest {
 
     @Test
     public void test() throws IOException {
-        String testStr = "[{\"RequestServerInfo\":{\"Id\":7,\"ClientName\":\"UnitTest\",\"MessageVersion\":3}}]";
+        String testStr = "[{\"RequestServerInfo\":{\"Id\":7,\"MessageVersion\":3,\"ClientName\":\"UnitTest\"}}]";
 
         ButtplugJsonMessageParser parser = new ButtplugJsonMessageParser();
         List<ButtplugMessage> msgs = parser.parseJson(testStr);

@@ -26,7 +26,7 @@ public class DeviceAdded extends ButtplugDeviceMessage {
 
     @JsonProperty(value = "DeviceDisplayName")
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    public String deviceDisplayName ;
+    public String deviceDisplayName;
 
     @JsonProperty(value = "DeviceMessages", required = true)
     @JsonDeserialize(using = DeviceMessagesDeserializer.class)

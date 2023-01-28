@@ -1,7 +1,12 @@
 package org.blackspherefollower.buttplug.client.client;
 
-import org.blackspherefollower.buttplug.protocol.messages.*;
+import org.blackspherefollower.buttplug.protocol.ButtplugConsts;
+import org.blackspherefollower.buttplug.protocol.ButtplugDeviceMessage;
+import org.blackspherefollower.buttplug.protocol.ButtplugJsonMessageParser;
+import org.blackspherefollower.buttplug.protocol.ButtplugMessage;
 import org.blackspherefollower.buttplug.protocol.messages.Error;
+import org.blackspherefollower.buttplug.protocol.messages.*;
+import org.blackspherefollower.buttplug.protocol.messages.Parts.DeviceMessageInfo;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketException;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
@@ -10,11 +15,6 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.eclipse.jetty.websocket.client.ClientUpgradeRequest;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
-import org.blackspherefollower.buttplug.protocol.ButtplugConsts;
-import org.blackspherefollower.buttplug.protocol.ButtplugDeviceMessage;
-import org.blackspherefollower.buttplug.protocol.ButtplugJsonMessageParser;
-import org.blackspherefollower.buttplug.protocol.ButtplugMessage;
-import org.blackspherefollower.buttplug.protocol.messages.Parts.DeviceMessageInfo;
 
 import java.io.IOException;
 import java.net.URI;
@@ -31,21 +31,21 @@ import java.util.concurrent.atomic.AtomicLong;
 @WebSocket(maxTextMessageSize = 64 * 1024)
 public class ButtplugWSClient {
 
+    private final ButtplugJsonMessageParser _parser;
+    private final Object sendLock = new Object();
+    private final String _clientName;
+    private final ConcurrentHashMap<Long, CompletableFuture<ButtplugMessage>> _waitingMsgs = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Long, ButtplugClientDevice> _devices = new ConcurrentHashMap<>();
+    private final AtomicLong msgId = new AtomicLong(1);
     public IDeviceEvent deviceAdded;
     public IDeviceEvent deviceRemoved;
     public IScanningEvent scanningFinished;
     public IErrorEvent errorReceived;
     public ISensorReadingEvent sensorReadingReceived;
-    private ButtplugJsonMessageParser _parser;
-    private Object sendLock = new Object();
-    private String _clientName;
     private int _messageSchemaVersion;
-    private ConcurrentHashMap<Long, CompletableFuture<ButtplugMessage>> _waitingMsgs = new ConcurrentHashMap<>();
-    private ConcurrentHashMap<Long, ButtplugClientDevice> _devices = new ConcurrentHashMap<>();
     private WebSocketClient client;
     private Session session;
     private Timer _pingTimer;
-    private AtomicLong msgId = new AtomicLong(1);
 
     public ButtplugWSClient(String aClientName) {
         _clientName = aClientName;
@@ -242,7 +242,7 @@ public class ButtplugWSClient {
     public CompletableFuture<ButtplugMessage> sendDeviceMessage(ButtplugClientDevice device, ButtplugDeviceMessage deviceMsg) throws ExecutionException, InterruptedException, IOException {
         ButtplugClientDevice dev = _devices.get(device.index);
         if (dev != null) {
-            if (!dev.deviceMessages.keySet().contains(deviceMsg.getClass().getSimpleName())) {
+            if (!dev.deviceMessages.containsKey(deviceMsg.getClass().getSimpleName())) {
                 return CompletableFuture.completedFuture(new Error("Device does not accept message type: " + deviceMsg.getClass().getSimpleName(), Error.ErrorClass.ERROR_DEVICE, ButtplugConsts.SystemMsgId));
             }
 

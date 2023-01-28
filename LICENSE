@@ -42,12 +42,6 @@ licensed under Apache License 2.0
 
 --
 
-Guava: Google Core Libraries for Java (https://github.com/google/guava)
-is licensed under Apache License 2.0
-(http://www.apache.org/licenses/LICENSE-2.0.txt)
-
---
-
 Jetty 9 (as well as 7 and 8) is dual licensed under the Apache License 2.0 and
 Eclipse Public License 1.0. Jetty is free for commercial use and distribution
 under the terms of either license, with exceptions listed in the NOTICE file

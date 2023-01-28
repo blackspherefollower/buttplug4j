@@ -35,7 +35,7 @@ public class ButtplugClientDevice {
         displayName = aDevInfo.deviceDisplayName != null && !aDevInfo.deviceDisplayName.isEmpty() ? aDevInfo.deviceDisplayName : aDevInfo.deviceName;
         messageTimingGap = aDevInfo.deviceMessageTimingGap;
         deviceMessages = new HashMap<>();
-        for( DeviceMessage deviceMessage : aDevInfo.deviceMessages) {
+        for (DeviceMessage deviceMessage : aDevInfo.deviceMessages) {
             deviceMessages.put(deviceMessage.message, deviceMessage.attributes);
         }
     }
@@ -47,7 +47,7 @@ public class ButtplugClientDevice {
         displayName = aDevInfo.deviceDisplayName != null && !aDevInfo.deviceDisplayName.isEmpty() ? aDevInfo.deviceDisplayName : aDevInfo.deviceName;
         messageTimingGap = aDevInfo.deviceMessageTimingGap;
         deviceMessages = new HashMap<>();
-        for( DeviceMessage deviceMessage : aDevInfo.deviceMessages) {
+        for (DeviceMessage deviceMessage : aDevInfo.deviceMessages) {
             deviceMessages.put(deviceMessage.message, deviceMessage.attributes);
         }
     }
@@ -67,34 +67,33 @@ public class ButtplugClientDevice {
 
     public long GetScalarCount(String actuatorType) {
         MessageAttributes attrs = deviceMessages.get("ScalarCmd");
-        if(attrs == null || !(attrs instanceof GenericMessageAttributes)) {
+        if (attrs == null || !(attrs instanceof GenericMessageAttributes)) {
             return 0;
         }
-        GenericMessageAttributes gattrs = (GenericMessageAttributes)attrs;
+        GenericMessageAttributes gattrs = (GenericMessageAttributes) attrs;
         return gattrs.features.stream().filter(genericFeatureAttributes -> genericFeatureAttributes.actuatorType.contentEquals(actuatorType)).count();
     }
 
     public Future<ButtplugMessage> SendScalarCmd(String actuatorType, double scalar) throws IOException, ExecutionException, InterruptedException {
 
         MessageAttributes attrs = deviceMessages.get("ScalarCmd");
-        if(attrs == null || !(attrs instanceof GenericMessageAttributes)) {
+        if (attrs == null || !(attrs instanceof GenericMessageAttributes)) {
             throw new IOException("Device doesn't support ScalarCmd!");
         }
 
         long count = 0;
 
         ArrayList<Double> values = new ArrayList<>();
-        GenericMessageAttributes gattrs = (GenericMessageAttributes)attrs;
-        for(GenericFeatureAttributes attr : gattrs.features) {
-            if(attr.actuatorType.contentEquals(actuatorType))
-            {
+        GenericMessageAttributes gattrs = (GenericMessageAttributes) attrs;
+        for (GenericFeatureAttributes attr : gattrs.features) {
+            if (attr.actuatorType.contentEquals(actuatorType)) {
                 values.add(scalar);
                 count++;
             } else {
                 values.add(null);
             }
         }
-        if(count == 0) {
+        if (count == 0) {
             throw new IOException("Device doesn't have any ScalarCmd features that support Rotate!");
         }
 

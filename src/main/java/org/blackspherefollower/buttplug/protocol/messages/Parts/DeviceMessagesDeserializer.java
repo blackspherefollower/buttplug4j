@@ -25,7 +25,7 @@ public class DeviceMessagesDeserializer extends JsonDeserializer {
             DeviceMessage dmsg = new DeviceMessage();
             dmsg.message = msg.getKey();
 
-            switch(dmsg.message) {
+            switch (dmsg.message) {
                 case "StopDeviceCmd":
                     dmsg.attributes = new NullMessageAttributes();
                     break;

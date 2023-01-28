@@ -24,31 +24,31 @@ jobs:
       contents: read
       pull-requests: write
       packages: write
-      
+
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Set up JDK 8
-      uses: actions/setup-java@v3
-      with:
-        java-version: '8'
-        distribution: 'temurin'
+      - uses: actions/checkout@v3
 
-    - name: Build with Gradle
-      uses: gradle/gradle-build-action@v2.3.3
-      with:
-        arguments: build jacocoTestReport
+      - name: Set up JDK 8
+        uses: actions/setup-java@v3
+        with:
+          java-version: '8'
+          distribution: 'temurin'
 
-    - name: Add coverage to PR
-      id: jacoco
-      uses: madrapps/jacoco-report@v1.3
-      with:
-        paths: ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml
-        token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@v2.3.3
+        with:
+          arguments: build jacocoTestReport
 
-    - name: Publish package
-      uses: gradle/gradle-build-action@v2.3.3
-      with:
-        arguments: publish
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Add coverage to PR
+        id: jacoco
+        uses: madrapps/jacoco-report@v1.3
+        with:
+          paths: ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish package
+        uses: gradle/gradle-build-action@v2.3.3
+        with:
+          arguments: publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

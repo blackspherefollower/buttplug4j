@@ -1,7 +1,7 @@
 package org.blackspherefollower.buttplug.protocol.messages;
 
-import org.blackspherefollower.buttplug.protocol.ButtplugMessage;
 import org.blackspherefollower.buttplug.protocol.ButtplugConsts;
+import org.blackspherefollower.buttplug.protocol.ButtplugMessage;
 
 public class Ok extends ButtplugMessage {
 

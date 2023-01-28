@@ -8,6 +8,27 @@ import java.util.ArrayList;
 
 public class ScalarCmd extends ButtplugDeviceMessage {
 
+    @JsonProperty(value = "Scalars", required = true)
+    private ScalarSubCmd[] scalars;
+
+    public ScalarCmd(long deviceIndex, Double[] scalars, String actuatorType, long id) {
+        super(id, deviceIndex);
+        long i = 0;
+        ArrayList<ScalarSubCmd> scalarsubs = new ArrayList<>();
+        for (Double scalar : scalars) {
+            if (scalar != null) {
+                scalarsubs.add(new ScalarSubCmd(i, scalar, actuatorType));
+            }
+            i++;
+        }
+        this.scalars = scalarsubs.toArray(new ScalarSubCmd[]{});
+    }
+
+    @SuppressWarnings("unused")
+    private ScalarCmd() {
+        super(ButtplugConsts.DefaultMsgId, -1);
+    }
+
     public class ScalarSubCmd {
         @JsonProperty(value = "Index", required = true)
         private long index;
@@ -17,6 +38,12 @@ public class ScalarCmd extends ButtplugDeviceMessage {
 
         @JsonProperty(value = "ActuatorType", required = true)
         private String actuatorType;
+
+        public ScalarSubCmd(long index, double scalar, String actuatorType) {
+            this.index = index;
+            this.actuatorType = actuatorType;
+            SetScalar(scalar);
+        }
 
         public double GetScalar() {
             if (speed > 1 || speed < 0) {
@@ -38,32 +65,5 @@ public class ScalarCmd extends ButtplugDeviceMessage {
 
             this.speed = speed;
         }
-
-        public ScalarSubCmd(long index, double scalar, String actuatorType) {
-            this.index = index;
-            this.actuatorType = actuatorType;
-            SetScalar(scalar);
-        }
-    }
-
-    @JsonProperty(value = "Scalars", required = true)
-    private ScalarSubCmd[] scalars;
-
-    public ScalarCmd(long deviceIndex, Double[] scalars, String actuatorType, long id) {
-        super(id, deviceIndex);
-        long i = 0;
-        ArrayList<ScalarSubCmd> scalarsubs = new ArrayList<>();
-        for(Double scalar : scalars) {
-            if(scalar != null) {
-                scalarsubs.add(new ScalarSubCmd(i, scalar, actuatorType));
-            }
-            i++;
-        }
-        this.scalars = scalarsubs.toArray(new ScalarSubCmd[]{});
-    }
-
-    @SuppressWarnings("unused")
-    private ScalarCmd() {
-        super(ButtplugConsts.DefaultMsgId, -1);
     }
 }
