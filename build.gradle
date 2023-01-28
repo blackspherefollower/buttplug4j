@@ -14,30 +14,6 @@ repositories {
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-jacocoTestReport {
-    reports {
-        xml.enabled = true
-        html.enabled = true
-    }
-}
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-    from sourceSets.main.allSource
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    from javadoc.destinationDir
-}
-
-artifacts {
-    archives sourcesJar
-    archives javadocJar
-}
-
-configurations {
-    deployerJars
-}
-
 dependencies {
     api 'org.eclipse.jetty.websocket:websocket-client:9.4.50.v20221201'
     api 'org.eclipse.jetty.websocket:websocket-api:9.4.50.v20221201'
@@ -46,28 +22,29 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.1'
 }
 
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+test {
+    finalizedBy jacocoTestReport
+}
+jacocoTestReport {
+    dependsOn test
+}
 tasks.named('test') {
     useJUnitPlatform()
 }
 
-task codeCoverageReport(type: JacocoReport) {
-    executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
-
-    subprojects.each {
-        sourceSets it.sourceSets.main
-    }
-
+jacocoTestReport {
     reports {
-        xml.enabled true
-        xml.destination new File("${buildDir}/reports/jacoco/report.xml")
-        html.enabled false
-        csv.enabled false
+        xml.required = true
+        csv.required = true
     }
 }
 
-codeCoverageReport.dependsOn {
-    subprojects*.test
-}
+
 
 publishing {
     repositories {
