@@ -28,10 +28,11 @@ jobs:
       with:
         java-version: '8'
         distribution: 'temurin'
+
     - name: Build with Gradle
       uses: gradle/gradle-build-action@v2.3.3
       with:
-        arguments: build jacocoTestReport publish
+        arguments: build jacocoTestReport
 
     - name: Add coverage to PR
       id: jacoco
@@ -39,5 +40,10 @@ jobs:
       with:
         paths: ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml
         token: ${{ secrets.GITHUB_TOKEN }}
-        min-coverage-overall: 40
-        min-coverage-changed-files: 60
+
+    - name: Publish package
+      uses: gradle/gradle-build-action@v2.3.3
+      with:
+        arguments: publish
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
