@@ -1,80 +1,54 @@
-allprojects {
-    apply plugin: 'java'
-    apply plugin: 'jacoco'
-    apply plugin: 'maven'
+plugins {
+    id 'java-library'
+    id 'jacoco'
+    id 'maven-publish'
+}
 
-    group = 'org.metafetish.buttplug'
-    version = "0.0." + ( "${System.env.TRAVIS_BUILD_NUMBER?:1}" ) + "-SNAPSHOT"
+group = 'org.blackspherefollower.buttplug'
+version = "3.0." + ( "${System.env.GITHUB_RUN_NUMBER?:1}" ) + ( "${System.env.GITHUB_REF_TYPE}" == "tag" ? "" : "-SNAPSHOT" )
 
-    repositories {
-        mavenCentral()
-    }
+repositories {
+    mavenCentral()
+}
 
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
-    jacocoTestReport {
-        reports {
-            xml.enabled = true
-            html.enabled = true
-        }
-    }
-
-    task sourcesJar(type: Jar, dependsOn: classes) {
-        classifier = 'sources'
-        from sourceSets.main.allSource
-    }
-
-    task javadocJar(type: Jar, dependsOn: javadoc) {
-        classifier = 'javadoc'
-        from javadoc.destinationDir
-    }
-
-    artifacts {
-        archives sourcesJar
-        archives javadocJar
+jacocoTestReport {
+    reports {
+        xml.enabled = true
+        html.enabled = true
     }
 }
 
-subprojects {
-    configurations {
-        deployerJars
-    }
-
-    dependencies {
-        testCompile group: 'junit', name: 'junit', version: '4.12'
-        deployerJars "io.packagecloud.maven.wagon:maven-packagecloud-wagon:0.0.6"
-    }
-
-    uploadArchives {
-        repositories.mavenDeployer {
-            configuration = configurations.deployerJars
-            repository(url: "packagecloud+https://packagecloud.io/blackspherefollower/buttplug4j") {
-                authentication(password: "$System.env.PACKAGECLOUD_TOKEN")
-            }
-            pom.project {
-                name "Buttplug4j"
-                description "Java implementation of the Buttplug WebSocket client"
-                url "https://buttplug.io/"
-                inceptionYear "2017"
-
-                scm {
-                    connection "scm:git:git://github.com/metafetish/buttplug4j.git"
-                    developerConnection "scm:git:ssh@github.com:metafetish/buttplug4j.git"
-                    url "https://github.com/metafetish/buttplug4j"
-                }
-
-                licenses {
-                    license {
-                        name "BSD 3-Clause License"
-                        url "https://github.com/metafetish/buttplug4j/blob/master/LICENSE"
-                    }
-                }
-            }
-        }
-    }
+task sourcesJar(type: Jar, dependsOn: classes) {
+    from sourceSets.main.allSource
 }
 
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
+
+configurations {
+    deployerJars
+}
+
+dependencies {
+    api 'org.eclipse.jetty.websocket:websocket-client:9.4.50.v20221201'
+    api 'org.eclipse.jetty.websocket:websocket-api:9.4.50.v20221201'
+    api 'com.fasterxml.jackson.core:jackson-annotations:2.14.1'
+    api 'com.fasterxml.jackson.core:jackson-databind:2.14.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.1'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
 
 task codeCoverageReport(type: JacocoReport) {
     executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
@@ -93,4 +67,22 @@ task codeCoverageReport(type: JacocoReport) {
 
 codeCoverageReport.dependsOn {
     subprojects*.test
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/${System.env.GITHUB_REPOSITORY_OWNER}/${System.env.GITHUB_REPOSITORY}")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+            }
+        }
+    }
+    publications {
+        gpr(MavenPublication) {
+            from(components.java)
+        }
+    }
 }

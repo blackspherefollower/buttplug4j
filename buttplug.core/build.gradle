@@ -1,4 +1,0 @@
-dependencies {
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.14.1'
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.14.1'
-}

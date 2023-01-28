@@ -1,7 +1,2 @@
 
-dependencies {
-    compile project(':buttplug.core')
-    compile group: 'org.eclipse.jetty.websocket', name: 'websocket-client', version: '9.4.50.v20221201'
-    compile group: 'org.eclipse.jetty.websocket', name: 'websocket-api', version: '9.4.50.v20221201'
-}
 
