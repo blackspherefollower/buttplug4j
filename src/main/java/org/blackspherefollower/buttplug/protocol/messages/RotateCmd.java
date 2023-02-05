@@ -11,12 +11,20 @@ public final class RotateCmd extends ButtplugDeviceMessage {
 
     public RotateCmd(final long deviceIndex, final RotateSubCmd[] rotations, final long id) {
         super(id, deviceIndex);
-        this.rotations = rotations;
+        this.setRotations(rotations);
     }
 
     @SuppressWarnings("unused")
     private RotateCmd() {
-        super(ButtplugConsts.DefaultMsgId, -1);
+        super(ButtplugConsts.DEFAULT_MSG_ID, -1);
+    }
+
+    public RotateSubCmd[] getRotations() {
+        return rotations;
+    }
+
+    public void setRotations(final RotateSubCmd[] rotations) {
+        this.rotations = rotations;
     }
 
     public static final class RotateSubCmd {
@@ -32,7 +40,7 @@ public final class RotateCmd extends ButtplugDeviceMessage {
         public RotateSubCmd(final long index, final double speed, final boolean clockwise) {
             this.index = index;
             this.clockwise = clockwise;
-            SetSpeed(speed);
+            setSpeed(speed);
         }
 
         public RotateSubCmd() {
@@ -41,14 +49,14 @@ public final class RotateCmd extends ButtplugDeviceMessage {
             this.speed = 0;
         }
 
-        public double GetPosition() {
+        public double getPosition() {
             if (speed > 1 || speed < 0) {
                 return 0;
             }
             return speed;
         }
 
-        public void SetSpeed(double speed) {
+        public void setSpeed(final double speed) {
             if (speed > 1) {
                 throw new IllegalArgumentException(
                         "Rotation speed cannot be greater than 1!");

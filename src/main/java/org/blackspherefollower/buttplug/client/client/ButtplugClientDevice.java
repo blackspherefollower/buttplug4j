@@ -50,21 +50,21 @@ public class ButtplugClientDevice {
 
     public ButtplugClientDevice(final ButtplugWSClient bpClient, final DeviceAdded deviceAdded) {
         this.client = bpClient;
-        this.deviceIndex = deviceAdded.deviceIndex;
-        this.name = deviceAdded.deviceName;
-        this.displayName = deviceAdded.deviceDisplayName != null
-                && !deviceAdded.deviceDisplayName.isEmpty()
-                ? deviceAdded.deviceDisplayName : deviceAdded.deviceName;
-        this.messageTimingGap = deviceAdded.deviceMessageTimingGap;
+        this.deviceIndex = deviceAdded.getDeviceIndex();
+        this.name = deviceAdded.getDeviceName();
+        this.displayName = deviceAdded.getDeviceDisplayName() != null
+                && !deviceAdded.getDeviceDisplayName().isEmpty()
+                ? deviceAdded.getDeviceDisplayName() : deviceAdded.getDeviceName();
+        this.messageTimingGap = deviceAdded.getDeviceMessageTimingGap();
         this.deviceMessages = new HashMap<>();
-        for (DeviceMessage deviceMessage : deviceAdded.deviceMessages) {
+        for (DeviceMessage deviceMessage : deviceAdded.getDeviceMessages()) {
             this.deviceMessages.put(deviceMessage.message, deviceMessage.attributes);
         }
     }
 
     public ButtplugClientDevice(final ButtplugWSClient bpClient, final DeviceRemoved deviceRemoved) {
         this.client = bpClient;
-        this.deviceIndex = deviceRemoved.deviceIndex;
+        this.deviceIndex = deviceRemoved.getDeviceIndex();
         this.name = "";
         this.displayName = "";
         this.messageTimingGap = null;
@@ -83,8 +83,8 @@ public class ButtplugClientDevice {
             return 0;
         }
         GenericMessageAttributes gattrs = (GenericMessageAttributes) attrs;
-        return gattrs.features.stream().filter(genericFeatureAttributes ->
-                genericFeatureAttributes.actuatorType.contentEquals(actuatorType)).count();
+        return gattrs.getFeatures().stream().filter(genericFeatureAttributes ->
+                genericFeatureAttributes.getActuatorType().contentEquals(actuatorType)).count();
     }
 
     public final Future<ButtplugMessage> sendScalarCmd(final String actuatorType, final double scalar)
@@ -99,8 +99,8 @@ public class ButtplugClientDevice {
 
         ArrayList<Double> values = new ArrayList<>();
         GenericMessageAttributes gattrs = (GenericMessageAttributes) attrs;
-        for (GenericFeatureAttributes attr : gattrs.features) {
-            if (attr.actuatorType.contentEquals(actuatorType)) {
+        for (GenericFeatureAttributes attr : gattrs.getFeatures()) {
+            if (attr.getActuatorType().contentEquals(actuatorType)) {
                 values.add(scalar);
                 count++;
             } else {
@@ -154,7 +154,7 @@ public class ButtplugClientDevice {
 
         ArrayList<RotateCmd.RotateSubCmd> values = new ArrayList<>();
         GenericMessageAttributes gattrs = (GenericMessageAttributes) attrs;
-        for (GenericFeatureAttributes attr : gattrs.features) {
+        for (GenericFeatureAttributes attr : gattrs.getFeatures()) {
             values.add(new RotateCmd.RotateSubCmd(count++, speed, clockwise));
         }
         if (count == 0) {
@@ -178,11 +178,11 @@ public class ButtplugClientDevice {
 
         ArrayList<RotateCmd.RotateSubCmd> values = new ArrayList<>();
         GenericMessageAttributes gattrs = (GenericMessageAttributes) attrs;
-        if (index < 0 || index >= gattrs.features.size()) {
+        if (index < 0 || index >= gattrs.getFeatures().size()) {
             throw new IOException("Device doesn't have a RotateCmd feature at index " + index + "!");
         }
 
-        for (GenericFeatureAttributes attr : gattrs.features) {
+        for (GenericFeatureAttributes attr : gattrs.getFeatures()) {
             if (count == index) {
                 values.add(new RotateCmd.RotateSubCmd(count++, speed, clockwise));
             } else {
@@ -201,7 +201,7 @@ public class ButtplugClientDevice {
             return 0;
         }
         GenericMessageAttributes gattrs = (GenericMessageAttributes) attrs;
-        return gattrs.features.size();
+        return gattrs.getFeatures().size();
     }
 
 
@@ -217,7 +217,7 @@ public class ButtplugClientDevice {
 
         ArrayList<LinearCmd.LinearSubCmd> values = new ArrayList<>();
         GenericMessageAttributes gattrs = (GenericMessageAttributes) attrs;
-        for (GenericFeatureAttributes attr : gattrs.features) {
+        for (GenericFeatureAttributes attr : gattrs.getFeatures()) {
             values.add(new LinearCmd.LinearSubCmd(count++, position, duration));
         }
         if (count == 0) {
@@ -241,11 +241,11 @@ public class ButtplugClientDevice {
 
         ArrayList<LinearCmd.LinearSubCmd> values = new ArrayList<>();
         GenericMessageAttributes gattrs = (GenericMessageAttributes) attrs;
-        if (index < 0 || index >= gattrs.features.size()) {
+        if (index < 0 || index >= gattrs.getFeatures().size()) {
             throw new IOException("Device doesn't have a LinearCmd feature at index " + index + "!");
         }
 
-        for (GenericFeatureAttributes attr : gattrs.features) {
+        for (GenericFeatureAttributes attr : gattrs.getFeatures()) {
             if (count == index) {
                 values.add(new LinearCmd.LinearSubCmd(count++, position, duration));
             } else {
@@ -264,7 +264,7 @@ public class ButtplugClientDevice {
             return 0;
         }
         GenericMessageAttributes gattrs = (GenericMessageAttributes) attrs;
-        return gattrs.features.size();
+        return gattrs.getFeatures().size();
     }
 
     public final long getDeviceIndex() {

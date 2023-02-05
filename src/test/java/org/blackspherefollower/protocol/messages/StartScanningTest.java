@@ -21,7 +21,7 @@ public class StartScanningTest {
 
         assertEquals(msgs.size(), 1);
         assertEquals(msgs.get(0).getClass(), StartScanning.class);
-        assertEquals(msgs.get(0).id, 6);
+        assertEquals(msgs.get(0).getId(), 6);
 
         String jsonOut = parser.formatJson(msgs);
         assertEquals(testStr, jsonOut);

@@ -3,14 +3,14 @@ package org.blackspherefollower.buttplug.protocol.messages;
 import org.blackspherefollower.buttplug.protocol.ButtplugConsts;
 import org.blackspherefollower.buttplug.protocol.ButtplugMessage;
 
-public class Ping extends ButtplugMessage {
+public final class Ping extends ButtplugMessage {
 
     @SuppressWarnings("unused")
     private Ping() {
-        super(ButtplugConsts.DefaultMsgId);
+        super(ButtplugConsts.DEFAULT_MSG_ID);
     }
 
-    public Ping(long id) {
+    public Ping(final long id) {
         super(id);
     }
 }

@@ -29,6 +29,26 @@ public class ButtplugWSClientMockTest {
         Thread.sleep(1000);
         assertTrue(client.stopAllDevices());
 
+        Thread.sleep(60000);
+        for (ButtplugClientDevice dev : client.getDevices()) {
+            if (dev.getScalarVibrateCount() > 0) {
+                dev.sendScalarVibrateCmd(0.5).get();
+            }
+        }
+
+        Thread.sleep(1000);
+        assertTrue(client.stopAllDevices());
+
+        Thread.sleep(60000);
+        for (ButtplugClientDevice dev : client.getDevices()) {
+            if (dev.getScalarVibrateCount() > 0) {
+                dev.sendScalarVibrateCmd(0.5).get();
+            }
+        }
+
+        Thread.sleep(1000);
+        assertTrue(client.stopAllDevices());
+
         client.disconnect();
     }
 }

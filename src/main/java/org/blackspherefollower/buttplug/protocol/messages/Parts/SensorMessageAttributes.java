@@ -5,12 +5,19 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.ArrayList;
 
 @JsonSerialize(using = SensorFeaturesSerializer.class)
-public class SensorMessageAttributes extends MessageAttributes {
+public final class SensorMessageAttributes extends MessageAttributes {
 
-    ArrayList<SensorFeatureAttributes> features;
+    private ArrayList<SensorFeatureAttributes> features;
 
     SensorMessageAttributes() {
-        features = new ArrayList<>();
+        setFeatures(new ArrayList<>());
     }
 
+    public ArrayList<SensorFeatureAttributes> getFeatures() {
+        return features;
+    }
+
+    public void setFeatures(final ArrayList<SensorFeatureAttributes> features) {
+        this.features = features;
+    }
 }

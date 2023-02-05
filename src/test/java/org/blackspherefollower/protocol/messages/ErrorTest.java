@@ -22,12 +22,12 @@ public class ErrorTest {
         assertEquals(msgs.size(), 1);
         assertEquals(msgs.get(0).getClass(),
                 Error.class);
-        assertEquals(msgs.get(0).id, 7);
+        assertEquals(msgs.get(0).getId(), 7);
         assertEquals(
-                ((Error) msgs.get(0)).errorMessage,
+                ((Error) msgs.get(0)).getErrorMessage(),
                 "TestError");
         assertEquals(
-                ((Error) msgs.get(0)).errorCode,
+                ((Error) msgs.get(0)).getErrorCode(),
                 Error.ErrorClass.ERROR_DEVICE);
 
         String jsonOut = parser.formatJson(msgs);

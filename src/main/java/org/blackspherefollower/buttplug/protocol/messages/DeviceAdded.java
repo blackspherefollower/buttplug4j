@@ -12,38 +12,66 @@ import org.blackspherefollower.buttplug.protocol.messages.Parts.DeviceMessagesSe
 
 import java.util.ArrayList;
 
-public class DeviceAdded extends ButtplugDeviceMessage {
-
-    @JsonProperty(value = "DeviceIndex", required = true)
-    public long deviceIndex;
-
+public final class DeviceAdded extends ButtplugDeviceMessage {
     @JsonProperty(value = "DeviceName", required = true)
-    public String deviceName;
+    private String deviceName;
 
     @JsonProperty(value = "DeviceMessageTimingGap")
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-    public Integer deviceMessageTimingGap = null;
+    private Integer deviceMessageTimingGap = null;
 
     @JsonProperty(value = "DeviceDisplayName")
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    public String deviceDisplayName;
+    private String deviceDisplayName;
 
     @JsonProperty(value = "DeviceMessages", required = true)
     @JsonDeserialize(using = DeviceMessagesDeserializer.class)
     @JsonSerialize(using = DeviceMessagesSerializer.class)
-    public ArrayList<DeviceMessage> deviceMessages;
+    private ArrayList<DeviceMessage> deviceMessages;
 
-    public DeviceAdded(long deviceIndex, String deviceName, ArrayList<DeviceMessage> deviceMessages) {
-        super(ButtplugConsts.SystemMsgId, deviceIndex);
+    public DeviceAdded(final long deviceIndex, final String deviceName, final ArrayList<DeviceMessage> deviceMessages) {
+        super(ButtplugConsts.SYSTEM_MSG_ID, deviceIndex);
 
-        this.deviceName = deviceName;
-        this.deviceMessages = deviceMessages;
+        this.setDeviceName(deviceName);
+        this.setDeviceMessages(deviceMessages);
     }
 
     @SuppressWarnings("unused")
     private DeviceAdded() {
-        super(ButtplugConsts.SystemMsgId, 0);
-        this.deviceName = "";
-        this.deviceMessages = new ArrayList<>();
+        super(ButtplugConsts.SYSTEM_MSG_ID, 0);
+        this.setDeviceName("");
+        this.setDeviceMessages(new ArrayList<>());
+    }
+
+    public String getDeviceName() {
+        return deviceName;
+    }
+
+    public void setDeviceName(final String deviceName) {
+        this.deviceName = deviceName;
+    }
+
+    public Integer getDeviceMessageTimingGap() {
+        return deviceMessageTimingGap;
+    }
+
+    public void setDeviceMessageTimingGap(final Integer deviceMessageTimingGap) {
+        this.deviceMessageTimingGap = deviceMessageTimingGap;
+    }
+
+    public String getDeviceDisplayName() {
+        return deviceDisplayName;
+    }
+
+    public void setDeviceDisplayName(final String deviceDisplayName) {
+        this.deviceDisplayName = deviceDisplayName;
+    }
+
+    public ArrayList<DeviceMessage> getDeviceMessages() {
+        return deviceMessages;
+    }
+
+    public void setDeviceMessages(final ArrayList<DeviceMessage> deviceMessages) {
+        this.deviceMessages = deviceMessages;
     }
 }

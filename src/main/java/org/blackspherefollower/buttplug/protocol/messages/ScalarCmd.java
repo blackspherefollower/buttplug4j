@@ -6,12 +6,12 @@ import org.blackspherefollower.buttplug.protocol.ButtplugDeviceMessage;
 
 import java.util.ArrayList;
 
-public class ScalarCmd extends ButtplugDeviceMessage {
+public final class ScalarCmd extends ButtplugDeviceMessage {
 
     @JsonProperty(value = "Scalars", required = true)
     private ScalarSubCmd[] scalars;
 
-    public ScalarCmd(long deviceIndex, Double[] scalars, String actuatorType, long id) {
+    public ScalarCmd(final long deviceIndex, final Double[] scalars, final String actuatorType, final long id) {
         super(id, deviceIndex);
         long i = 0;
         ArrayList<ScalarSubCmd> scalarsubs = new ArrayList<>();
@@ -21,49 +21,73 @@ public class ScalarCmd extends ButtplugDeviceMessage {
             }
             i++;
         }
-        this.scalars = scalarsubs.toArray(new ScalarSubCmd[]{});
+        this.setScalars(scalarsubs.toArray(new ScalarSubCmd[]{}));
     }
 
     @SuppressWarnings("unused")
     private ScalarCmd() {
-        super(ButtplugConsts.DefaultMsgId, -1);
+        super(ButtplugConsts.DEFAULT_MSG_ID, -1);
     }
 
-    public class ScalarSubCmd {
+    public ScalarSubCmd[] getScalars() {
+        return scalars;
+    }
+
+    public void setScalars(final ScalarSubCmd[] scalars) {
+        this.scalars = scalars;
+    }
+
+    public static final class ScalarSubCmd {
         @JsonProperty(value = "Index", required = true)
         private long index;
 
         @JsonProperty(value = "Scalar", required = true)
-        private double speed;
+        private double scalar;
 
         @JsonProperty(value = "ActuatorType", required = true)
         private String actuatorType;
 
-        public ScalarSubCmd(long index, double scalar, String actuatorType) {
-            this.index = index;
-            this.actuatorType = actuatorType;
-            SetScalar(scalar);
+        public ScalarSubCmd(final long index, final double scalar, final String actuatorType) {
+            this.setIndex(index);
+            this.setActuatorType(actuatorType);
+            setScalar(scalar);
         }
 
-        public double GetScalar() {
-            if (speed > 1 || speed < 0) {
+        public double getScalar() {
+            if (scalar > 1 || scalar < 0) {
                 return 0;
             }
-            return speed;
+            return scalar;
         }
 
-        public void SetScalar(double speed) {
-            if (speed > 1) {
+        public void setScalar(final double scalar) {
+            if (scalar > 1) {
                 throw new IllegalArgumentException(
                         "Scalar values cannot be greater than 1!");
             }
 
-            if (speed < 0) {
+            if (scalar < 0) {
                 throw new IllegalArgumentException(
                         "Scalar values cannot be lower than 0!");
             }
 
-            this.speed = speed;
+            this.scalar = scalar;
+        }
+
+        public long getIndex() {
+            return index;
+        }
+
+        public void setIndex(final long index) {
+            this.index = index;
+        }
+
+        public String getActuatorType() {
+            return actuatorType;
+        }
+
+        public void setActuatorType(final String actuatorType) {
+            this.actuatorType = actuatorType;
         }
     }
 }

@@ -7,19 +7,27 @@ import org.blackspherefollower.buttplug.protocol.messages.Parts.DeviceMessageInf
 
 import java.util.ArrayList;
 
-public class DeviceList extends ButtplugMessage {
+public final class DeviceList extends ButtplugMessage {
 
     @JsonProperty(value = "Devices", required = true)
-    public ArrayList<DeviceMessageInfo> devices;
+    private ArrayList<DeviceMessageInfo> devices;
 
-    public DeviceList(ArrayList<DeviceMessageInfo> devices, long id) {
+    public DeviceList(final ArrayList<DeviceMessageInfo> devices, final long id) {
         super(id);
-        this.devices = devices;
+        this.setDevices(devices);
     }
 
     @SuppressWarnings("unused")
     private DeviceList() {
-        super(ButtplugConsts.DefaultMsgId);
-        this.devices = new ArrayList<>();
+        super(ButtplugConsts.DEFAULT_MSG_ID);
+        this.setDevices(new ArrayList<>());
+    }
+
+    public ArrayList<DeviceMessageInfo> getDevices() {
+        return devices;
+    }
+
+    public void setDevices(final ArrayList<DeviceMessageInfo> devices) {
+        this.devices = devices;
     }
 }

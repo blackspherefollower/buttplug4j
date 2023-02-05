@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.util.ArrayList;
 
-public class DeviceMessageInfo {
+public final class DeviceMessageInfo {
 
     @JsonProperty(value = "DeviceIndex", required = true)
     public long deviceIndex;

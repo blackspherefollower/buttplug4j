@@ -83,7 +83,7 @@ public class ButtplugWSClient {
 
         ButtplugMessage res = sendMessage(new RequestServerInfo(clientName, getNextMsgId())).get();
         if (res instanceof ServerInfo) {
-            if (((ServerInfo) res).maxPingTime > 0) {
+            if (((ServerInfo) res).getMaxPingTime() > 0) {
                 pingTimer = new Timer("pingTimer", true);
                 pingTimer.scheduleAtFixedRate(new TimerTask() {
                     @Override
@@ -94,11 +94,11 @@ public class ButtplugWSClient {
                             e.printStackTrace();
                         }
                     }
-                }, 0, Math.round(((double) ((ServerInfo) res).maxPingTime) / 2));
+                }, 0, Math.round(((double) ((ServerInfo) res).getMaxPingTime()) / 2));
             }
 
         } else if (res instanceof Error) {
-            throw new Exception(((Error) res).errorMessage);
+            throw new Exception(((Error) res).getErrorMessage());
         } else {
             throw new Exception("Unexpected message returned: " + res.getClass().getName());
         }
@@ -138,7 +138,7 @@ public class ButtplugWSClient {
                 CompletableFuture<ButtplugMessage> val = waitingMsgs.remove(waitMmsgId);
                 if (val != null) {
                     val.complete(new Error("Connection closed!",
-                            Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.SystemMsgId));
+                            Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.SYSTEM_MSG_ID));
                 }
             }
         }
@@ -152,8 +152,8 @@ public class ButtplugWSClient {
             List<ButtplugMessage> msgs = parser.parseJson(buf);
 
             for (ButtplugMessage msg : msgs) {
-                if (msg.id > 0) {
-                    CompletableFuture<ButtplugMessage> val = waitingMsgs.remove(msg.id);
+                if (msg.getId() > 0) {
+                    CompletableFuture<ButtplugMessage> val = waitingMsgs.remove(msg.getId());
                     if (val != null) {
                         val.complete(msg);
                         continue;
@@ -162,14 +162,14 @@ public class ButtplugWSClient {
 
                 if (msg instanceof DeviceAdded) {
                     ButtplugClientDevice device = new ButtplugClientDevice(this, (DeviceAdded) msg);
-                    devices.put(((DeviceAdded) msg).deviceIndex, device);
+                    devices.put(((DeviceAdded) msg).getDeviceIndex(), device);
                     if (getDeviceAdded() != null) {
                         getDeviceAdded().deviceAdded(device);
                     }
                 } else if (msg instanceof DeviceRemoved) {
-                    if (devices.remove(((DeviceRemoved) msg).deviceIndex) != null) {
+                    if (devices.remove(((DeviceRemoved) msg).getDeviceIndex()) != null) {
                         if (getDeviceRemoved() != null) {
-                            getDeviceRemoved().deviceRemoved(((DeviceRemoved) msg).deviceIndex);
+                            getDeviceRemoved().deviceRemoved(((DeviceRemoved) msg).getDeviceIndex());
                         }
                     }
                 } else if (msg instanceof ScanningFinished) {
@@ -189,7 +189,7 @@ public class ButtplugWSClient {
         } catch (IOException e) {
             if (getErrorReceived() != null) {
                 getErrorReceived().errorReceived(new Error(e.getMessage(),
-                        Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.SystemMsgId));
+                        Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.SYSTEM_MSG_ID));
             } else {
                 e.printStackTrace();
             }
@@ -200,7 +200,7 @@ public class ButtplugWSClient {
         try {
             ButtplugMessage msg = sendMessage(new Ping(msgId.incrementAndGet())).get();
             if (msg instanceof Error) {
-                throw new Exception(((Error) msg).errorMessage);
+                throw new Exception(((Error) msg).getErrorMessage());
             }
         } catch (Throwable e) {
             if (client != null) {
@@ -212,14 +212,14 @@ public class ButtplugWSClient {
 
     public final void requestDeviceList() throws Exception {
         ButtplugMessage res = sendMessage(new RequestDeviceList(msgId.incrementAndGet())).get();
-        if (!(res instanceof DeviceList) || ((DeviceList) res).devices == null) {
+        if (!(res instanceof DeviceList) || ((DeviceList) res).getDevices() == null) {
             if (res instanceof Error) {
-                throw new Exception(((Error) res).errorMessage);
+                throw new Exception(((Error) res).getErrorMessage());
             }
             return;
         }
 
-        for (DeviceMessageInfo d : ((DeviceList) res).devices) {
+        for (DeviceMessageInfo d : ((DeviceList) res).getDevices()) {
             if (!devices.containsKey(d.deviceIndex)) {
                 ButtplugClientDevice device = new ButtplugClientDevice(this, d);
                 if (devices.put(d.deviceIndex, device) == null) {
@@ -273,15 +273,15 @@ public class ButtplugWSClient {
                 return CompletableFuture.completedFuture(new Error(
                         "Device does not accept message type: "
                                 + deviceMsg.getClass().getSimpleName(),
-                        Error.ErrorClass.ERROR_DEVICE, ButtplugConsts.SystemMsgId));
+                        Error.ErrorClass.ERROR_DEVICE, ButtplugConsts.SYSTEM_MSG_ID));
             }
 
-            deviceMsg.deviceIndex = device.getDeviceIndex();
-            deviceMsg.id = msgId.incrementAndGet();
+            deviceMsg.setDeviceIndex(device.getDeviceIndex());
+            deviceMsg.setId(msgId.incrementAndGet());
             return sendMessage(deviceMsg);
         } else {
             return CompletableFuture.completedFuture(new Error("Device not available.",
-                    Error.ErrorClass.ERROR_DEVICE, ButtplugConsts.SystemMsgId));
+                    Error.ErrorClass.ERROR_DEVICE, ButtplugConsts.SYSTEM_MSG_ID));
         }
     }
 
@@ -295,10 +295,10 @@ public class ButtplugWSClient {
             throws ExecutionException, InterruptedException, IOException {
         CompletableFuture<ButtplugMessage> promise = new CompletableFuture<>();
 
-        waitingMsgs.put(msg.id, promise);
+        waitingMsgs.put(msg.getId(), promise);
         if (session == null) {
             return CompletableFuture.completedFuture(new Error("Bad WS state!",
-                    Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.SystemMsgId));
+                    Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.SYSTEM_MSG_ID));
         }
 
         try {
@@ -306,7 +306,7 @@ public class ButtplugWSClient {
             fut.get();
         } catch (WebSocketException e) {
             return CompletableFuture.completedFuture(new Error(e.getMessage(),
-                    Error.ErrorClass.ERROR_UNKNOWN, msg.id));
+                    Error.ErrorClass.ERROR_UNKNOWN, msg.getId()));
         }
 
         return promise;

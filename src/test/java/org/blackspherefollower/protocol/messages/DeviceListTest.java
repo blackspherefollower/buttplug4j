@@ -21,8 +21,8 @@ public class DeviceListTest {
 
         assertEquals(1, msgs.size());
         assertEquals(DeviceList.class, msgs.get(0).getClass());
-        assertEquals(5, msgs.get(0).id);
-        assertEquals(2, ((DeviceList) msgs.get(0)).devices.size());
+        assertEquals(5, msgs.get(0).getId());
+        assertEquals(2, ((DeviceList) msgs.get(0)).getDevices().size());
 
         //DeviceMessageInfo[] devs = ((DeviceList) msgs.get(0)).devices;
         //assertEquals(2, devs[0].deviceIndex);

@@ -5,12 +5,20 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.ArrayList;
 
 @JsonSerialize(using = GenericFeaturesSerializer.class)
-public class GenericMessageAttributes extends MessageAttributes {
+public final class GenericMessageAttributes extends MessageAttributes {
 
-    public ArrayList<GenericFeatureAttributes> features;
+    private ArrayList<GenericFeatureAttributes> features;
 
     public GenericMessageAttributes() {
-        features = new ArrayList<>();
+        setFeatures(new ArrayList<>());
+    }
+
+    public ArrayList<GenericFeatureAttributes> getFeatures() {
+        return features;
+    }
+
+    public void setFeatures(final ArrayList<GenericFeatureAttributes> features) {
+        this.features = features;
     }
 }
 

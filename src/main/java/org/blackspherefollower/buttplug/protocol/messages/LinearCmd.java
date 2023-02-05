@@ -11,12 +11,20 @@ public final class LinearCmd extends ButtplugDeviceMessage {
 
     public LinearCmd(final long deviceIndex, final LinearSubCmd[] vectors, final long id) {
         super(id, deviceIndex);
-        this.vectors = vectors;
+        this.setVectors(vectors);
     }
 
     @SuppressWarnings("unused")
     private LinearCmd() {
-        super(ButtplugConsts.DefaultMsgId, -1);
+        super(ButtplugConsts.DEFAULT_MSG_ID, -1);
+    }
+
+    public LinearSubCmd[] getVectors() {
+        return vectors;
+    }
+
+    public void setVectors(final LinearSubCmd[] vectors) {
+        this.vectors = vectors;
     }
 
     public static final class LinearSubCmd {
@@ -32,23 +40,23 @@ public final class LinearCmd extends ButtplugDeviceMessage {
         public LinearSubCmd(final long index, final double position, final long duration) {
             this.index = index;
             this.duration = duration;
-            SetPosition(position);
+            setPosition(position);
         }
 
         public LinearSubCmd() {
             this.index = -1;
             this.duration = 0;
-            SetPosition(0);
+            setPosition(0);
         }
 
-        public double GetPosition() {
+        public double getPosition() {
             if (position > 1 || position < 0) {
                 return 0;
             }
             return position;
         }
 
-        public void SetPosition(final double position) {
+        public void setPosition(final double position) {
             if (position > 1) {
                 throw new IllegalArgumentException(
                         "Linear position cannot be greater than 1!");

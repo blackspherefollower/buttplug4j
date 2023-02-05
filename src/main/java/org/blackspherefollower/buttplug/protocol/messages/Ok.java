@@ -3,14 +3,14 @@ package org.blackspherefollower.buttplug.protocol.messages;
 import org.blackspherefollower.buttplug.protocol.ButtplugConsts;
 import org.blackspherefollower.buttplug.protocol.ButtplugMessage;
 
-public class Ok extends ButtplugMessage {
+public final class Ok extends ButtplugMessage {
 
-    public Ok(long id) {
+    public Ok(final long id) {
         super(id);
     }
 
     @SuppressWarnings("unused")
     private Ok() {
-        super(ButtplugConsts.DefaultMsgId);
+        super(ButtplugConsts.DEFAULT_MSG_ID);
     }
 }

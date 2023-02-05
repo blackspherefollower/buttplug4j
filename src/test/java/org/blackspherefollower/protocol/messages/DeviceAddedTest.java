@@ -21,11 +21,11 @@ public class DeviceAddedTest {
 
         assertEquals(1, msgs.size());
         assertEquals(DeviceAdded.class, msgs.get(0).getClass());
-        assertEquals(3, msgs.get(0).id);
-        assertEquals(2, ((DeviceAdded) msgs.get(0)).deviceIndex);
-        assertEquals("foo", ((DeviceAdded) msgs.get(0)).deviceName);
-        assertEquals("ScalarCmd", ((DeviceAdded) msgs.get(0)).deviceMessages.get(0).message);
-        assertEquals("StopDeviceCmd", ((DeviceAdded) msgs.get(0)).deviceMessages.get(1).message);
+        assertEquals(3, msgs.get(0).getId());
+        assertEquals(2, ((DeviceAdded) msgs.get(0)).getDeviceIndex());
+        assertEquals("foo", ((DeviceAdded) msgs.get(0)).getDeviceName());
+        assertEquals("ScalarCmd", ((DeviceAdded) msgs.get(0)).getDeviceMessages().get(0).message);
+        assertEquals("StopDeviceCmd", ((DeviceAdded) msgs.get(0)).getDeviceMessages().get(1).message);
 
         String jsonOut = parser.formatJson(msgs);
         assertEquals(testStr, jsonOut);

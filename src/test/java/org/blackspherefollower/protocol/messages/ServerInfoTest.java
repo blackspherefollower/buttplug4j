@@ -21,10 +21,10 @@ public class ServerInfoTest {
 
         assertEquals(1, msgs.size());
         assertEquals(ServerInfo.class, msgs.get(0).getClass());
-        assertEquals(1, msgs.get(0).id, 1);
-        assertEquals(3, ((ServerInfo) msgs.get(0)).messageVersion);
-        assertEquals(500, ((ServerInfo) msgs.get(0)).maxPingTime);
-        assertEquals("Websocket Server", ((ServerInfo) msgs.get(0)).serverName);
+        assertEquals(1, msgs.get(0).getId(), 1);
+        assertEquals(3, ((ServerInfo) msgs.get(0)).getMessageVersion());
+        assertEquals(500, ((ServerInfo) msgs.get(0)).getMaxPingTime());
+        assertEquals("Websocket Server", ((ServerInfo) msgs.get(0)).getServerName());
 
         String jsonOut = parser.formatJson(msgs);
         assertEquals(testStr, jsonOut);

@@ -8,9 +8,9 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import java.io.IOException;
 import java.util.List;
 
-public class DeviceMessagesSerializer extends JsonSerializer {
+public final class DeviceMessagesSerializer extends JsonSerializer {
     @Override
-    public void serialize(Object value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+    public void serialize(final Object value, final JsonGenerator gen, final SerializerProvider serializers) throws IOException {
         gen.writeStartObject();
         if (value instanceof List<?>) {
             List<?> data = (List<?>) value;

@@ -5,25 +5,41 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.blackspherefollower.buttplug.protocol.ButtplugConsts;
 import org.blackspherefollower.buttplug.protocol.ButtplugMessage;
 
-public class Error extends ButtplugMessage {
+public final class Error extends ButtplugMessage {
 
     @JsonProperty(value = "ErrorCode", required = true)
     @JsonFormat(shape = JsonFormat.Shape.NUMBER)
-    public ErrorClass errorCode;
+    private ErrorClass errorCode;
     @JsonProperty(value = "ErrorMessage", required = true)
-    public String errorMessage;
+    private String errorMessage;
 
-    public Error(String errorMessage, ErrorClass errorCode, long id) {
+    public Error(final String errorMessage, final ErrorClass errorCode, final long id) {
         super(id);
-        this.errorMessage = errorMessage;
-        this.errorCode = errorCode;
+        this.setErrorMessage(errorMessage);
+        this.setErrorCode(errorCode);
     }
 
     @SuppressWarnings("unused")
     private Error() {
-        super(ButtplugConsts.DefaultMsgId);
-        this.errorMessage = "";
-        this.errorCode = ErrorClass.ERROR_UNKNOWN;
+        super(ButtplugConsts.DEFAULT_MSG_ID);
+        this.setErrorMessage("");
+        this.setErrorCode(ErrorClass.ERROR_UNKNOWN);
+    }
+
+    public ErrorClass getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(final ErrorClass errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(final String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
     public enum ErrorClass {

@@ -3,14 +3,14 @@ package org.blackspherefollower.buttplug.protocol.messages;
 import org.blackspherefollower.buttplug.protocol.ButtplugConsts;
 import org.blackspherefollower.buttplug.protocol.ButtplugMessage;
 
-public class StopAllDevices extends ButtplugMessage {
+public final class StopAllDevices extends ButtplugMessage {
 
     @SuppressWarnings("unused")
     private StopAllDevices() {
-        super(ButtplugConsts.DefaultMsgId);
+        super(ButtplugConsts.DEFAULT_MSG_ID);
     }
 
-    public StopAllDevices(long id) {
+    public StopAllDevices(final long id) {
         super(id);
     }
 }

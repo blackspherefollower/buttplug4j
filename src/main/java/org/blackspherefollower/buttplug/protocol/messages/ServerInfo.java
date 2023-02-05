@@ -4,31 +4,55 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.blackspherefollower.buttplug.protocol.ButtplugConsts;
 import org.blackspherefollower.buttplug.protocol.ButtplugMessage;
 
-public class ServerInfo extends ButtplugMessage {
+public final class ServerInfo extends ButtplugMessage {
 
     @JsonProperty(value = "MessageVersion", required = true)
-    public int messageVersion;
+    private int messageVersion;
 
     @JsonProperty(value = "MaxPingTime", required = true)
-    public long maxPingTime;
+    private long maxPingTime;
 
     @JsonProperty(value = "ServerName", required = true)
-    public String serverName;
+    private String serverName;
 
-    public ServerInfo(String serverName, int messageVersion, long maxPingTime, long id) {
+    public ServerInfo(final String serverName, final int messageVersion, final long maxPingTime, final long id) {
         super(id);
 
-        this.serverName = serverName;
-        this.messageVersion = messageVersion;
-        this.maxPingTime = maxPingTime;
+        this.setServerName(serverName);
+        this.setMessageVersion(messageVersion);
+        this.setMaxPingTime(maxPingTime);
     }
 
     @SuppressWarnings("unused")
     private ServerInfo() {
-        super(ButtplugConsts.DefaultMsgId);
+        super(ButtplugConsts.DEFAULT_MSG_ID);
 
-        this.serverName = "";
-        this.messageVersion = 1;
-        this.maxPingTime = 0;
+        this.setServerName("");
+        this.setMessageVersion(1);
+        this.setMaxPingTime(0);
+    }
+
+    public int getMessageVersion() {
+        return messageVersion;
+    }
+
+    public void setMessageVersion(final int messageVersion) {
+        this.messageVersion = messageVersion;
+    }
+
+    public long getMaxPingTime() {
+        return maxPingTime;
+    }
+
+    public void setMaxPingTime(final long maxPingTime) {
+        this.maxPingTime = maxPingTime;
+    }
+
+    public String getServerName() {
+        return serverName;
+    }
+
+    public void setServerName(final String serverName) {
+        this.serverName = serverName;
     }
 }

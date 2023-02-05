@@ -13,9 +13,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 
-public class DeviceMessagesDeserializer extends JsonDeserializer {
+public final class DeviceMessagesDeserializer extends JsonDeserializer {
     @Override
-    public Object deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+    public Object deserialize(final JsonParser p, final DeserializationContext ctxt) throws IOException {
         ObjectCodec oc = p.getCodec();
         JsonNode node = oc.readTree(p);
 
@@ -38,7 +38,7 @@ public class DeviceMessagesDeserializer extends JsonDeserializer {
                 case "SensorSubscribeCmd":
                     SensorMessageAttributes sattrs = new SensorMessageAttributes();
                     for (Iterator<JsonNode> it2 = msg.getValue().elements(); it2.hasNext(); ) {
-                        sattrs.features.add(new ObjectMapper().treeToValue(it2.next(), SensorFeatureAttributes.class));
+                        sattrs.getFeatures().add(new ObjectMapper().treeToValue(it2.next(), SensorFeatureAttributes.class));
                     }
                     dmsg.attributes = sattrs;
                     break;
@@ -47,7 +47,7 @@ public class DeviceMessagesDeserializer extends JsonDeserializer {
                 case "RotateCmd":
                     GenericMessageAttributes gattrs = new GenericMessageAttributes();
                     for (Iterator<JsonNode> it2 = msg.getValue().elements(); it2.hasNext(); ) {
-                        gattrs.features.add(new ObjectMapper().treeToValue(it2.next(), GenericFeatureAttributes.class));
+                        gattrs.getFeatures().add(new ObjectMapper().treeToValue(it2.next(), GenericFeatureAttributes.class));
                     }
                     dmsg.attributes = gattrs;
                     break;
