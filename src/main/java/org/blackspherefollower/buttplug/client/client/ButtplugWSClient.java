@@ -40,20 +40,19 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicLong;
 
-@WebSocket(maxTextMessageSize = 64 * 1024)
+@WebSocket
 public class ButtplugWSClient {
-
     private final ButtplugJsonMessageParser parser;
     private final Object sendLock = new Object();
     private final String clientName;
     private final ConcurrentHashMap<Long, CompletableFuture<ButtplugMessage>> waitingMsgs = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Long, ButtplugClientDevice> devices = new ConcurrentHashMap<>();
     private final AtomicLong msgId = new AtomicLong(1);
-    public IDeviceEvent deviceAdded;
-    public IDeviceEvent deviceRemoved;
-    public IScanningEvent scanningFinished;
-    public IErrorEvent errorReceived;
-    public ISensorReadingEvent sensorReadingReceived;
+    private IDeviceEvent deviceAdded;
+    private IDeviceEvent deviceRemoved;
+    private IScanningEvent scanningFinished;
+    private IErrorEvent errorReceived;
+    private ISensorReadingEvent sensorReadingReceived;
     private WebSocketClient client;
     private Session session;
     private Timer pingTimer;
@@ -133,7 +132,7 @@ public class ButtplugWSClient {
         }
         client = null;
 
-        int max = 3;
+        int max = MAX_DISCONNECT_MESSAGE_TRYS;
         while (max-- > 0 && waitingMsgs.size() != 0) {
             for (long waitMmsgId : waitingMsgs.keySet()) {
                 CompletableFuture<ButtplugMessage> val = waitingMsgs.remove(waitMmsgId);
@@ -164,32 +163,32 @@ public class ButtplugWSClient {
                 if (msg instanceof DeviceAdded) {
                     ButtplugClientDevice device = new ButtplugClientDevice(this, (DeviceAdded) msg);
                     devices.put(((DeviceAdded) msg).deviceIndex, device);
-                    if (deviceAdded != null) {
-                        deviceAdded.deviceAdded(device);
+                    if (getDeviceAdded() != null) {
+                        getDeviceAdded().deviceAdded(device);
                     }
                 } else if (msg instanceof DeviceRemoved) {
                     if (devices.remove(((DeviceRemoved) msg).deviceIndex) != null) {
-                        if (deviceRemoved != null) {
-                            deviceRemoved.deviceRemoved(((DeviceRemoved) msg).deviceIndex);
+                        if (getDeviceRemoved() != null) {
+                            getDeviceRemoved().deviceRemoved(((DeviceRemoved) msg).deviceIndex);
                         }
                     }
                 } else if (msg instanceof ScanningFinished) {
-                    if (scanningFinished != null) {
-                        scanningFinished.scanningFinished();
+                    if (getScanningFinished() != null) {
+                        getScanningFinished().scanningFinished();
                     }
                 } else if (msg instanceof Error) {
-                    if (errorReceived != null) {
-                        errorReceived.errorReceived((Error) msg);
+                    if (getErrorReceived() != null) {
+                        getErrorReceived().errorReceived((Error) msg);
                     }
                 } else if (msg instanceof SensorReading) {
-                    if (sensorReadingReceived != null) {
-                        sensorReadingReceived.sensorReadingReceived((SensorReading) msg);
+                    if (getSensorReadingReceived() != null) {
+                        getSensorReadingReceived().sensorReadingReceived((SensorReading) msg);
                     }
                 }
             }
         } catch (IOException e) {
-            if (errorReceived != null) {
-                errorReceived.errorReceived(new Error(e.getMessage(),
+            if (getErrorReceived() != null) {
+                getErrorReceived().errorReceived(new Error(e.getMessage(),
                         Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.SystemMsgId));
             } else {
                 e.printStackTrace();
@@ -224,8 +223,8 @@ public class ButtplugWSClient {
             if (!devices.containsKey(d.deviceIndex)) {
                 ButtplugClientDevice device = new ButtplugClientDevice(this, d);
                 if (devices.put(d.deviceIndex, device) == null) {
-                    if (deviceAdded != null) {
-                        deviceAdded.deviceAdded(device);
+                    if (getDeviceAdded() != null) {
+                        getDeviceAdded().deviceAdded(device);
                     }
                 }
             }
@@ -312,4 +311,46 @@ public class ButtplugWSClient {
 
         return promise;
     }
+
+    public final IDeviceEvent getDeviceAdded() {
+        return deviceAdded;
+    }
+
+    public final void setDeviceAdded(final IDeviceEvent deviceAddedHandler) {
+        this.deviceAdded = deviceAddedHandler;
+    }
+
+    public final IDeviceEvent getDeviceRemoved() {
+        return deviceRemoved;
+    }
+
+    public final  void setDeviceRemoved(final IDeviceEvent deviceRemovedHandler) {
+        this.deviceRemoved = deviceRemovedHandler;
+    }
+
+    public final IScanningEvent getScanningFinished() {
+        return scanningFinished;
+    }
+
+    public final void setScanningFinished(final IScanningEvent scanningFinishedHandler) {
+        this.scanningFinished = scanningFinishedHandler;
+    }
+
+    public final IErrorEvent getErrorReceived() {
+        return errorReceived;
+    }
+
+    public final void setErrorReceived(final IErrorEvent errorReceivedHandler) {
+        this.errorReceived = errorReceivedHandler;
+    }
+
+    public final ISensorReadingEvent getSensorReadingReceived() {
+        return sensorReadingReceived;
+    }
+
+    public final void setSensorReadingReceived(final ISensorReadingEvent sensorReadingReceivedHandler) {
+        this.sensorReadingReceived = sensorReadingReceivedHandler;
+    }
+
+    private static final int MAX_DISCONNECT_MESSAGE_TRYS = 3;
 }
