@@ -59,7 +59,7 @@ write code for!
 
 ## License
 
-Buttplug4J is BSD licensed.
+Buttplug for Java is BSD licensed.
 
     Copyright (c) 2016-2017, BlackSphereFollower
     All rights reserved.
