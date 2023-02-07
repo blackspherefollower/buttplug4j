@@ -1,6 +1,6 @@
 # Buttplug - Java WebSocket Client Implementation
 
-[![Build Status](https://travis-ci.org/metafetish/buttplug4j.svg?branch=master)](https://travis-ci.org/metafetish/buttplug4j) [![codecov](https://codecov.io/gh/metafetish/buttplug4j/branch/master/graph/badge.svg)](https://codecov.io/gh/metafetish/buttplug4j) [![Patreon donate button](https://img.shields.io/badge/patreon-donate-yellow.svg)](https://www.patreon.com/qdot)
+[![Build Status](https://github.com/blackspherefollower/buttplug4j/actions/workflows/gradle.yml/badge.svg?branch=master)](https://github.com/blackspherefollower/buttplug4j/actions/workflows/gradle.yml) [![Patreon donate button](https://img.shields.io/badge/patreon-donate-yellow.svg)](https://www.patreon.com/blackspherefollower)
 
 Buttplug is a framework for hooking up hardware to interfaces, where
 hardware usually means sex toys, but could honestly be just about
@@ -23,23 +23,23 @@ different hardware. Clients can then connect over different means
 Buttplug implementations are available in multiple languages (c#, rust,
 javascript, etc)/frameworks/platforms. For a full
 list,
-[see the README in the main buttplug repo](http://github.com/metafetish/buttplug).
+[see the README in the main buttplug repo](http://github.com/buttplugio/buttplug).
 
 ## Platform Support
 
-Buttplug Java should run on any 1.7 or later JRE (including Android).
+Buttplug Java should run on any 1.8 or later JRE (including Android).
 In depth testing is still pending, so your mileage may vary.
 
 ## Development
 
 Snapshot libraries from the buttplug4j repo are available via Maven from the following
-repository: https://packagecloud.io/blackspherefollower/buttplug4j/maven2
+repository: https://github.com/blackspherefollower/buttplug4j/packages
 
 ```xml
 <repositories>
   <repository>
     <id>blackspherefollower-buttplug4j</id>
-    <url>https://packagecloud.io/blackspherefollower/buttplug4j/maven2</url>
+    <url>https://maven.pkg.github.com/lackspherefollower/buttplug4j</url>
     <releases>
       <enabled>true</enabled>
     </releases>
@@ -53,15 +53,15 @@ repository: https://packagecloud.io/blackspherefollower/buttplug4j/maven2
 ## Support The Project
 
 If you find this project helpful, you can
-[support Metafetish projects via Patreon](http://patreon.com/qdot)!
+[support my projects via Patreon](http://patreon.com/blackspherefollower)!
 Every donation helps us afford more hardware to reverse, document, and
 write code for!
 
 ## License
 
-Buttplug is BSD licensed.
+Buttplug for Java is BSD licensed.
 
-    Copyright (c) 2016-2017, Metafetish
+    Copyright (c) 2016-2017, BlackSphereFollower
     All rights reserved.
     
     Redistribution and use in source and binary forms, with or without
