@@ -1,4 +1,4 @@
-package org.blackspherefollower.buttplug.client.client;
+package org.blackspherefollower.buttplug.client;
 
 import org.blackspherefollower.buttplug.protocol.messages.Error;
 
