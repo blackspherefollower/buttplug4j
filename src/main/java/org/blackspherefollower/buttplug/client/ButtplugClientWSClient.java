@@ -30,6 +30,7 @@ public final class ButtplugClientWSClient extends ButtplugClientWSEndpoint {
         if (client != null && session != null && session.isOpen()) {
             throw new IllegalStateException("WS is already open");
         }
+        connectionState = ConnectionState.CONNECTING;
 
         CompletableFuture<Boolean> promise = new CompletableFuture<>();
         setOnConnected(new IConnectedEvent() {

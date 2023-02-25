@@ -20,6 +20,7 @@ public final class ButtplugClientWSServer extends ButtplugClientWSEndpoint {
 
     public ButtplugClientWSServer(final String clientName) {
         super(clientName);
+        connectionState = ConnectionState.CONNECTING;
     }
 
     public void disconnect() {
@@ -47,5 +48,9 @@ public final class ButtplugClientWSServer extends ButtplugClientWSEndpoint {
                 }
             }
         }
+    }
+
+    public Session getSession() {
+        return session;
     }
 }

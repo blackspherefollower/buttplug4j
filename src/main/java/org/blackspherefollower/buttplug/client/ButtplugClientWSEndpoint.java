@@ -4,9 +4,21 @@ import org.blackspherefollower.buttplug.protocol.ButtplugConsts;
 import org.blackspherefollower.buttplug.protocol.ButtplugDeviceMessage;
 import org.blackspherefollower.buttplug.protocol.ButtplugJsonMessageParser;
 import org.blackspherefollower.buttplug.protocol.ButtplugMessage;
-import org.blackspherefollower.buttplug.protocol.messages.*;
+import org.blackspherefollower.buttplug.protocol.messages.DeviceAdded;
+import org.blackspherefollower.buttplug.protocol.messages.DeviceList;
+import org.blackspherefollower.buttplug.protocol.messages.DeviceRemoved;
 import org.blackspherefollower.buttplug.protocol.messages.Error;
+import org.blackspherefollower.buttplug.protocol.messages.Ok;
 import org.blackspherefollower.buttplug.protocol.messages.Parts.DeviceMessageInfo;
+import org.blackspherefollower.buttplug.protocol.messages.Ping;
+import org.blackspherefollower.buttplug.protocol.messages.RequestDeviceList;
+import org.blackspherefollower.buttplug.protocol.messages.RequestServerInfo;
+import org.blackspherefollower.buttplug.protocol.messages.ScanningFinished;
+import org.blackspherefollower.buttplug.protocol.messages.SensorReading;
+import org.blackspherefollower.buttplug.protocol.messages.ServerInfo;
+import org.blackspherefollower.buttplug.protocol.messages.StartScanning;
+import org.blackspherefollower.buttplug.protocol.messages.StopAllDevices;
+import org.blackspherefollower.buttplug.protocol.messages.StopScanning;
 
 import javax.websocket.ClientEndpoint;
 import javax.websocket.CloseReason;
@@ -47,6 +59,21 @@ public abstract class ButtplugClientWSEndpoint {
     Timer pingTimer;
     Timer wsPingTimer;
 
+    public final ConnectionState getConnectionState() {
+        return connectionState;
+    }
+    public final boolean isConnected() {
+        return connectionState == ConnectionState.CONNECTED;
+    }
+
+
+    public enum ConnectionState {
+        DISCONNECTED,
+        CONNECTING,
+        CONNECTED
+    }
+    protected ConnectionState connectionState = ConnectionState.DISCONNECTED;
+
     public ButtplugClientWSEndpoint(final String aClientName) {
         clientName = aClientName;
         parser = new ButtplugJsonMessageParser();
@@ -60,6 +87,7 @@ public abstract class ButtplugClientWSEndpoint {
     @SuppressWarnings("unused")
     public final void onClose(final CloseReason reason) {
         this.session = null;
+        connectionState = ConnectionState.DISCONNECTED;
     }
 
     @OnOpen
@@ -117,6 +145,8 @@ public abstract class ButtplugClientWSEndpoint {
                     getErrorReceived().errorReceived(new Error(e.getMessage(), Error.ErrorClass.ERROR_UNKNOWN, -1));
                 }
             }
+
+            connectionState = ConnectionState.CONNECTED;
 
             if (getOnConnected() != null) {
                 getOnConnected().onConnected(this);

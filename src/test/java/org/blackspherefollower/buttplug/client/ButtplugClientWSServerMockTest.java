@@ -7,6 +7,7 @@ import org.eclipse.jetty.websocket.javax.server.config.JavaxWebSocketServletCont
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import javax.websocket.Session;
 import javax.websocket.server.ServerEndpointConfig;
 import java.io.IOException;
 import java.net.URI;
@@ -38,7 +39,7 @@ public class ButtplugClientWSServerMockTest {
             // Setup the basic application "context" for this application at "/"
             // This is also known as the handler tree (in jetty speak)
             ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-            context.setContextPath("/");
+            context.setContextPath("/*");
             server.setHandler(context);
 
             // Configure specific websocket behavior
@@ -48,7 +49,7 @@ public class ButtplugClientWSServerMockTest {
                 wsContainer.setDefaultMaxTextMessageBufferSize(65535);
 
                 // Add websockets
-                wsContainer.addEndpoint(ServerEndpointConfig.Builder.create(ButtplugClientWSEndpoint.class, "/").configurator(new ServerEndpointConfig.Configurator() {
+                wsContainer.addEndpoint(ServerEndpointConfig.Builder.create(ButtplugClientWSEndpoint.class, "/{user}").configurator(new ServerEndpointConfig.Configurator() {
                     @Override
                     public <T> T getEndpointInstance(Class<T> endpointClass) {
                         if(endpointClass == ButtplugClientWSEndpoint.class) {
@@ -58,6 +59,13 @@ public class ButtplugClientWSServerMockTest {
                                 public void onConnected(ButtplugClientWSEndpoint client) {
                                     new Thread(() -> {
                                         try {
+                                            if( client instanceof ButtplugClientWSServer ) {
+                                                Session s = ((ButtplugClientWSServer) client).getSession();
+                                                s.getPathParameters().forEach((k,v) -> {
+                                                    System.out.printf("param: %s -> %s\n", k, v);
+                                                });
+                                            }
+
                                             client.startScanning();
 
                                         Thread.sleep(5000);
