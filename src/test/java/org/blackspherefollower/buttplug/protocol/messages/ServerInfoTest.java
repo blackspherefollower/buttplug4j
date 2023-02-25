@@ -1,8 +1,8 @@
-package org.blackspherefollower.protocol.messages;
+package org.blackspherefollower.buttplug.protocol.messages;
 
 import org.blackspherefollower.buttplug.protocol.ButtplugJsonMessageParser;
 import org.blackspherefollower.buttplug.protocol.ButtplugMessage;
-import org.blackspherefollower.buttplug.protocol.messages.DeviceRemoved;
+import org.blackspherefollower.buttplug.protocol.messages.ServerInfo;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -10,19 +10,21 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DeviceRemovedTest {
+public class ServerInfoTest {
 
     @Test
     public void test() throws IOException {
-        String testStr = "[{\"DeviceRemoved\":{\"Id\":3,\"DeviceIndex\":2}}]";
+        String testStr = "[{\"ServerInfo\":{\"Id\":1,\"MessageVersion\":3,\"MaxPingTime\":500,\"ServerName\":\"Websocket Server\"}}]";
 
         ButtplugJsonMessageParser parser = new ButtplugJsonMessageParser();
         List<ButtplugMessage> msgs = parser.parseJson(testStr);
 
         assertEquals(1, msgs.size());
-        assertEquals(DeviceRemoved.class, msgs.get(0).getClass());
-        assertEquals(3, msgs.get(0).getId());
-        assertEquals(2, ((DeviceRemoved) msgs.get(0)).getDeviceIndex());
+        assertEquals(ServerInfo.class, msgs.get(0).getClass());
+        assertEquals(1, msgs.get(0).getId(), 1);
+        assertEquals(3, ((ServerInfo) msgs.get(0)).getMessageVersion());
+        assertEquals(500, ((ServerInfo) msgs.get(0)).getMaxPingTime());
+        assertEquals("Websocket Server", ((ServerInfo) msgs.get(0)).getServerName());
 
         String jsonOut = parser.formatJson(msgs);
         assertEquals(testStr, jsonOut);
@@ -30,5 +32,4 @@ public class DeviceRemovedTest {
         jsonOut = parser.formatJson(msgs.get(0));
         assertEquals(testStr, jsonOut);
     }
-
 }

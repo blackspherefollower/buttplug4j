@@ -1,35 +1,23 @@
-package org.blackspherefollower.buttplug.client.client;
+package org.blackspherefollower.buttplug.client;
 
 import org.blackspherefollower.buttplug.protocol.ButtplugConsts;
 import org.blackspherefollower.buttplug.protocol.ButtplugDeviceMessage;
 import org.blackspherefollower.buttplug.protocol.ButtplugJsonMessageParser;
 import org.blackspherefollower.buttplug.protocol.ButtplugMessage;
-import org.blackspherefollower.buttplug.protocol.messages.DeviceAdded;
-import org.blackspherefollower.buttplug.protocol.messages.DeviceList;
-import org.blackspherefollower.buttplug.protocol.messages.DeviceRemoved;
+import org.blackspherefollower.buttplug.protocol.messages.*;
 import org.blackspherefollower.buttplug.protocol.messages.Error;
-import org.blackspherefollower.buttplug.protocol.messages.Ok;
 import org.blackspherefollower.buttplug.protocol.messages.Parts.DeviceMessageInfo;
-import org.blackspherefollower.buttplug.protocol.messages.Ping;
-import org.blackspherefollower.buttplug.protocol.messages.RequestDeviceList;
-import org.blackspherefollower.buttplug.protocol.messages.RequestServerInfo;
-import org.blackspherefollower.buttplug.protocol.messages.ScanningFinished;
-import org.blackspherefollower.buttplug.protocol.messages.SensorReading;
-import org.blackspherefollower.buttplug.protocol.messages.ServerInfo;
-import org.blackspherefollower.buttplug.protocol.messages.StartScanning;
-import org.blackspherefollower.buttplug.protocol.messages.StopAllDevices;
-import org.blackspherefollower.buttplug.protocol.messages.StopScanning;
-import org.eclipse.jetty.websocket.api.Session;
-import org.eclipse.jetty.websocket.api.WebSocketException;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
-import org.eclipse.jetty.websocket.api.annotations.WebSocket;
-import org.eclipse.jetty.websocket.client.ClientUpgradeRequest;
-import org.eclipse.jetty.websocket.client.WebSocketClient;
 
+import javax.websocket.ClientEndpoint;
+import javax.websocket.CloseReason;
+import javax.websocket.OnClose;
+import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
+import javax.websocket.OnError;
+import javax.websocket.Session;
+import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
-import java.net.URI;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -40,24 +28,26 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicLong;
 
-@WebSocket
-public class ButtplugWSClient {
+@ClientEndpoint
+@ServerEndpoint("/")
+public abstract class ButtplugClientWSEndpoint {
     private final ButtplugJsonMessageParser parser;
     private final Object sendLock = new Object();
-    private final String clientName;
-    private final ConcurrentHashMap<Long, CompletableFuture<ButtplugMessage>> waitingMsgs = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<Long, ButtplugClientDevice> devices = new ConcurrentHashMap<>();
-    private final AtomicLong msgId = new AtomicLong(1);
+    final String clientName;
+    final ConcurrentHashMap<Long, CompletableFuture<ButtplugMessage>> waitingMsgs = new ConcurrentHashMap<>();
+    final ConcurrentHashMap<Long, ButtplugClientDevice> devices = new ConcurrentHashMap<>();
+    final AtomicLong msgId = new AtomicLong(1);
     private IDeviceEvent deviceAdded;
     private IDeviceEvent deviceRemoved;
     private IScanningEvent scanningFinished;
     private IErrorEvent errorReceived;
     private ISensorReadingEvent sensorReadingReceived;
-    private WebSocketClient client;
-    private Session session;
-    private Timer pingTimer;
+    private IConnectedEvent onConnected;
+    Session session;
+    Timer pingTimer;
+    Timer wsPingTimer;
 
-    public ButtplugWSClient(final String aClientName) {
+    public ButtplugClientWSEndpoint(final String aClientName) {
         clientName = aClientName;
         parser = new ButtplugJsonMessageParser();
     }
@@ -66,90 +56,78 @@ public class ButtplugWSClient {
         return msgId.getAndIncrement();
     }
 
-    public final void connect(final URI url) throws Exception {
-
-        if (client != null && session != null && session.isOpen()) {
-            throw new IllegalStateException("WS is already open");
-        }
-
-        client = new WebSocketClient();
-
-        waitingMsgs.clear();
-        devices.clear();
-        msgId.set(1);
-
-        client.start();
-        client.connect(this, url, new ClientUpgradeRequest()).get();
-
-        ButtplugMessage res = sendMessage(new RequestServerInfo(clientName, getNextMsgId())).get();
-        if (res instanceof ServerInfo) {
-            if (((ServerInfo) res).getMaxPingTime() > 0) {
-                pingTimer = new Timer("pingTimer", true);
-                pingTimer.scheduleAtFixedRate(new TimerTask() {
-                    @Override
-                    public void run() {
-                        try {
-                            onPingTimer();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, 0, Math.round(((double) ((ServerInfo) res).getMaxPingTime()) / 2));
-            }
-
-        } else if (res instanceof Error) {
-            throw new Exception(((Error) res).getErrorMessage());
-        } else {
-            throw new Exception("Unexpected message returned: " + res.getClass().getName());
-        }
-    }
-
-    @OnWebSocketClose
+    @OnClose
     @SuppressWarnings("unused")
-    public final void onClose(final int statusCode, final String reason) {
+    public final void onClose(final CloseReason reason) {
         this.session = null;
     }
 
-    @OnWebSocketConnect
+    @OnOpen
     @SuppressWarnings("unused")
     public final void onConnect(final Session newSession) {
         this.session = newSession;
-    }
 
-    public final void disconnect() {
-        if (pingTimer != null) {
-            pingTimer.cancel();
-            pingTimer = null;
-        }
-
-        if (session != null) {
-            try {
-                session.disconnect();
-            } catch (IOException e) {
-                // noop - something when wrong closing the socket, but we're
-                // about to dispose of it anyway.
-            }
-        }
-        client = null;
-
-        int max = MAX_DISCONNECT_MESSAGE_TRYS;
-        while (max-- > 0 && waitingMsgs.size() != 0) {
-            for (long waitMmsgId : waitingMsgs.keySet()) {
-                CompletableFuture<ButtplugMessage> val = waitingMsgs.remove(waitMmsgId);
-                if (val != null) {
-                    val.complete(new Error("Connection closed!",
-                            Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.SYSTEM_MSG_ID));
+        // Setup websocket ping
+        wsPingTimer = new Timer("wsPingTimer", true);
+        wsPingTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    if (session != null) {
+                        session.getAsyncRemote().sendPing(ByteBuffer.wrap("ping".getBytes()));
+                    }
+                } catch (IOException e) {
+                    wsPingTimer.cancel();
+                    wsPingTimer = null;
+                    throw new RuntimeException(e);
                 }
             }
-        }
+        },0, 10000);
 
-        msgId.set(1);
+        // Don't block the WS thread
+        new Thread(() -> {
+            waitingMsgs.clear();
+            devices.clear();
+            msgId.set(1);
+
+            try {
+                ButtplugMessage res = sendMessage(new RequestServerInfo(clientName, getNextMsgId())).get();
+                if (res instanceof ServerInfo) {
+                    if (((ServerInfo) res).getMaxPingTime() > 0) {
+                        pingTimer = new Timer("pingTimer", true);
+                        pingTimer.scheduleAtFixedRate(new TimerTask() {
+                            @Override
+                            public void run() {
+                                try {
+                                    onPingTimer();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }, 0, Math.round(((double) ((ServerInfo) res).getMaxPingTime()) / 2));
+                    }
+
+                } else if (res instanceof Error) {
+                    throw new Exception(((Error) res).getErrorMessage());
+                } else {
+                    throw new Exception("Unexpected message returned: " + res.getClass().getName());
+                }
+            } catch (Exception e) {
+                if (getErrorReceived() != null) {
+                    getErrorReceived().errorReceived(new Error(e.getMessage(), Error.ErrorClass.ERROR_UNKNOWN, -1));
+                }
+            }
+
+            if (getOnConnected() != null) {
+                getOnConnected().onConnected(this);
+            }
+        }).start();
     }
 
-    @OnWebSocketMessage
-    public final void onMessage(final String buf) {
+    @OnMessage
+    public final void onMessage(final Session sess, final String message) {
         try {
-            List<ButtplugMessage> msgs = parser.parseJson(buf);
+            List<ButtplugMessage> msgs = parser.parseJson(message);
 
             for (ButtplugMessage msg : msgs) {
                 if (msg.getId() > 0) {
@@ -196,15 +174,15 @@ public class ButtplugWSClient {
         }
     }
 
-    private void onPingTimer() throws Exception {
+    void onPingTimer() throws Exception {
         try {
             ButtplugMessage msg = sendMessage(new Ping(msgId.incrementAndGet())).get();
             if (msg instanceof Error) {
                 throw new Exception(((Error) msg).getErrorMessage());
             }
         } catch (Throwable e) {
-            if (client != null) {
-                disconnect();
+            if (session != null) {
+                session.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, e.getMessage()));
             }
             throw e;
         }
@@ -229,6 +207,12 @@ public class ButtplugWSClient {
                 }
             }
         }
+    }
+
+    @OnError
+    public void onWebSocketError(Throwable cause)
+    {
+        cause.printStackTrace(System.err);
     }
 
     public final List<ButtplugClientDevice> getDevices() {
@@ -291,8 +275,7 @@ public class ButtplugWSClient {
     }
 
 
-    protected final CompletableFuture<ButtplugMessage> sendMessage(final ButtplugMessage msg)
-            throws ExecutionException, InterruptedException, IOException {
+    protected final CompletableFuture<ButtplugMessage> sendMessage(final ButtplugMessage msg) {
         CompletableFuture<ButtplugMessage> promise = new CompletableFuture<>();
 
         waitingMsgs.put(msg.getId(), promise);
@@ -302,13 +285,11 @@ public class ButtplugWSClient {
         }
 
         try {
-            Future<Void> fut = session.getRemote().sendStringByFuture(parser.formatJson(msg));
-            fut.get();
-        } catch (WebSocketException e) {
+            session.getAsyncRemote().sendText(parser.formatJson(msg)).get();
+        } catch (Exception e) {
             return CompletableFuture.completedFuture(new Error(e.getMessage(),
                     Error.ErrorClass.ERROR_UNKNOWN, msg.getId()));
         }
-
         return promise;
     }
 
@@ -324,7 +305,7 @@ public class ButtplugWSClient {
         return deviceRemoved;
     }
 
-    public final  void setDeviceRemoved(final IDeviceEvent deviceRemovedHandler) {
+    public final void setDeviceRemoved(final IDeviceEvent deviceRemovedHandler) {
         this.deviceRemoved = deviceRemovedHandler;
     }
 
@@ -352,5 +333,15 @@ public class ButtplugWSClient {
         this.sensorReadingReceived = sensorReadingReceivedHandler;
     }
 
-    private static final int MAX_DISCONNECT_MESSAGE_TRYS = 3;
+    static final int MAX_DISCONNECT_MESSAGE_TRYS = 3;
+
+    public IConnectedEvent getOnConnected() {
+        return onConnected;
+    }
+
+    public void setOnConnected(IConnectedEvent onConnected) {
+        this.onConnected = onConnected;
+    }
+
+    public abstract void disconnect();
 }

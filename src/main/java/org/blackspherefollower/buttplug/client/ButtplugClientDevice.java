@@ -1,4 +1,4 @@
-package org.blackspherefollower.buttplug.client.client;
+package org.blackspherefollower.buttplug.client;
 
 import org.blackspherefollower.buttplug.protocol.ButtplugMessage;
 import org.blackspherefollower.buttplug.protocol.messages.DeviceAdded;
@@ -32,9 +32,9 @@ public class ButtplugClientDevice {
 
     private final Map<String, MessageAttributes> deviceMessages;
 
-    private final ButtplugWSClient client;
+    private final ButtplugClientWSEndpoint client;
 
-    public ButtplugClientDevice(final ButtplugWSClient bpClient, final DeviceMessageInfo deviceMessageInfo) {
+    public ButtplugClientDevice(final ButtplugClientWSEndpoint bpClient, final DeviceMessageInfo deviceMessageInfo) {
         this.client = bpClient;
         this.deviceIndex = deviceMessageInfo.deviceIndex;
         this.name = deviceMessageInfo.deviceName;
@@ -48,7 +48,7 @@ public class ButtplugClientDevice {
         }
     }
 
-    public ButtplugClientDevice(final ButtplugWSClient bpClient, final DeviceAdded deviceAdded) {
+    public ButtplugClientDevice(final ButtplugClientWSEndpoint bpClient, final DeviceAdded deviceAdded) {
         this.client = bpClient;
         this.deviceIndex = deviceAdded.getDeviceIndex();
         this.name = deviceAdded.getDeviceName();
@@ -62,7 +62,7 @@ public class ButtplugClientDevice {
         }
     }
 
-    public ButtplugClientDevice(final ButtplugWSClient bpClient, final DeviceRemoved deviceRemoved) {
+    public ButtplugClientDevice(final ButtplugClientWSEndpoint bpClient, final DeviceRemoved deviceRemoved) {
         this.client = bpClient;
         this.deviceIndex = deviceRemoved.getDeviceIndex();
         this.name = "";

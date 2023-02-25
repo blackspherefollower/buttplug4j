@@ -1,4 +1,4 @@
-package org.blackspherefollower.buttplug.client.client;
+package org.blackspherefollower.buttplug.client;
 
 public interface IScanningEvent {
     void scanningFinished();
