@@ -1,5 +1,6 @@
 package org.blackspherefollower.buttplug.client;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
@@ -8,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ButtplugWSClientMockTest {
 
-    //@Disabled
+    @Disabled
     @Test
     public void TestConnect() throws Exception {
         ButtplugClientWSClient client = new ButtplugClientWSClient("Java Test");

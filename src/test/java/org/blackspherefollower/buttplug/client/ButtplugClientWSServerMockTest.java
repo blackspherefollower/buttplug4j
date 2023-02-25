@@ -4,6 +4,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.websocket.javax.server.config.JavaxWebSocketServletContainerInitializer;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import javax.websocket.server.ServerEndpointConfig;
@@ -16,7 +17,7 @@ import org.blackspherefollower.buttplug.client.ButtplugClientWSEndpoint;
 
 public class ButtplugClientWSServerMockTest {
 
-    //@Disabled
+    @Disabled
     @Test
     public void TestConnect() throws Exception {
         ButtplugClientWSServerExample server = new ButtplugClientWSServerExample(8080);
