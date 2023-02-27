@@ -13,7 +13,7 @@ repositories {
 }
 
 dependencies {
-    api 'jakarta.websocket:jakarta.websocket-api:1.1.2'
+    api 'jakarta.websocket:jakarta.websocket-api:2.1.0'
     api 'org.eclipse.jetty.websocket:websocket-javax-client:10.0.13'
     api 'com.fasterxml.jackson.core:jackson-annotations:2.14.1'
     api 'com.fasterxml.jackson.core:jackson-databind:2.14.1'
