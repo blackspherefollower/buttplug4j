@@ -21,7 +21,7 @@ public class ButtplugClientWSServerMockTest {
     @Disabled
     @Test
     public void TestConnect() throws Exception {
-        ButtplugClientWSServerExample server = new ButtplugClientWSServerExample(8080);
+        ButtplugClientWSServerExample server = new ButtplugClientWSServerExample(54321);
         server.join();
     }
 
