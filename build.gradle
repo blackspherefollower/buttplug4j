@@ -5,7 +5,7 @@ plugins {
     id 'checkstyle'
 }
 
-group = 'org.blackspherefollower.buttplug'
+group = 'io.github.blackspherefollower'
 version = "3.0." + ("${System.env.GITHUB_RUN_NUMBER ?: 1}") + ("${System.env.GITHUB_REF_TYPE}" == "tag" ? "" : "-SNAPSHOT")
 
 repositories {
@@ -62,11 +62,14 @@ publishing {
             }
         }
         maven {
-            name = "PackageCloud"
-            url = uri("https://packagecloud.io/blackspherefollower/buttplug4j/java/maven2/")
+            name = "ossrh"
+            url = version.contains("-SNAPSHOT") ?
+                    uri("https://s01.oss.sonatype.org/content/repositories/snapshots/") :
+                    uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+
             credentials {
-                username = project.findProperty("packagecloud.key") ?: System.getenv("PACKAGECLOUD_TOKEN")
-                password = ""
+                username = project.findProperty("maven.user") ?:System.getenv("MAVEN_USER")
+                password = project.findProperty("maven.pass") ?:System.getenv("MAVEN_PASS")
             }
         }
     }
