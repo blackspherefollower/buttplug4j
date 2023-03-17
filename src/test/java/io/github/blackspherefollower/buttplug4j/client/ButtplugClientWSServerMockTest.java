@@ -55,7 +55,7 @@ public class ButtplugClientWSServerMockTest {
                             ButtplugClientWSServer client = new ButtplugClientWSServer("Java WS Server Buttplug Client");
                             client.setOnConnected(new IConnectedEvent() {
                                 @Override
-                                public void onConnected(ButtplugClientWSEndpoint client) {
+                                public void onConnected(ButtplugClient client) {
                                     new Thread(() -> {
                                         try {
                                             if( client instanceof ButtplugClientWSServer ) {

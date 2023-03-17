@@ -10,14 +10,15 @@ import java.util.List;
 
 public final class DeviceMessagesSerializer extends JsonSerializer {
     @Override
-    public void serialize(final Object value, final JsonGenerator gen, final SerializerProvider serializers) throws IOException {
+    public void serialize(final Object value, final JsonGenerator gen, final SerializerProvider serializers)
+            throws IOException {
         gen.writeStartObject();
         if (value instanceof List<?>) {
             List<?> data = (List<?>) value;
             for (Object obj : data) {
                 if (obj instanceof DeviceMessage) {
                     DeviceMessage dmsg = (DeviceMessage) obj;
-                    gen.writeObjectField(dmsg.message, dmsg.attributes);
+                    gen.writeObjectField(dmsg.getMessage(), dmsg.getAttributes());
                 }
             }
         }

@@ -10,25 +10,67 @@ import java.util.ArrayList;
 public final class DeviceMessageInfo {
 
     @JsonProperty(value = "DeviceIndex", required = true)
-    public long deviceIndex;
+    private long deviceIndex;
 
     @JsonProperty(value = "DeviceName", required = true)
-    public String deviceName;
+    private String deviceName;
 
     @JsonProperty(value = "DeviceMessageTimingGap")
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-    public Integer deviceMessageTimingGap = null;
+    private Integer deviceMessageTimingGap = null;
 
     @JsonProperty(value = "DeviceDisplayName")
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    public String deviceDisplayName;
+    private String deviceDisplayName;
+
+    public long getDeviceIndex() {
+        return deviceIndex;
+    }
+
+    public void setDeviceIndex(final long deviceIndex) {
+        this.deviceIndex = deviceIndex;
+    }
+
+    public String getDeviceName() {
+        return deviceName;
+    }
+
+    public void setDeviceName(final String deviceName) {
+        this.deviceName = deviceName;
+    }
+
+    public Integer getDeviceMessageTimingGap() {
+        return deviceMessageTimingGap;
+    }
+
+    public void setDeviceMessageTimingGap(final Integer deviceMessageTimingGap) {
+        this.deviceMessageTimingGap = deviceMessageTimingGap;
+    }
+
+    public String getDeviceDisplayName() {
+        return deviceDisplayName;
+    }
+
+    public void setDeviceDisplayName(final String deviceDisplayName) {
+        this.deviceDisplayName = deviceDisplayName;
+    }
+
+    public ArrayList<DeviceMessage> getDeviceMessages() {
+        return deviceMessages;
+    }
+
+    public void setDeviceMessages(final ArrayList<DeviceMessage> deviceMessages) {
+        this.deviceMessages = deviceMessages;
+    }
 
     @JsonProperty(value = "DeviceMessages", required = true)
     @JsonDeserialize(using = DeviceMessagesDeserializer.class)
     @JsonSerialize(using = DeviceMessagesSerializer.class)
-    public ArrayList<DeviceMessage> deviceMessages;
+    private ArrayList<DeviceMessage> deviceMessages;
 
-    public DeviceMessageInfo(long deviceIndex, String deviceName, ArrayList<DeviceMessage> deviceMessages, int deviceMessageTimingGap, String deviceDisplayName) {
+    public DeviceMessageInfo(final long deviceIndex, final String deviceName,
+                             final ArrayList<DeviceMessage> deviceMessages, final int deviceMessageTimingGap,
+                             final String deviceDisplayName) {
         this.deviceName = deviceName;
         this.deviceIndex = deviceIndex;
         this.deviceMessages = deviceMessages;

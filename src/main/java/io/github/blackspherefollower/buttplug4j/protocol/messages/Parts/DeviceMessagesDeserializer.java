@@ -20,39 +20,42 @@ public final class DeviceMessagesDeserializer extends JsonDeserializer {
         JsonNode node = oc.readTree(p);
 
         ArrayList<DeviceMessage> ret = new ArrayList<>();
-        for (Iterator<Map.Entry<String, JsonNode>> it = node.fields(); it.hasNext(); ) {
+        for (Iterator<Map.Entry<String, JsonNode>> it = node.fields(); it.hasNext();) {
             Map.Entry<String, JsonNode> msg = it.next();
             DeviceMessage dmsg = new DeviceMessage();
-            dmsg.message = msg.getKey();
+            dmsg.setMessage(msg.getKey());
 
-            switch (dmsg.message) {
+            switch (dmsg.getMessage()) {
                 case "StopDeviceCmd":
-                    dmsg.attributes = new NullMessageAttributes();
+                    dmsg.setAttributes(new NullMessageAttributes());
                     break;
                 case "RawReadCmd":
                 case "RawWriteCmd":
                 case "RawSubscribeCmd":
-                    dmsg.attributes = new ObjectMapper().treeToValue(msg.getValue(), RawMessageAttributes.class);
+                    dmsg.setAttributes(new ObjectMapper().treeToValue(msg.getValue(),
+                            RawMessageAttributes.class));
                     break;
                 case "SensorReadCmd":
                 case "SensorSubscribeCmd":
                     SensorMessageAttributes sattrs = new SensorMessageAttributes();
-                    for (Iterator<JsonNode> it2 = msg.getValue().elements(); it2.hasNext(); ) {
-                        sattrs.getFeatures().add(new ObjectMapper().treeToValue(it2.next(), SensorFeatureAttributes.class));
+                    for (Iterator<JsonNode> it2 = msg.getValue().elements(); it2.hasNext();) {
+                        sattrs.getFeatures().add(new ObjectMapper().treeToValue(it2.next(),
+                                SensorFeatureAttributes.class));
                     }
-                    dmsg.attributes = sattrs;
+                    dmsg.setAttributes(sattrs);
                     break;
                 case "ScalarCmd":
                 case "LinearCmd":
                 case "RotateCmd":
                     GenericMessageAttributes gattrs = new GenericMessageAttributes();
-                    for (Iterator<JsonNode> it2 = msg.getValue().elements(); it2.hasNext(); ) {
-                        gattrs.getFeatures().add(new ObjectMapper().treeToValue(it2.next(), GenericFeatureAttributes.class));
+                    for (Iterator<JsonNode> it2 = msg.getValue().elements(); it2.hasNext();) {
+                        gattrs.getFeatures().add(new ObjectMapper().treeToValue(it2.next(),
+                                GenericFeatureAttributes.class));
                     }
-                    dmsg.attributes = gattrs;
+                    dmsg.setAttributes(gattrs);
                     break;
                 default:
-                    throw new JsonParseException(p, "Unknown Buttplug Device Message type: " + dmsg.message);
+                    throw new JsonParseException(p, "Unknown Buttplug Device Message type: " + dmsg.getMessage());
             }
 
             ret.add(dmsg);

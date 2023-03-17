@@ -4,11 +4,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import io.github.blackspherefollower.buttplug4j.protocol.ButtplugConsts;
+import io.github.blackspherefollower.buttplug4j.protocol.ButtplugDeviceMessage;
 import io.github.blackspherefollower.buttplug4j.protocol.messages.Parts.DeviceMessage;
 import io.github.blackspherefollower.buttplug4j.protocol.messages.Parts.DeviceMessagesDeserializer;
 import io.github.blackspherefollower.buttplug4j.protocol.messages.Parts.DeviceMessagesSerializer;
-import io.github.blackspherefollower.buttplug4j.protocol.ButtplugConsts;
-import io.github.blackspherefollower.buttplug4j.protocol.ButtplugDeviceMessage;
 
 import java.util.ArrayList;
 

@@ -32,7 +32,7 @@ public final class SensorUnsubscribeCmd extends ButtplugDeviceMessage {
         return sensorType;
     }
 
-    public  void setSensorType(final String sensorType) {
+    public void setSensorType(final String sensorType) {
         this.sensorType = sensorType;
     }
 }

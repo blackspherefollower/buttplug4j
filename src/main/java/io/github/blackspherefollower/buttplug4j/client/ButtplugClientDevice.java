@@ -32,23 +32,23 @@ public class ButtplugClientDevice {
 
     private final Map<String, MessageAttributes> deviceMessages;
 
-    private final ButtplugClientWSEndpoint client;
+    private final ButtplugClient client;
 
-    public ButtplugClientDevice(final ButtplugClientWSEndpoint bpClient, final DeviceMessageInfo deviceMessageInfo) {
+    public ButtplugClientDevice(final ButtplugClient bpClient, final DeviceMessageInfo deviceMessageInfo) {
         this.client = bpClient;
-        this.deviceIndex = deviceMessageInfo.deviceIndex;
-        this.name = deviceMessageInfo.deviceName;
-        this.displayName = deviceMessageInfo.deviceDisplayName != null
-                && !deviceMessageInfo.deviceDisplayName.isEmpty()
-                ? deviceMessageInfo.deviceDisplayName : deviceMessageInfo.deviceName;
-        this.messageTimingGap = deviceMessageInfo.deviceMessageTimingGap;
+        this.deviceIndex = deviceMessageInfo.getDeviceIndex();
+        this.name = deviceMessageInfo.getDeviceName();
+        this.displayName = deviceMessageInfo.getDeviceDisplayName() != null
+                && !deviceMessageInfo.getDeviceDisplayName().isEmpty()
+                ? deviceMessageInfo.getDeviceDisplayName() : deviceMessageInfo.getDeviceName();
+        this.messageTimingGap = deviceMessageInfo.getDeviceMessageTimingGap();
         this.deviceMessages = new HashMap<>();
-        for (DeviceMessage deviceMessage : deviceMessageInfo.deviceMessages) {
-            this.deviceMessages.put(deviceMessage.message, deviceMessage.attributes);
+        for (DeviceMessage deviceMessage : deviceMessageInfo.getDeviceMessages()) {
+            this.deviceMessages.put(deviceMessage.getMessage(), deviceMessage.getAttributes());
         }
     }
 
-    public ButtplugClientDevice(final ButtplugClientWSEndpoint bpClient, final DeviceAdded deviceAdded) {
+    public ButtplugClientDevice(final ButtplugClient bpClient, final DeviceAdded deviceAdded) {
         this.client = bpClient;
         this.deviceIndex = deviceAdded.getDeviceIndex();
         this.name = deviceAdded.getDeviceName();
@@ -58,7 +58,7 @@ public class ButtplugClientDevice {
         this.messageTimingGap = deviceAdded.getDeviceMessageTimingGap();
         this.deviceMessages = new HashMap<>();
         for (DeviceMessage deviceMessage : deviceAdded.getDeviceMessages()) {
-            this.deviceMessages.put(deviceMessage.message, deviceMessage.attributes);
+            this.deviceMessages.put(deviceMessage.getMessage(), deviceMessage.getAttributes());
         }
     }
 

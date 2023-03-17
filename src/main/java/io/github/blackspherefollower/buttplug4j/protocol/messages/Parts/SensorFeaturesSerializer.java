@@ -8,7 +8,8 @@ import java.io.IOException;
 
 public final class SensorFeaturesSerializer extends JsonSerializer {
     @Override
-    public void serialize(final Object value, final JsonGenerator gen, final SerializerProvider serializers) throws IOException {
+    public void serialize(final Object value, final JsonGenerator gen, final SerializerProvider serializers)
+            throws IOException {
         SensorMessageAttributes data = (SensorMessageAttributes) value;
         gen.writeStartArray();
         for (SensorFeatureAttributes feat : data.getFeatures()) {

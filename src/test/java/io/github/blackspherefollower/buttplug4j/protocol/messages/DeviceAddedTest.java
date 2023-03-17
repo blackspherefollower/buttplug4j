@@ -23,8 +23,8 @@ public class DeviceAddedTest {
         assertEquals(3, msgs.get(0).getId());
         assertEquals(2, ((DeviceAdded) msgs.get(0)).getDeviceIndex());
         assertEquals("foo", ((DeviceAdded) msgs.get(0)).getDeviceName());
-        assertEquals("ScalarCmd", ((DeviceAdded) msgs.get(0)).getDeviceMessages().get(0).message);
-        assertEquals("StopDeviceCmd", ((DeviceAdded) msgs.get(0)).getDeviceMessages().get(1).message);
+        assertEquals("ScalarCmd", ((DeviceAdded) msgs.get(0)).getDeviceMessages().get(0).getMessage());
+        assertEquals("StopDeviceCmd", ((DeviceAdded) msgs.get(0)).getDeviceMessages().get(1).getMessage());
 
         String jsonOut = parser.formatJson(msgs);
         assertEquals(testStr, jsonOut);
