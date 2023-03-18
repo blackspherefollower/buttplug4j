@@ -34,6 +34,7 @@ public final class DeviceMessagesDeserializer extends JsonDeserializer {
                 case "RawSubscribeCmd":
                     dmsg.setAttributes(new ObjectMapper().treeToValue(msg.getValue(),
                             RawMessageAttributes.class));
+
                     break;
                 case "SensorReadCmd":
                 case "SensorSubscribeCmd":
@@ -47,12 +48,12 @@ public final class DeviceMessagesDeserializer extends JsonDeserializer {
                 case "ScalarCmd":
                 case "LinearCmd":
                 case "RotateCmd":
-                    GenericMessageAttributes gattrs = new GenericMessageAttributes();
-                    for (Iterator<JsonNode> it2 = msg.getValue().elements(); it2.hasNext();) {
-                        gattrs.getFeatures().add(new ObjectMapper().treeToValue(it2.next(),
-                                GenericFeatureAttributes.class));
-                    }
-                    dmsg.setAttributes(gattrs);
+                        GenericMessageAttributes gattrs = new GenericMessageAttributes();
+                        for (Iterator<JsonNode> it2 = msg.getValue().elements(); it2.hasNext();) {
+                            gattrs.getFeatures().add(new ObjectMapper().treeToValue(it2.next(),
+                                    GenericFeatureAttributes.class));
+                        }
+                        dmsg.setAttributes(gattrs);
                     break;
                 default:
                     throw new JsonParseException(p, "Unknown Buttplug Device Message type: " + dmsg.getMessage());

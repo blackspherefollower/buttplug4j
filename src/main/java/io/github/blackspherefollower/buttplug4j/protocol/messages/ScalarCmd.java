@@ -1,6 +1,7 @@
 package io.github.blackspherefollower.buttplug4j.protocol.messages;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.github.blackspherefollower.buttplug4j.Util.Pair;
 import io.github.blackspherefollower.buttplug4j.protocol.ButtplugConsts;
 import io.github.blackspherefollower.buttplug4j.protocol.ButtplugDeviceMessage;
 
@@ -11,13 +12,13 @@ public final class ScalarCmd extends ButtplugDeviceMessage {
     @JsonProperty(value = "Scalars", required = true)
     private ScalarSubCmd[] scalars;
 
-    public ScalarCmd(final long deviceIndex, final Double[] scalars, final String actuatorType, final long id) {
+    public ScalarCmd(final long deviceIndex, final Pair<Double, String>[] scalars, final long id) {
         super(id, deviceIndex);
         long i = 0;
         ArrayList<ScalarSubCmd> scalarsubs = new ArrayList<>();
-        for (Double scalar : scalars) {
+        for (Pair<Double, String> scalar : scalars) {
             if (scalar != null) {
-                scalarsubs.add(new ScalarSubCmd(i, scalar, actuatorType));
+                scalarsubs.add(new ScalarSubCmd(i, scalar.getLeft(), scalar.getRight()));
             }
             i++;
         }

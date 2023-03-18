@@ -2,12 +2,12 @@ package io.github.blackspherefollower.buttplug4j.protocol;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectMapper.DefaultTypeResolverBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper.DefaultTyping;
 import com.fasterxml.jackson.databind.jsontype.TypeResolverBuilder;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,17 +25,29 @@ public final class ButtplugJsonMessageParser {
     }
 
     public List<ButtplugMessage> parseJson(final String json)
-            throws IOException {
-        return Arrays.asList(mapper.readValue(json, ButtplugMessage[].class));
+            throws ButtplugProtocolException {
+        try {
+            return Arrays.asList(mapper.readValue(json, ButtplugMessage[].class));
+        } catch (JsonProcessingException e) {
+            throw new ButtplugProtocolException(e);
+        }
     }
 
     public String formatJson(final List<ButtplugMessage> msgs)
-            throws IOException {
-        return mapper.writeValueAsString(msgs);
+            throws ButtplugProtocolException {
+        try {
+            return mapper.writeValueAsString(msgs);
+        } catch (JsonProcessingException e) {
+            throw new ButtplugProtocolException(e);
+        }
     }
 
     public String formatJson(final ButtplugMessage msgs)
-            throws IOException {
-        return mapper.writeValueAsString(new ButtplugMessage[]{msgs});
+            throws ButtplugProtocolException {
+        try {
+            return mapper.writeValueAsString(new ButtplugMessage[]{msgs});
+        } catch (JsonProcessingException e) {
+            throw new ButtplugProtocolException(e);
+        }
     }
 }

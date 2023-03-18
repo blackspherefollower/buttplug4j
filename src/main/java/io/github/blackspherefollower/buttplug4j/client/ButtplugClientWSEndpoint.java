@@ -2,6 +2,7 @@ package io.github.blackspherefollower.buttplug4j.client;
 
 import io.github.blackspherefollower.buttplug4j.protocol.ButtplugConsts;
 import io.github.blackspherefollower.buttplug4j.protocol.ButtplugMessage;
+import io.github.blackspherefollower.buttplug4j.protocol.ButtplugProtocolException;
 import io.github.blackspherefollower.buttplug4j.protocol.messages.Error;
 
 import javax.websocket.ClientEndpoint;
@@ -41,7 +42,7 @@ public abstract class ButtplugClientWSEndpoint extends ButtplugClient {
         try {
             List<ButtplugMessage> msgs = getParser().parseJson(message);
             onMessage(msgs);
-        } catch (IOException e) {
+        } catch (ButtplugProtocolException e) {
             if (getErrorReceived() != null) {
                 getErrorReceived().errorReceived(new Error(e.getMessage(),
                         Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.SYSTEM_MSG_ID));
@@ -86,7 +87,11 @@ public abstract class ButtplugClientWSEndpoint extends ButtplugClient {
 
     @OnError
     public final void onWebSocketError(final Throwable cause) {
-        cause.printStackTrace(System.err);
+        if (getErrorReceived() != null) {
+            getErrorReceived().errorReceived(new Error(cause.getMessage(), Error.ErrorClass.ERROR_UNKNOWN,
+                    ButtplugConsts.SYSTEM_MSG_ID));
+        }
+        disconnect();
     }
 
     @Override

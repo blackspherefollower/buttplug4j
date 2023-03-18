@@ -134,11 +134,11 @@ public abstract class ButtplugClient {
                 }
 
             } else if (res instanceof Error) {
-                throw new Exception(((Error) res).getErrorMessage());
+                throw new ButtplugClientException(((Error) res).getErrorMessage());
             } else {
-                throw new Exception("Unexpected message returned: " + res.getClass().getName());
+                throw new ButtplugClientException("Unexpected message returned: " + res.getClass().getName());
             }
-        } catch (Exception e) {
+        } catch (ButtplugClientException | InterruptedException | ExecutionException e) {
             if (getErrorReceived() != null) {
                 getErrorReceived().errorReceived(new Error(e.getMessage(), Error.ErrorClass.ERROR_UNKNOWN, -1));
             }
@@ -151,23 +151,23 @@ public abstract class ButtplugClient {
         }
     }
 
-    private void onPingTimer() throws Exception {
+    private void onPingTimer() throws ButtplugClientException, ExecutionException, InterruptedException {
         try {
             ButtplugMessage msg = sendMessage(new Ping(msgId.incrementAndGet())).get();
             if (msg instanceof Error) {
-                throw new Exception(((Error) msg).getErrorMessage());
+                throw new ButtplugClientException(((Error) msg).getErrorMessage());
             }
-        } catch (Throwable e) {
+        } catch (ButtplugClientException | InterruptedException | ExecutionException e) {
             disconnect();
             throw e;
         }
     }
 
-    public final void requestDeviceList() throws Exception {
+    public final void requestDeviceList() throws ButtplugClientException, ExecutionException, InterruptedException {
         ButtplugMessage res = sendMessage(new RequestDeviceList(msgId.incrementAndGet())).get();
         if (!(res instanceof DeviceList) || ((DeviceList) res).getDevices() == null) {
             if (res instanceof Error) {
-                throw new Exception(((Error) res).getErrorMessage());
+                throw new ButtplugClientException(((Error) res).getErrorMessage());
             }
             return;
         }
@@ -194,17 +194,15 @@ public abstract class ButtplugClient {
         return waitForOk(startScanningAsync());
     }
 
-    public final Future<ButtplugMessage> startScanningAsync()
-            throws ExecutionException, InterruptedException, IOException {
+    public final Future<ButtplugMessage> startScanningAsync() {
         return sendMessage(new StartScanning(msgId.incrementAndGet()));
     }
 
-    public final boolean stopScanning() throws ExecutionException, InterruptedException, IOException {
+    public final boolean stopScanning() throws ExecutionException, InterruptedException {
         return waitForOk(stopScanningAsync());
     }
 
-    public final Future<ButtplugMessage> stopScanningAsync()
-            throws ExecutionException, InterruptedException, IOException {
+    public final Future<ButtplugMessage> stopScanningAsync() {
         return sendMessage(new StopScanning(msgId.incrementAndGet()));
     }
 
@@ -212,14 +210,12 @@ public abstract class ButtplugClient {
         return waitForOk(stopAllDevicesAsync());
     }
 
-    public final Future<ButtplugMessage> stopAllDevicesAsync()
-            throws IOException, ExecutionException, InterruptedException {
+    public final Future<ButtplugMessage> stopAllDevicesAsync() {
         return sendMessage(new StopAllDevices(getNextMsgId()));
     }
 
     public final CompletableFuture<ButtplugMessage> sendDeviceMessage(
-            final ButtplugClientDevice device, final ButtplugDeviceMessage deviceMsg)
-            throws ExecutionException, InterruptedException, IOException {
+            final ButtplugClientDevice device, final ButtplugDeviceMessage deviceMsg) {
         ButtplugClientDevice dev = devices.get(device.getDeviceIndex());
         if (dev != null) {
             if (!dev.getDeviceMessages().containsKey(deviceMsg.getClass().getSimpleName())) {
@@ -239,7 +235,7 @@ public abstract class ButtplugClient {
     }
 
     protected final boolean waitForOk(final Future<ButtplugMessage> msg)
-            throws ExecutionException, InterruptedException, IOException {
+            throws ExecutionException, InterruptedException {
         return msg.get() instanceof Ok;
     }
 

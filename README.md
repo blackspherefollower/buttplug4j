@@ -33,21 +33,26 @@ In depth testing is still pending, so your mileage may vary.
 ## Development
 
 Snapshot libraries from the buttplug4j repo are available via Maven from the following
-repository: https://github.com/blackspherefollower/buttplug4j/packages
+repository: https://s01.oss.sonatype.org/content/repositories/snapshots
+Releases will be available from maven central.
 
 ```xml
 <repositories>
-  <repository>
-    <id>blackspherefollower-buttplug4j</id>
-    <url>https://maven.pkg.github.com/lackspherefollower/buttplug4j</url>
-    <releases>
-      <enabled>true</enabled>
-    </releases>
-    <snapshots>
-      <enabled>true</enabled>
-    </snapshots>
-  </repository>
+    <repository>
+        <id>OSSRH</id>
+        <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
 </repositories>
+<dependencies>
+    <dependency>
+        <groupId>io.github.blackspherefollower</groupId>
+        <artifactId>buttplug4j</artifactId>
+        <version>[3.0-SNAPSHOT,)</version>
+    </dependency>
+</dependencies>
 ```
 
 ## Support The Project

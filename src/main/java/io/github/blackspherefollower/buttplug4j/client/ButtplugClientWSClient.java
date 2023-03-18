@@ -4,10 +4,12 @@ import org.eclipse.jetty.util.component.LifeCycle;
 
 import javax.websocket.ClientEndpoint;
 import javax.websocket.ContainerProvider;
+import javax.websocket.DeploymentException;
 import javax.websocket.WebSocketContainer;
 import java.io.IOException;
 import java.net.URI;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @ClientEndpoint
 public final class ButtplugClientWSClient extends ButtplugClientWSEndpoint {
@@ -18,7 +20,8 @@ public final class ButtplugClientWSClient extends ButtplugClientWSEndpoint {
         super(clientName);
     }
 
-    public void connect(final URI url) throws Exception {
+    public void connect(final URI url) throws IllegalStateException, DeploymentException, IOException,
+            ExecutionException, InterruptedException {
 
         if (client != null && getSession() != null && getSession().isOpen()) {
             throw new IllegalStateException("WS is already open");
