@@ -3,6 +3,7 @@ plugins {
     id 'jacoco'
     id 'maven-publish'
     id 'checkstyle'
+    id 'signing'
 }
 
 group = 'io.github.blackspherefollower'
@@ -74,8 +75,40 @@ publishing {
         }
     }
     publications {
-        gpr(MavenPublication) {
+        mavenJava(MavenPublication) {
             from(components.java)
+            pom {
+                name = 'Buttplug for Java'
+                description = 'A pure Java Buttplug Client implementation'
+                url = 'https://github.com/blackspherefollower/buttplug4j'
+                inceptionYear = '2017'
+
+                licenses {
+                    license {
+                        name = 'BSDv3 License'
+                        url = 'https://github.com/blackspherefollower/buttplug4j/'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'blackspherefollower'
+                        name = 'BlackSphereFollower'
+                        email = 'blackspherefollower@iostindex.com'
+                    }
+                }
+                scm {
+                    connection='scm:git:git:github.com/blackspherefollower/buttplug4j.git'
+                    developerConnection='scm:git:https://github.com/blackspherefollower/buttplug4j.git'
+                    url='https://github.com/blackspherefollower/buttplug4j'
+                }
+            }
         }
     }
+}
+
+signing {
+    def gpgKey = project.findProperty("gpg.key") ?: System.getenv("OSSRH_GPG") ?: ""
+    def gpgPass = project.findProperty("gpg.pass") ?: System.getenv("OSSRH_GPG_PASS") ?: ""
+    useInMemoryPgpKeys(gpgKey.replaceAll("\\\\n", "\n"), gpgPass)
+    sign publishing.publications.mavenJava
 }

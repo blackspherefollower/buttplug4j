@@ -10,6 +10,7 @@ name: Java CI with Gradle
 on:
   push:
     branches: [ "master" ]
+    tags: [ "*" ]
   pull_request:
     branches: [ "master" ]
 
@@ -45,6 +46,7 @@ jobs:
         with:
           paths: ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml
           token: ${{ secrets.GITHUB_TOKEN }}
+        if: github.event_name == 'pull_request'
 
       - name: Publish package
         uses: gradle/gradle-build-action@v2.3.3
@@ -54,4 +56,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MAVEN_USER: ${{ secrets.MAVEN_USER }}
           MAVEN_PASS: ${{ secrets.MAVEN_PASS }}
-        if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
+          OSSRH_GPG: ${{ secrets.OSSRH_GPG }}
+          OSSRH_GPG_PASS: ${{ secrets.OSSRH_GPG_PASS }}
+        if: (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tag')) && github.event_name != 'pull_request'
