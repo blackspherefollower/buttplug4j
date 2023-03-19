@@ -56,4 +56,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MAVEN_USER: ${{ secrets.MAVEN_USER }}
           MAVEN_PASS: ${{ secrets.MAVEN_PASS }}
-        if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
+        if: (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tag')) && github.event_name != 'pull_request'
