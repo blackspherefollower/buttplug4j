@@ -46,6 +46,7 @@ jobs:
         with:
           paths: ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml
           token: ${{ secrets.GITHUB_TOKEN }}
+        if: github.event_name = 'pull_request'
 
       - name: Publish package
         uses: gradle/gradle-build-action@v2.3.3
