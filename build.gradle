@@ -91,10 +91,9 @@ publishing {
                 }
                 developers {
                     developer {
+                        id = 'blackspherefollower'
                         name = 'BlackSphereFollower'
                         email = 'blackspherefollower@iostindex.com'
-                        organisation = 'IoSTIndex'
-                        organisationUrl = 'https://IoSTIndex.com'
                     }
                 }
                 scm {
