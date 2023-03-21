@@ -3,6 +3,7 @@ plugins {
     id 'jacoco'
     id 'maven-publish'
     id 'checkstyle'
+    id 'signing'
 }
 
 group = 'io.github.blackspherefollower'
@@ -51,6 +52,10 @@ jacocoTestReport {
     }
 }
 
+signing {
+    sign publishing.publications.mavenJava
+}
+
 publishing {
     repositories {
         maven {
@@ -76,6 +81,32 @@ publishing {
     publications {
         gpr(MavenPublication) {
             from(components.java)
+            pom {
+                name = 'Buttplug for Java'
+                description = 'A set of useful utility classes for web applications.'
+                url = 'https://github.com/blackspherefollower/buttplug4j'
+                inceptionYear = '2017'
+
+                licenses {
+                    license {
+                        name = 'BSDv3 License'
+                        url = 'https://github.com/blackspherefollower/buttplug4j/'
+                    }
+                }
+                developers {
+                    developer {
+                        name = 'BlackSphereFollower'
+                        email = 'blackspherefollower@iostindex.com'
+                        organisation = 'IoSTIndex'
+                        organisationUrl = 'https://IoSTIndex.com'
+                    }
+                }
+                scm {
+                    connection='scm:git:git:github.com/blackspherefollower/buttplug4j.git'
+                    developerConnection='scm:git:https://github.com/blackspherefollower/buttplug4j.git'
+                    url='https://github.com/blackspherefollower/buttplug4j'
+                }
+            }
         }
     }
 }
