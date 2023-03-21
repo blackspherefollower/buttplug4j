@@ -79,11 +79,11 @@ publishing {
         }
     }
     publications {
-        gpr(MavenPublication) {
+        mavenJava(MavenPublication) {
             from(components.java)
             pom {
                 name = 'Buttplug for Java'
-                description = 'A set of useful utility classes for web applications.'
+                description = 'A pure Java Buttplug Client implementation'
                 url = 'https://github.com/blackspherefollower/buttplug4j'
                 inceptionYear = '2017'
 
