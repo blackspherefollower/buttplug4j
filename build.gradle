@@ -52,10 +52,6 @@ jacocoTestReport {
     }
 }
 
-signing {
-    sign publishing.publications.mavenJava
-}
-
 publishing {
     repositories {
         maven {
@@ -109,4 +105,8 @@ publishing {
             }
         }
     }
+}
+
+signing {
+    sign publishing.publications.mavenJava
 }
