@@ -19,7 +19,7 @@ dependencies {
     api 'com.fasterxml.jackson.core:jackson-annotations:2.14.2'
     api 'com.fasterxml.jackson.core:jackson-databind:2.14.2'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
-    testImplementation 'org.eclipse.jetty.websocket:websocket-javax-server:10.0.14'
+    testImplementation 'org.eclipse.jetty.websocket:websocket-javax-server:10.0.15'
 }
 
 java {
