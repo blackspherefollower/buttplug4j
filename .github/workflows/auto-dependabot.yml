@@ -1,0 +1,13 @@
+name: auto-dependabot
+
+on:
+  pull_request:
+
+jobs:
+  auto-dependabot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ahmadnassri/action-dependabot-auto-merge@v2
+        with:
+          target: patch
+          github-token: ${{ secrets.DEPENDABOT_TOKEN }}
