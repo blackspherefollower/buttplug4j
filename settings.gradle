@@ -1,4 +1,4 @@
-include 'client'
-include 'connectors:javax:wscommon'
-include 'connectors:javax:wsclient'
-include 'connectors:javax:wsserver'
+include 'buttplug4j'
+include 'buttplug4j.connectors.javax.websocket.common'
+include 'buttplug4j.connectors.javax.websocket.client'
+include 'buttplug4j.connectors.javax.websocket.server'
