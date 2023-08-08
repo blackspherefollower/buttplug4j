@@ -1,4 +1,4 @@
-package io.github.blackspherefollower.buttplug4j.connectors.javax.common;
+package io.github.blackspherefollower.buttplug4j.connectors.javax.websocket.common;
 
 import io.github.blackspherefollower.buttplug4j.client.ButtplugClient;
 import io.github.blackspherefollower.buttplug4j.protocol.ButtplugConsts;

@@ -1,7 +1,7 @@
-package io.github.blackspherefollower.buttplug4j.connectors.javax.client;
+package io.github.blackspherefollower.buttplug4j.connectors.javax.websocket.client;
 
 import io.github.blackspherefollower.buttplug4j.client.ButtplugClient;
-import io.github.blackspherefollower.buttplug4j.connectors.javax.common.ButtplugClientWSEndpoint;
+import io.github.blackspherefollower.buttplug4j.connectors.javax.websocket.common.ButtplugClientWSEndpoint;
 import org.eclipse.jetty.util.component.LifeCycle;
 
 import javax.websocket.ClientEndpoint;

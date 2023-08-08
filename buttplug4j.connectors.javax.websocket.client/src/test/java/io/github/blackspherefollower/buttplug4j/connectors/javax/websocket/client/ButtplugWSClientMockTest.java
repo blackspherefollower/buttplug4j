@@ -1,4 +1,4 @@
-package io.github.blackspherefollower.buttplug4j.connectors.javax.client;
+package io.github.blackspherefollower.buttplug4j.connectors.javax.websocket.client;
 
 import io.github.blackspherefollower.buttplug4j.client.ButtplugClientDevice;
 import org.junit.jupiter.api.Disabled;

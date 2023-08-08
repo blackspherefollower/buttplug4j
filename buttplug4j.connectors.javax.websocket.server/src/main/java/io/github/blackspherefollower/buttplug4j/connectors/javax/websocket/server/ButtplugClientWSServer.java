@@ -1,6 +1,6 @@
-package io.github.blackspherefollower.buttplug4j.connectors.javax.server;
+package io.github.blackspherefollower.buttplug4j.connectors.javax.websocket.server;
 
-import io.github.blackspherefollower.buttplug4j.connectors.javax.common.ButtplugClientWSEndpoint;
+import io.github.blackspherefollower.buttplug4j.connectors.javax.websocket.common.ButtplugClientWSEndpoint;
 
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;

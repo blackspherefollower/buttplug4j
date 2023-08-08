@@ -1,10 +1,9 @@
-package io.github.blackspherefollower.buttplug4j.connectors.javax.client;
+package io.github.blackspherefollower.buttplug4j.connectors.javax.websocket.server;
 
 import io.github.blackspherefollower.buttplug4j.client.ButtplugClient;
 import io.github.blackspherefollower.buttplug4j.client.ButtplugClientDevice;
 import io.github.blackspherefollower.buttplug4j.client.IConnectedEvent;
-import io.github.blackspherefollower.buttplug4j.connectors.javax.common.ButtplugClientWSEndpoint;
-import io.github.blackspherefollower.buttplug4j.connectors.javax.server.ButtplugClientWSServer;
+import io.github.blackspherefollower.buttplug4j.connectors.javax.websocket.common.ButtplugClientWSEndpoint;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
