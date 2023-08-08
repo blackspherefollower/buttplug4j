@@ -1,7 +1,7 @@
 package io.github.blackspherefollower.buttplug4j.protocol.messages;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.github.blackspherefollower.buttplug4j.Util.Pair;
+import io.github.blackspherefollower.buttplug4j.util.Pair;
 import io.github.blackspherefollower.buttplug4j.protocol.ButtplugConsts;
 import io.github.blackspherefollower.buttplug4j.protocol.ButtplugDeviceMessage;
 

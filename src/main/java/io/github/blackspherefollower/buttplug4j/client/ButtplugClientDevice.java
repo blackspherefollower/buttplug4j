@@ -1,6 +1,6 @@
 package io.github.blackspherefollower.buttplug4j.client;
 
-import io.github.blackspherefollower.buttplug4j.Util.Pair;
+import io.github.blackspherefollower.buttplug4j.util.Pair;
 import io.github.blackspherefollower.buttplug4j.protocol.ButtplugMessage;
 import io.github.blackspherefollower.buttplug4j.protocol.messages.DeviceAdded;
 import io.github.blackspherefollower.buttplug4j.protocol.messages.DeviceRemoved;

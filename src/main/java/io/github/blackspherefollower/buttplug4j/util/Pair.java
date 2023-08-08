@@ -1,4 +1,4 @@
-package io.github.blackspherefollower.buttplug4j.Util;
+package io.github.blackspherefollower.buttplug4j.util;
 
 public final class Pair<A, B> {
 
