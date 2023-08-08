@@ -1,0 +1,4 @@
+include 'client'
+include 'connectors:javax:wscommon'
+include 'connectors:javax:wsclient'
+include 'connectors:javax:wsserver'
