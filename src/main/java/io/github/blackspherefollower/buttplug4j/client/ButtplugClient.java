@@ -133,6 +133,9 @@ public abstract class ButtplugClient {
                     }, 0, Math.round(((double) ((ServerInfo) res).getMaxPingTime()) / 2));
                 }
 
+                // Populate already connected devices
+                requestDeviceList();
+
             } else if (res instanceof Error) {
                 throw new ButtplugClientException(((Error) res).getErrorMessage());
             } else {
@@ -149,6 +152,7 @@ public abstract class ButtplugClient {
         if (getOnConnected() != null) {
             getOnConnected().onConnected(this);
         }
+
     }
 
     private void onPingTimer() throws ButtplugClientException, ExecutionException, InterruptedException {
