@@ -9,6 +9,7 @@ public final class Pair<A, B> {
         this.a = a;
         this.b = b;
     }
+
     public A getLeft() {
         return a;
     }

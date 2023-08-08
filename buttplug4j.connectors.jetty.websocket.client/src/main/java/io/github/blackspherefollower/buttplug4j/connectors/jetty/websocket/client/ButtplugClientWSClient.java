@@ -6,10 +6,10 @@ import io.github.blackspherefollower.buttplug4j.protocol.ButtplugMessage;
 import io.github.blackspherefollower.buttplug4j.protocol.ButtplugProtocolException;
 import io.github.blackspherefollower.buttplug4j.protocol.messages.Error;
 import org.eclipse.jetty.util.component.LifeCycle;
+import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.*;
 import org.eclipse.jetty.websocket.client.ClientUpgradeRequest;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
-import org.eclipse.jetty.websocket.api.Session;
 
 import java.io.IOException;
 import java.net.URI;
@@ -18,14 +18,14 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 @WebSocket(maxTextMessageSize = 64 * 1024)
 public final class ButtplugClientWSClient extends ButtplugClient {
 
+    private static final int TENSEC = 10000;
     private WebSocketClient client;
-
     private Session session;
+    private Timer wsPingTimer;
 
     public ButtplugClientWSClient(final String clientName) {
         super(clientName);
@@ -88,13 +88,8 @@ public final class ButtplugClientWSClient extends ButtplugClient {
         new Thread(() -> doHandshake()).start();
     }
 
-    private Timer wsPingTimer;
-
-
-    private static final int TENSEC = 10000;
-
     @OnWebSocketMessage
-    public final void onMessage(final Session sess, final String message) {
+    public void onMessage(final Session sess, final String message) {
         try {
             List<ButtplugMessage> msgs = getParser().parseJson(message);
             onMessage(msgs);

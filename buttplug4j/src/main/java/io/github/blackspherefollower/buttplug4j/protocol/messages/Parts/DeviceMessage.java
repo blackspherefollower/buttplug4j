@@ -1,6 +1,9 @@
 package io.github.blackspherefollower.buttplug4j.protocol.messages.Parts;
 
 public final class DeviceMessage {
+    private String message;
+    private MessageAttributes attributes;
+
     public String getMessage() {
         return message;
     }
@@ -16,7 +19,4 @@ public final class DeviceMessage {
     public void setAttributes(final MessageAttributes attributes) {
         this.attributes = attributes;
     }
-
-    private String message;
-    private MessageAttributes attributes;
 }

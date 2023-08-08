@@ -1,18 +1,9 @@
 package io.github.blackspherefollower.buttplug4j.client;
 
-import io.github.blackspherefollower.buttplug4j.util.Pair;
 import io.github.blackspherefollower.buttplug4j.protocol.ButtplugMessage;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.DeviceAdded;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.DeviceRemoved;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.LinearCmd;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.Parts.DeviceMessage;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.Parts.DeviceMessageInfo;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.Parts.GenericFeatureAttributes;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.Parts.GenericMessageAttributes;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.Parts.MessageAttributes;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.RotateCmd;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.ScalarCmd;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.StopDeviceCmd;
+import io.github.blackspherefollower.buttplug4j.protocol.messages.*;
+import io.github.blackspherefollower.buttplug4j.protocol.messages.Parts.*;
+import io.github.blackspherefollower.buttplug4j.util.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;

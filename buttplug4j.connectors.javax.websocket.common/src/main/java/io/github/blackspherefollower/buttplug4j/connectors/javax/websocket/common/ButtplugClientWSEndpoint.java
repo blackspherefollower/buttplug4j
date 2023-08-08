@@ -6,13 +6,7 @@ import io.github.blackspherefollower.buttplug4j.protocol.ButtplugMessage;
 import io.github.blackspherefollower.buttplug4j.protocol.ButtplugProtocolException;
 import io.github.blackspherefollower.buttplug4j.protocol.messages.Error;
 
-import javax.websocket.ClientEndpoint;
-import javax.websocket.CloseReason;
-import javax.websocket.OnClose;
-import javax.websocket.OnError;
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
+import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -24,9 +18,9 @@ import java.util.concurrent.CompletableFuture;
 @ClientEndpoint
 @ServerEndpoint("/")
 public abstract class ButtplugClientWSEndpoint extends ButtplugClient {
+    private static final int TENSEC = 10000;
     private Session session;
     private Timer wsPingTimer;
-
 
     public ButtplugClientWSEndpoint(final String aClientName) {
         super(aClientName);
@@ -35,8 +29,6 @@ public abstract class ButtplugClientWSEndpoint extends ButtplugClient {
     public final Session getSession() {
         return session;
     }
-
-    private static final int TENSEC = 10000;
 
     @OnMessage
     public final void onMessage(final Session sess, final String message) {

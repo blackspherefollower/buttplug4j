@@ -64,8 +64,8 @@ publishing {
                     uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
 
             credentials {
-                username = project.findProperty("maven.user") ?:System.getenv("MAVEN_USER")
-                password = project.findProperty("maven.pass") ?:System.getenv("MAVEN_PASS")
+                username = project.findProperty("maven.user") ?: System.getenv("MAVEN_USER")
+                password = project.findProperty("maven.pass") ?: System.getenv("MAVEN_PASS")
             }
         }
     }
@@ -92,9 +92,9 @@ publishing {
                     }
                 }
                 scm {
-                    connection='scm:git:git:github.com/blackspherefollower/buttplug4j.git'
-                    developerConnection='scm:git:https://github.com/blackspherefollower/buttplug4j.git'
-                    url='https://github.com/blackspherefollower/buttplug4j'
+                    connection = 'scm:git:git:github.com/blackspherefollower/buttplug4j.git'
+                    developerConnection = 'scm:git:https://github.com/blackspherefollower/buttplug4j.git'
+                    url = 'https://github.com/blackspherefollower/buttplug4j'
                 }
             }
         }

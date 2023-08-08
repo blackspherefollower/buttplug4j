@@ -52,7 +52,7 @@
     <!-- https://checkstyle.org/config_filters.html#SuppressionFilter -->
     <module name="SuppressionFilter">
         <property name="file" value="${org.checkstyle.sun.suppressionfilter.config}"
-                  default="checkstyle-suppressions.xml" />
+                  default="checkstyle-suppressions.xml"/>
         <property name="optional" value="true"/>
     </module>
 
@@ -102,19 +102,19 @@
         <!-- See https://checkstyle.org/config_javadoc.html -->
         <module name="InvalidJavadocPosition"/>
         <module name="JavadocMethod">
-            <property name="severity" value="warning" />
+            <property name="severity" value="warning"/>
         </module>
         <module name="JavadocType">
-            <property name="severity" value="warning" />
+            <property name="severity" value="warning"/>
         </module>
         <module name="JavadocVariable">
-            <property name="severity" value="warning" />
+            <property name="severity" value="warning"/>
         </module>
         <module name="JavadocStyle">
-            <property name="severity" value="warning" />
+            <property name="severity" value="warning"/>
         </module>
         <module name="MissingJavadocMethod">
-            <property name="severity" value="warning" />
+            <property name="severity" value="warning"/>
         </module>
 
         <!-- Checks for Naming Conventions.                  -->
@@ -174,7 +174,7 @@
         <module name="EmptyStatement"/>
         <module name="EqualsHashCode"/>
         <module name="HiddenField">
-            <property name="severity" value="ignore" />
+            <property name="severity" value="ignore"/>
         </module>
         <module name="IllegalInstantiation"/>
         <module name="InnerAssignment"/>
@@ -202,7 +202,7 @@
         <!-- https://checkstyle.org/config_filters.html#SuppressionXpathFilter -->
         <module name="SuppressionXpathFilter">
             <property name="file" value="${org.checkstyle.sun.suppressionxpathfilter.config}"
-                      default="checkstyle-xpath-suppressions.xml" />
+                      default="checkstyle-xpath-suppressions.xml"/>
             <property name="optional" value="true"/>
         </module>
 

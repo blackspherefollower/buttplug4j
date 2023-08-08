@@ -22,6 +22,29 @@ public final class DeviceMessageInfo {
     @JsonProperty(value = "DeviceDisplayName")
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String deviceDisplayName;
+    @JsonProperty(value = "DeviceMessages", required = true)
+    @JsonDeserialize(using = DeviceMessagesDeserializer.class)
+    @JsonSerialize(using = DeviceMessagesSerializer.class)
+    private ArrayList<DeviceMessage> deviceMessages;
+
+    public DeviceMessageInfo(final long deviceIndex, final String deviceName,
+                             final ArrayList<DeviceMessage> deviceMessages, final int deviceMessageTimingGap,
+                             final String deviceDisplayName) {
+        this.deviceName = deviceName;
+        this.deviceIndex = deviceIndex;
+        this.deviceMessages = deviceMessages;
+        this.deviceMessageTimingGap = deviceMessageTimingGap;
+        this.deviceDisplayName = deviceDisplayName;
+    }
+
+    @SuppressWarnings("unused")
+    private DeviceMessageInfo() {
+        this.deviceName = "";
+        this.deviceIndex = -1;
+        this.deviceMessages = new ArrayList<>();
+        this.deviceMessageTimingGap = null;
+        this.deviceDisplayName = "";
+    }
 
     public long getDeviceIndex() {
         return deviceIndex;
@@ -61,29 +84,5 @@ public final class DeviceMessageInfo {
 
     public void setDeviceMessages(final ArrayList<DeviceMessage> deviceMessages) {
         this.deviceMessages = deviceMessages;
-    }
-
-    @JsonProperty(value = "DeviceMessages", required = true)
-    @JsonDeserialize(using = DeviceMessagesDeserializer.class)
-    @JsonSerialize(using = DeviceMessagesSerializer.class)
-    private ArrayList<DeviceMessage> deviceMessages;
-
-    public DeviceMessageInfo(final long deviceIndex, final String deviceName,
-                             final ArrayList<DeviceMessage> deviceMessages, final int deviceMessageTimingGap,
-                             final String deviceDisplayName) {
-        this.deviceName = deviceName;
-        this.deviceIndex = deviceIndex;
-        this.deviceMessages = deviceMessages;
-        this.deviceMessageTimingGap = deviceMessageTimingGap;
-        this.deviceDisplayName = deviceDisplayName;
-    }
-
-    @SuppressWarnings("unused")
-    private DeviceMessageInfo() {
-        this.deviceName = "";
-        this.deviceIndex = -1;
-        this.deviceMessages = new ArrayList<>();
-        this.deviceMessageTimingGap = null;
-        this.deviceDisplayName = "";
     }
 }

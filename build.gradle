@@ -1,4 +1,3 @@
-
 subprojects { project ->
     group = 'io.github.blackspherefollower'
     version = "3.1." + ("${System.env.GITHUB_RUN_NUMBER ?: 1}") + ("${System.env.GITHUB_REF_TYPE}" == "tag" ? "" : "-SNAPSHOT")

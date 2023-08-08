@@ -5,27 +5,8 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.DeviceAdded;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.DeviceList;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.DeviceRemoved;
 import io.github.blackspherefollower.buttplug4j.protocol.messages.Error;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.LinearCmd;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.Ok;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.Ping;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.RequestDeviceList;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.RequestServerInfo;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.RotateCmd;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.ScalarCmd;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.ScanningFinished;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.SensorReadCmd;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.SensorReading;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.SensorSubscribeCmd;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.SensorUnsubscribeCmd;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.ServerInfo;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.StartScanning;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.StopAllDevices;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.StopDeviceCmd;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.StopScanning;
+import io.github.blackspherefollower.buttplug4j.protocol.messages.*;
 
 @JsonTypeInfo(include = As.WRAPPER_OBJECT, use = Id.NAME)
 @JsonSubTypes({

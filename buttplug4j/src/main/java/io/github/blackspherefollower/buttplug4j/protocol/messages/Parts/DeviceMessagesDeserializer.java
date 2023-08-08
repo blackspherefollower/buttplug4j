@@ -20,7 +20,7 @@ public final class DeviceMessagesDeserializer extends JsonDeserializer {
         JsonNode node = oc.readTree(p);
 
         ArrayList<DeviceMessage> ret = new ArrayList<>();
-        for (Iterator<Map.Entry<String, JsonNode>> it = node.fields(); it.hasNext();) {
+        for (Iterator<Map.Entry<String, JsonNode>> it = node.fields(); it.hasNext(); ) {
             Map.Entry<String, JsonNode> msg = it.next();
             DeviceMessage dmsg = new DeviceMessage();
             dmsg.setMessage(msg.getKey());
@@ -39,7 +39,7 @@ public final class DeviceMessagesDeserializer extends JsonDeserializer {
                 case "SensorReadCmd":
                 case "SensorSubscribeCmd":
                     SensorMessageAttributes sattrs = new SensorMessageAttributes();
-                    for (Iterator<JsonNode> it2 = msg.getValue().elements(); it2.hasNext();) {
+                    for (Iterator<JsonNode> it2 = msg.getValue().elements(); it2.hasNext(); ) {
                         sattrs.getFeatures().add(new ObjectMapper().treeToValue(it2.next(),
                                 SensorFeatureAttributes.class));
                     }
@@ -48,12 +48,12 @@ public final class DeviceMessagesDeserializer extends JsonDeserializer {
                 case "ScalarCmd":
                 case "LinearCmd":
                 case "RotateCmd":
-                        GenericMessageAttributes gattrs = new GenericMessageAttributes();
-                        for (Iterator<JsonNode> it2 = msg.getValue().elements(); it2.hasNext();) {
-                            gattrs.getFeatures().add(new ObjectMapper().treeToValue(it2.next(),
-                                    GenericFeatureAttributes.class));
-                        }
-                        dmsg.setAttributes(gattrs);
+                    GenericMessageAttributes gattrs = new GenericMessageAttributes();
+                    for (Iterator<JsonNode> it2 = msg.getValue().elements(); it2.hasNext(); ) {
+                        gattrs.getFeatures().add(new ObjectMapper().treeToValue(it2.next(),
+                                GenericFeatureAttributes.class));
+                    }
+                    dmsg.setAttributes(gattrs);
                     break;
                 default:
                     throw new JsonParseException(p, "Unknown Buttplug Device Message type: " + dmsg.getMessage());
