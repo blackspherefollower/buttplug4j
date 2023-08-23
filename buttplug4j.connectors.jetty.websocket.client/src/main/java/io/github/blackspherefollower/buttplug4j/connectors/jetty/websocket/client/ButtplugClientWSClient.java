@@ -95,8 +95,7 @@ public final class ButtplugClientWSClient extends ButtplugClient {
             onMessage(msgs);
         } catch (ButtplugProtocolException e) {
             if (getErrorReceived() != null) {
-                getErrorReceived().errorReceived(new Error(e.getMessage(),
-                        Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.SYSTEM_MSG_ID));
+                getErrorReceived().errorReceived(new Error(e));
             } else {
                 e.printStackTrace();
             }
@@ -106,8 +105,9 @@ public final class ButtplugClientWSClient extends ButtplugClient {
     @OnWebSocketError
     public void onWebSocketError(final Throwable cause) {
         if (getErrorReceived() != null) {
-            getErrorReceived().errorReceived(new Error(cause.getMessage(), Error.ErrorClass.ERROR_UNKNOWN,
-                    ButtplugConsts.SYSTEM_MSG_ID));
+            getErrorReceived().errorReceived(new Error(cause));
+        } else {
+            cause.printStackTrace();
         }
         disconnect();
     }
@@ -123,8 +123,7 @@ public final class ButtplugClientWSClient extends ButtplugClient {
         try {
             session.getRemote().sendStringByFuture(getParser().formatJson(msg)).get();
         } catch (Exception e) {
-            return CompletableFuture.completedFuture(new Error(e.getMessage(),
-                    Error.ErrorClass.ERROR_UNKNOWN, msg.getId()));
+            return CompletableFuture.completedFuture(new Error(e, msg.getId()));
         }
         return promise;
     }

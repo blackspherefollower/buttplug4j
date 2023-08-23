@@ -115,7 +115,11 @@ public abstract class ButtplugClient {
                             try {
                                 onPingTimer();
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                if (errorReceived != null) {
+                                    errorReceived.errorReceived(new Error(e));
+                                } else {
+                                    e.printStackTrace();
+                                }
                             }
                         }
                     }, 0, Math.round(((double) ((ServerInfo) res).getMaxPingTime()) / 2));
@@ -131,7 +135,9 @@ public abstract class ButtplugClient {
             }
         } catch (ButtplugClientException | InterruptedException | ExecutionException e) {
             if (getErrorReceived() != null) {
-                getErrorReceived().errorReceived(new Error(e.getMessage(), Error.ErrorClass.ERROR_UNKNOWN, -1));
+                getErrorReceived().errorReceived(new Error(e));
+            } else {
+                e.printStackTrace();
             }
         }
 
