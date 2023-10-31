@@ -91,14 +91,22 @@ public abstract class ButtplugClientWSEndpoint extends ButtplugClient {
     protected final CompletableFuture<ButtplugMessage> sendMessage(final ButtplugMessage msg) {
         CompletableFuture<ButtplugMessage> promise = scheduleWait(msg.getId(), new CompletableFuture<>());
         if (session == null) {
-            return CompletableFuture.completedFuture(new Error("Bad WS state!",
-                    Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.SYSTEM_MSG_ID));
+            Error err = new Error("Bad WS state!",
+                    Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.SYSTEM_MSG_ID);
+            if( getErrorReceived() != null) {
+                getErrorReceived().errorReceived(err);
+            }
+            return CompletableFuture.completedFuture(err);
         }
 
         try {
             session.getAsyncRemote().sendText(getParser().formatJson(msg)).get();
         } catch (Exception e) {
-            return CompletableFuture.completedFuture(new Error(e, msg.getId()));
+            Error err = new Error(e, msg.getId());
+            if( getErrorReceived() != null) {
+                getErrorReceived().errorReceived(err);
+            }
+            return CompletableFuture.completedFuture(err);
         }
         return promise;
     }

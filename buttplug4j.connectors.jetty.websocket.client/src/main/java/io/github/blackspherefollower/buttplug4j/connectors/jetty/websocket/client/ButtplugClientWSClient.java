@@ -1,6 +1,7 @@
 package io.github.blackspherefollower.buttplug4j.connectors.jetty.websocket.client;
 
 import io.github.blackspherefollower.buttplug4j.client.ButtplugClient;
+import io.github.blackspherefollower.buttplug4j.client.IConnectedEvent;
 import io.github.blackspherefollower.buttplug4j.protocol.ButtplugConsts;
 import io.github.blackspherefollower.buttplug4j.protocol.ButtplugMessage;
 import io.github.blackspherefollower.buttplug4j.protocol.ButtplugProtocolException;
@@ -38,6 +39,8 @@ public final class ButtplugClientWSClient extends ButtplugClient {
         }
         setConnectionState(ButtplugClient.ConnectionState.CONNECTING);
 
+        IConnectedEvent stashCallback = getOnConnected();
+
         CompletableFuture<Boolean> promise = new CompletableFuture<>();
         setOnConnected(client -> promise.complete(true));
 
@@ -45,6 +48,11 @@ public final class ButtplugClientWSClient extends ButtplugClient {
         client.start();
         client.connect(this, url, new ClientUpgradeRequest()).get();
         promise.get();
+
+        // Restore and echo down the line
+        setOnConnected(stashCallback);
+        if(stashCallback != null )
+            stashCallback.onConnected(this);
     }
 
     protected void cleanup() {
@@ -116,14 +124,22 @@ public final class ButtplugClientWSClient extends ButtplugClient {
     protected CompletableFuture<ButtplugMessage> sendMessage(final ButtplugMessage msg) {
         CompletableFuture<ButtplugMessage> promise = scheduleWait(msg.getId(), new CompletableFuture<>());
         if (session == null) {
-            return CompletableFuture.completedFuture(new Error("Bad WS state!",
-                    Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.SYSTEM_MSG_ID));
+            Error err = new Error("Bad WS state!",
+                Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.SYSTEM_MSG_ID);
+            if( getErrorReceived() != null) {
+                getErrorReceived().errorReceived(err);
+            }
+            return CompletableFuture.completedFuture(err);
         }
 
         try {
             session.getRemote().sendStringByFuture(getParser().formatJson(msg)).get();
         } catch (Exception e) {
-            return CompletableFuture.completedFuture(new Error(e, msg.getId()));
+            Error err = new Error(e, msg.getId());
+            if( getErrorReceived() != null) {
+                getErrorReceived().errorReceived(err);
+            }
+            return CompletableFuture.completedFuture(err);
         }
         return promise;
     }

@@ -1,6 +1,7 @@
 package io.github.blackspherefollower.buttplug4j.connectors.javax.websocket.client;
 
 import io.github.blackspherefollower.buttplug4j.client.ButtplugClient;
+import io.github.blackspherefollower.buttplug4j.client.IConnectedEvent;
 import io.github.blackspherefollower.buttplug4j.connectors.javax.websocket.common.ButtplugClientWSEndpoint;
 import org.eclipse.jetty.util.component.LifeCycle;
 
@@ -30,12 +31,19 @@ public final class ButtplugClientWSClient extends ButtplugClientWSEndpoint {
         }
         setConnectionState(ButtplugClient.ConnectionState.CONNECTING);
 
+        IConnectedEvent stashCallback = getOnConnected();
+
         CompletableFuture<Boolean> promise = new CompletableFuture<>();
         setOnConnected(client -> promise.complete(true));
 
         client = ContainerProvider.getWebSocketContainer();
         client.connectToServer(this, url);
         promise.get();
+
+        // Restore and echo down the line
+        setOnConnected(stashCallback);
+        if(stashCallback != null )
+            stashCallback.onConnected(this);
     }
 
     protected void cleanup() {
