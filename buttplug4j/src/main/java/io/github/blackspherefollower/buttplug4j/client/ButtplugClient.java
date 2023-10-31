@@ -22,13 +22,10 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * ButtplugClient is the abstract class containing the bulk of the logic for communicating with the Buttplug.io sever
  * Intiface Central.
- * <br/>
- * <br/>
+ * <p>
  * The transport logic is not in this package, as the various websocket libraries have differing
  * requirements that will not fit all use-cases. In general, the Java8 compatible Jetty Websocket Client connector will
- * meet the needs of most users.
- *
- * @see io.github.blackspherefollower.buttplug4j.connectors.jetty.websocket.client.ButtplugClientWSClient
+ * meet the needs of most users: see <a href="https://mvnrepository.com/artifact/io.github.blackspherefollower/buttplug4j.connectors.jetty.websocket.client">https://mvnrepository.com/artifact/io.github.blackspherefollower/buttplug4j.connectors.jetty.websocket.client</a>
  */
 public abstract class ButtplugClient {
     static final int MAX_DISCONNECT_MESSAGE_TRYS = 3;
