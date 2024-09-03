@@ -1,36 +1,49 @@
-# Buttplug - Java WebSocket Client Implementation
+# Buttplug for Java - A Buttplug Client Implementation for Native Java
 
 [![Build Status](https://github.com/blackspherefollower/buttplug4j/actions/workflows/gradle.yml/badge.svg?branch=master)](https://github.com/blackspherefollower/buttplug4j/actions/workflows/gradle.yml) [![Patreon donate button](https://img.shields.io/badge/patreon-donate-yellow.svg)](https://www.patreon.com/blackspherefollower)
 
-Buttplug is a framework for hooking up hardware to interfaces, where
-hardware usually means sex toys, but could honestly be just about
-anything. It's basically a userland HID manager for things that may
-not specifically be HID.
+Learn more about buttplug.io at https://buttplug.io
 
-In more concrete terms, think of Buttplug as something like
-[osculator](http://www.osculator.net/) or [VRPN](http://vrpn.org), but
-for sex toys. Instead of wiimotes and control surfaces, we interface
-with vibrators, electrostim equipment, fucking machines, and other
-hardware that can communicate with computers.
-
-The core of buttplug works as a router. It is an application that
-connects to driver libraries, to register and communicate with
-different hardware. Clients can then connect over different means
-(network, websockets, etc...), to interact with the hardware.
-
-## Other Buttplug Implementations
-
-Buttplug implementations are available in multiple languages (c#, rust,
-javascript, etc)/frameworks/platforms. For a full
-list,
-[see the README in the main buttplug repo](http://github.com/buttplugio/buttplug).
 
 ## Platform Support
 
 Buttplug Java should run on any 1.8 or later JRE (including Android).
 In depth testing is still pending, so your mileage may vary.
 
-## Development
+## Usage
+
+The core buttplug4j library does not contain a transport implementation,
+as the connector layer is intended to be extensible. In reality, you'll probably just
+want the Jetty websocket client connector (this depends on the core client
+library, so there's no need to add a separate dependency); see the 2
+dependency import examples below.
+
+For Gradle:
+```groovy
+dependencies {
+    implementation 'io.github.blackspherefollower:buttplug4j.connectors.jetty.websocket.client:3.1.105'
+}
+```
+
+For Maven:
+```xml
+<dependencies>
+    <dependency>
+        <groupId>io.github.blackspherefollower</groupId>
+        <artifactId>buttplug4j.connectors.jetty.websocket.client</artifactId>
+        <version>3.1.105</version>
+    </dependency>
+</dependencies>
+```
+
+For an all-in-one example project, please see https://github.com/blackspherefollower/buttplug4j-example
+
+In general, you'll want to create a `ButtplugClientWSClient` object in a scope where it will not get garbage collected 
+before you're done, add callbacks for error and event handling, then connect it to the address Intiface is listening
+on. Then you can scan for devices, iterate over them and send commands.
+
+
+### Snapshots
 
 Snapshot libraries from the buttplug4j repo are available via Maven from the following
 repository: https://s01.oss.sonatype.org/content/repositories/snapshots
@@ -49,7 +62,7 @@ Releases will be available from maven central.
 <dependencies>
     <dependency>
         <groupId>io.github.blackspherefollower</groupId>
-        <artifactId>buttplug4j</artifactId>
+        <artifactId>buttplug4j.connectors.jetty.websocket.client</artifactId>
         <version>[3.0-SNAPSHOT,)</version>
     </dependency>
 </dependencies>
@@ -66,7 +79,7 @@ write code for!
 
 Buttplug for Java is BSD licensed.
 
-    Copyright (c) 2016-2017, BlackSphereFollower
+    Copyright (c) 2016-2024, BlackSphereFollower
     All rights reserved.
     
     Redistribution and use in source and binary forms, with or without
