@@ -8,6 +8,7 @@ import io.github.blackspherefollower.buttplug4j.util.Pair;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 
@@ -380,6 +381,115 @@ public class ButtplugClientDevice {
 
         return client.sendDeviceMessage(this, new LinearCmd(getDeviceIndex(),
                 values.toArray(new LinearCmd.LinearSubCmd[]{}), client.getNextMsgId()));
+    }
+
+    /**
+     * Sends a command to read a sensor value from the device.
+     * <p>
+     * This method constructs and sends a sensor read command to the device for the specified sensor type and index.
+     * It checks if the device supports the "SensorReadCmd" attribute before attempting to send the command. 
+     * If the device does not support this attribute, or if the command cannot be sent, a {@link ButtplugDeviceException} 
+     * is thrown.
+     * </p>
+     * 
+     * @param index The index of the sensor feature to read. This value specifies which sensor data 
+     *              to retrieve from the device.
+     * @param sensorType The type of sensor to read (e.g., "Battery"). This value indicates the specific 
+     *                   type of sensor data requested.
+     * 
+     * @return A {@link Future} representing the pending result of the sensor read command.
+     *         Once completed, the {@link ButtplugMessage} returned by the Future will contain 
+     *         the sensor data if the command succeeds.
+     * 
+     * @throws ButtplugDeviceException if the device does not support "SensorReadCmd" or if 
+     *                                 the sensor read command could not be created or sent.
+     */
+    public final Future<ButtplugMessage> sendSensorReadCmd(final int index, final String sensorType)
+            throws ButtplugDeviceException {
+
+        MessageAttributes attrs = getDeviceMessages().get("SensorReadCmd");
+        if (!(attrs instanceof SensorMessageAttributes)) {
+            throw new ButtplugDeviceException("Device doesn't support SensorReadCmd!");
+        }
+
+        final SensorReadCmd cmd = new SensorReadCmd(index, index);
+        cmd.setSensorType(sensorType);
+
+        return client.sendDeviceMessage(this, cmd);
+    }
+
+    /**
+     * Checks if the device has a battery sensor feature.
+     * <p>
+     * This method verifies if the device's message attributes include a "Battery" sensor feature
+     * by looking for the presence of "SensorReadCmd" in the device's messages. If found,
+     * it then checks if one of the sensor features corresponds to "Battery".
+     * </p>
+     * 
+     * @return {@code true} if the device has a "Battery" sensor feature, {@code false} otherwise.
+     */
+    public final boolean hasBatterySensor() {
+        MessageAttributes attrs = getDeviceMessages().get("SensorReadCmd");
+        if (!(attrs instanceof SensorMessageAttributes)) {
+            return false;
+        }
+
+        SensorMessageAttributes sensorAttrs = (SensorMessageAttributes) attrs;
+        
+        boolean hasBatteryLevel = sensorAttrs.getFeatures().stream().anyMatch(
+            featureAttributes -> "Battery".equals(featureAttributes.getSensorType())
+        );
+
+        return hasBatteryLevel;
+    }
+
+    /**
+     * Reads the battery level of the device.
+     * <p>
+     * This method queries the device to retrieve its battery level as a percentage from 0 to 100.
+     * Before calling this method, use {@link #hasBatterySensor()} to verify that the device supports
+     * a "Battery" sensor feature. If the device lacks this feature or returns an unexpected message type,
+     * an exception is thrown.
+     * </p>
+     * 
+     * @return The battery level of the device, in the range of 0 to 100.
+     * 
+     * @throws ButtplugDeviceException if the device does not support "SensorReadCmd",
+     *                                 does not have a "Battery" feature, or returns an invalid response.
+     * @throws InterruptedException if the thread is interrupted while waiting for a response from the device.
+     * @throws ExecutionException if an exception occurred during the execution of the sensor read command.
+     */
+    public final long readBatteryLevel() throws ButtplugDeviceException, InterruptedException, ExecutionException {
+        MessageAttributes attrs = getDeviceMessages().get("SensorReadCmd");
+        if (!(attrs instanceof SensorMessageAttributes)) {
+            throw new ButtplugDeviceException("Device doesn't support SensorReadCmd!");
+        }
+
+        SensorMessageAttributes sensorAttrs = (SensorMessageAttributes) attrs;
+        int index = -1;
+        boolean found = false;
+        for (SensorFeatureAttributes featureAttributes : sensorAttrs.getFeatures()) {
+            index++;
+            if ("Battery".equals(featureAttributes.getSensorType())) {
+               found = true;
+               break; 
+            }
+        }
+
+        if (!found) {
+            throw new ButtplugDeviceException("Device doesn't have Battery feature!");
+        }
+
+        Future<ButtplugMessage> sensorReadFuture = sendSensorReadCmd(index, "Battery");
+        ButtplugMessage message = sensorReadFuture.get();
+        if (!(message instanceof SensorReading)) {
+            throw new ButtplugDeviceException("Invalid ButtplugMessage returned. Expecting SensorReading and got " + message.getClass());
+        }
+
+        SensorReading sensorReading = (SensorReading) message;
+        byte singleByte = sensorReading.getData()[0];
+        long result = (singleByte & 0xFF);
+        return result;
     }
 
     public final long getRotateCount() {
