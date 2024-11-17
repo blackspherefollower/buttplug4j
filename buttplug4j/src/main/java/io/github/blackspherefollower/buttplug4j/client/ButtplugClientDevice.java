@@ -1,5 +1,6 @@
 package io.github.blackspherefollower.buttplug4j.client;
 
+import io.github.blackspherefollower.buttplug4j.protocol.ButtplugConsts;
 import io.github.blackspherefollower.buttplug4j.protocol.ButtplugMessage;
 import io.github.blackspherefollower.buttplug4j.protocol.messages.*;
 import io.github.blackspherefollower.buttplug4j.protocol.messages.Parts.*;
@@ -392,7 +393,7 @@ public class ButtplugClientDevice {
      * is thrown.
      * </p>
      * 
-     * @param index The index of the sensor feature to read. This value specifies which sensor data 
+     * @param sensorIndex The index of the sensor feature to read. This value specifies which sensor data 
      *              to retrieve from the device.
      * @param sensorType The type of sensor to read (e.g., "Battery"). This value indicates the specific 
      *                   type of sensor data requested.
@@ -404,7 +405,7 @@ public class ButtplugClientDevice {
      * @throws ButtplugDeviceException if the device does not support "SensorReadCmd" or if 
      *                                 the sensor read command could not be created or sent.
      */
-    public final Future<ButtplugMessage> sendSensorReadCmd(final int index, final String sensorType)
+    public final Future<ButtplugMessage> sendSensorReadCmd(final int sensorIndex, final String sensorType)
             throws ButtplugDeviceException {
 
         MessageAttributes attrs = getDeviceMessages().get("SensorReadCmd");
@@ -412,8 +413,9 @@ public class ButtplugClientDevice {
             throw new ButtplugDeviceException("Device doesn't support SensorReadCmd!");
         }
 
-        final SensorReadCmd cmd = new SensorReadCmd(index, index);
+        final SensorReadCmd cmd = new SensorReadCmd(this.deviceIndex, ButtplugConsts.DEFAULT_MSG_ID);
         cmd.setSensorType(sensorType);
+        cmd.setSensorIndex(sensorIndex);
 
         return client.sendDeviceMessage(this, cmd);
     }
