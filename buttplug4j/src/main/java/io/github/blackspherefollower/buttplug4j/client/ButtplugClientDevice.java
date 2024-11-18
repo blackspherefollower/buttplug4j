@@ -1,6 +1,5 @@
 package io.github.blackspherefollower.buttplug4j.client;
 
-import io.github.blackspherefollower.buttplug4j.protocol.ButtplugConsts;
 import io.github.blackspherefollower.buttplug4j.protocol.ButtplugMessage;
 import io.github.blackspherefollower.buttplug4j.protocol.messages.*;
 import io.github.blackspherefollower.buttplug4j.protocol.messages.Parts.*;
@@ -11,6 +10,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 
 public class ButtplugClientDevice {
@@ -413,7 +414,7 @@ public class ButtplugClientDevice {
             throw new ButtplugDeviceException("Device doesn't support SensorReadCmd!");
         }
 
-        final SensorReadCmd cmd = new SensorReadCmd(this.deviceIndex, ButtplugConsts.DEFAULT_MSG_ID);
+        final SensorReadCmd cmd = new SensorReadCmd(this.deviceIndex, client.getNextMsgId());
         cmd.setSensorType(sensorType);
         cmd.setSensorIndex(sensorIndex);
 
@@ -460,8 +461,9 @@ public class ButtplugClientDevice {
      *                                 does not have a "Battery" feature, or returns an invalid response.
      * @throws InterruptedException if the thread is interrupted while waiting for a response from the device.
      * @throws ExecutionException if an exception occurred during the execution of the sensor read command.
+     * @throws TimeoutException if the response from the device took more than 2 seconds
      */
-    public final long readBatteryLevel() throws ButtplugDeviceException, InterruptedException, ExecutionException {
+    public final long readBatteryLevel() throws ButtplugDeviceException, InterruptedException, ExecutionException, TimeoutException {
         MessageAttributes attrs = getDeviceMessages().get("SensorReadCmd");
         if (!(attrs instanceof SensorMessageAttributes)) {
             throw new ButtplugDeviceException("Device doesn't support SensorReadCmd!");
@@ -483,7 +485,7 @@ public class ButtplugClientDevice {
         }
 
         Future<ButtplugMessage> sensorReadFuture = sendSensorReadCmd(index, "Battery");
-        ButtplugMessage message = sensorReadFuture.get();
+        ButtplugMessage message = sensorReadFuture.get(2, TimeUnit.SECONDS);
         if (!(message instanceof SensorReading)) {
             throw new ButtplugDeviceException("Invalid ButtplugMessage returned. Expecting SensorReading and got " + message.getClass());
         }
