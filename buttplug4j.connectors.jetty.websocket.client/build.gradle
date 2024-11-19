@@ -12,7 +12,7 @@ repositories {
 
 dependencies {
     api project(':buttplug4j')
-    api 'org.eclipse.jetty.websocket:websocket-client:9.4.54.v20240208'
+    api 'org.eclipse.jetty.websocket:websocket-client:9.4.56.v20240826'
     api 'org.eclipse.jetty.websocket:websocket-api:9.4.55.v20240627'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.3'
 }
