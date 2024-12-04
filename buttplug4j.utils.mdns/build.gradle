@@ -13,7 +13,7 @@ repositories {
 dependencies {
     api 'org.jmdns:jmdns:3.5.8'
     api 'org.slf4j:slf4j-simple:2.0.13'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.3'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.3'
 }
 
 java {
