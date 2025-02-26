@@ -12,7 +12,7 @@ repositories {
 
 dependencies {
     api 'org.jmdns:jmdns:3.6.0'
-    api 'org.slf4j:slf4j-simple:2.0.16'
+    api 'org.slf4j:slf4j-simple:2.0.17'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
 }
 
