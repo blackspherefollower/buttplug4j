@@ -13,7 +13,9 @@ repositories {
 dependencies {
     api 'org.jmdns:jmdns:3.6.1'
     api 'org.slf4j:slf4j-simple:2.0.17'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.12.2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.11.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.11.2'
 }
 
 java {
