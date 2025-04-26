@@ -54,6 +54,12 @@ public final class ScalarCmd extends ButtplugDeviceMessage {
             setScalar(scalar);
         }
 
+        public ScalarSubCmd() {
+            this.index = -1;
+            this.actuatorType = "";
+            this.scalar = 0;
+        }
+
         public double getScalar() {
             if (scalar > 1 || scalar < 0) {
                 return 0;

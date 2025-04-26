@@ -69,5 +69,21 @@ public final class LinearCmd extends ButtplugDeviceMessage {
 
             this.position = position;
         }
+
+        public long getDuration() {
+            return duration;
+        }
+
+        public void setDuration(long duration) {
+            this.duration = duration;
+        }
+
+        public long getIndex() {
+            return index;
+        }
+
+        public void setIndex(long index) {
+            this.index = index;
+        }
     }
 }

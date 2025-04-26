@@ -34,6 +34,14 @@ public final class RotateCmd extends ButtplugDeviceMessage {
         @JsonProperty(value = "Speed", required = true)
         private double speed;
 
+        public boolean isClockwise() {
+            return clockwise;
+        }
+
+        public void setClockwise(boolean clockwise) {
+            this.clockwise = clockwise;
+        }
+
         @JsonProperty(value = "Clockwise", required = true)
         private boolean clockwise;
 
@@ -49,7 +57,7 @@ public final class RotateCmd extends ButtplugDeviceMessage {
             this.speed = 0;
         }
 
-        public double getPosition() {
+        public double getSpeed() {
             if (speed > 1 || speed < 0) {
                 return 0;
             }
@@ -68,6 +76,14 @@ public final class RotateCmd extends ButtplugDeviceMessage {
             }
 
             this.speed = speed;
+        }
+
+        public long getIndex() {
+            return index;
+        }
+
+        public void setIndex(long index) {
+            this.index = index;
         }
     }
 }
