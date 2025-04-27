@@ -21,7 +21,7 @@ dependency import examples below.
 For Gradle:
 ```groovy
 dependencies {
-    implementation 'io.github.blackspherefollower:buttplug4j.connectors.jetty.websocket.client:3.1.105'
+    implementation 'io.github.blackspherefollower:buttplug4j.connectors.jetty.websocket.client:3.1.180'
 }
 ```
 
@@ -31,7 +31,7 @@ For Maven:
     <dependency>
         <groupId>io.github.blackspherefollower</groupId>
         <artifactId>buttplug4j.connectors.jetty.websocket.client</artifactId>
-        <version>3.1.105</version>
+        <version>3.1.180</version>
     </dependency>
 </dependencies>
 ```
