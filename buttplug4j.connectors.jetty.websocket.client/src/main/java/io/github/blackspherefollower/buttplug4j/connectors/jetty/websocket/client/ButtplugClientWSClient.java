@@ -117,7 +117,7 @@ public final class ButtplugClientWSClient extends ButtplugClient {
         } else {
             cause.printStackTrace();
         }
-        disconnect();
+        new Thread(() -> disconnect()).start();
     }
 
     @Override
