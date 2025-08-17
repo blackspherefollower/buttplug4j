@@ -57,9 +57,7 @@ publishing {
         }
         maven {
             name = "ossrh"
-            url = version.contains("-SNAPSHOT") ?
-                    uri("https://s01.oss.sonatype.org/content/repositories/snapshots/") :
-                    uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+            url = "https://central.sonatype.com/api/v1/publisher/upload?publishingType=AUTOMATIC"
 
             credentials {
                 username = project.findProperty("maven.user") ?: System.getenv("MAVEN_USER")
