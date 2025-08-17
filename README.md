@@ -45,15 +45,31 @@ on. Then you can scan for devices, iterate over them and send commands.
 
 ### Snapshots
 
-Snapshot libraries from the buttplug4j repo are available via Maven from the following
-repository: https://s01.oss.sonatype.org/content/repositories/snapshots
-Releases will be available from maven central.
+Snapshot libraries from the buttplug4j repo are available via Maven from the Central Portal Snapshots
+repository: https://central.sonatype.com/repository/maven-snapshots
 
+Releases will be available from Maven Central.
+
+For Gradle:
+```groovy
+repositories {
+    maven {
+        name = 'Central Portal Snapshots'
+        url = 'https://central.sonatype.com/repository/maven-snapshots/'
+    }
+}
+dependencies {
+    implementation 'io.github.blackspherefollower:buttplug4j.connectors.jetty.websocket.client:3.1.+'
+}
+```
+
+For Maven:
 ```xml
 <repositories>
     <repository>
-        <id>OSSRH</id>
-        <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+        <name>Central Portal Snapshots</name>
+        <id>central-portal-snapshots</id>
+        <url>https://central.sonatype.com/repository/maven-snapshots/</url>
         <snapshots>
             <enabled>true</enabled>
         </snapshots>
@@ -63,7 +79,7 @@ Releases will be available from maven central.
     <dependency>
         <groupId>io.github.blackspherefollower</groupId>
         <artifactId>buttplug4j.connectors.jetty.websocket.client</artifactId>
-        <version>[3.0-SNAPSHOT,)</version>
+        <version>[3.1-SNAPSHOT,)</version>
     </dependency>
 </dependencies>
 ```
@@ -79,7 +95,7 @@ write code for!
 
 Buttplug for Java is BSD licensed.
 
-    Copyright (c) 2016-2024, BlackSphereFollower
+    Copyright (c) 2016-2025, BlackSphereFollower
     All rights reserved.
     
     Redistribution and use in source and binary forms, with or without
