@@ -10,7 +10,7 @@ public final class RequestDeviceList extends ButtplugMessage {
         super(ButtplugConsts.DEFAULT_MSG_ID);
     }
 
-    public RequestDeviceList(final long id) {
+    public RequestDeviceList(final int id) {
         super(id);
     }
 }

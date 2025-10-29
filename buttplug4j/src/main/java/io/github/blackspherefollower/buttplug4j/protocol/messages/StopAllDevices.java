@@ -10,7 +10,7 @@ public final class StopAllDevices extends ButtplugMessage {
         super(ButtplugConsts.DEFAULT_MSG_ID);
     }
 
-    public StopAllDevices(final long id) {
+    public StopAllDevices(final int id) {
         super(id);
     }
 }

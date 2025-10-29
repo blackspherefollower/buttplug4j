@@ -7,7 +7,7 @@ public abstract class ButtplugDeviceMessage extends ButtplugMessage {
     @JsonProperty(value = "DeviceIndex", required = true)
     private long deviceIndex;
 
-    public ButtplugDeviceMessage(final long id, final long deviceIndex) {
+    public ButtplugDeviceMessage(final int id, final long deviceIndex) {
         super(id);
         this.setDeviceIndex(deviceIndex);
     }

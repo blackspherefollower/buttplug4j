@@ -5,7 +5,7 @@ import io.github.blackspherefollower.buttplug4j.protocol.ButtplugMessage;
 
 public final class Ok extends ButtplugMessage {
 
-    public Ok(final long id) {
+    public Ok(final int id) {
         super(id);
     }
 

@@ -16,7 +16,7 @@ public final class Error extends ButtplugMessage {
     @JsonIgnore
     private Throwable exception = null;
 
-    public Error(final String errorMessage, final ErrorClass errorCode, final long id) {
+    public Error(final String errorMessage, final ErrorClass errorCode, final int id) {
         super(id);
         this.setErrorMessage(errorMessage);
         this.setErrorCode(errorCode);
@@ -35,7 +35,8 @@ public final class Error extends ButtplugMessage {
         this.setErrorCode(ErrorClass.ERROR_UNKNOWN);
         this.exception = e;
     }
-    public Error(Throwable e, final long id) {
+
+    public Error(Throwable e, final int id) {
         super(id);
         this.setErrorMessage(e.getMessage());
         this.setErrorCode(ErrorClass.ERROR_UNKNOWN);

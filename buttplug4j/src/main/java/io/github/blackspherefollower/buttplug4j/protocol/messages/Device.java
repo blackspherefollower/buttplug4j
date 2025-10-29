@@ -1,16 +1,14 @@
-package io.github.blackspherefollower.buttplug4j.protocol.messages.Parts;
+package io.github.blackspherefollower.buttplug4j.protocol.messages;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
-public final class DeviceMessageInfo {
+public class Device {
 
     @JsonProperty(value = "DeviceIndex", required = true)
-    private long deviceIndex;
+    private int deviceIndex;
 
     @JsonProperty(value = "DeviceName", required = true)
     private String deviceName;
@@ -22,35 +20,34 @@ public final class DeviceMessageInfo {
     @JsonProperty(value = "DeviceDisplayName")
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String deviceDisplayName;
-    @JsonProperty(value = "DeviceMessages", required = true)
-    @JsonDeserialize(using = DeviceMessagesDeserializer.class)
-    @JsonSerialize(using = DeviceMessagesSerializer.class)
-    private ArrayList<DeviceMessage> deviceMessages;
 
-    public DeviceMessageInfo(final long deviceIndex, final String deviceName,
-                             final ArrayList<DeviceMessage> deviceMessages, final int deviceMessageTimingGap,
-                             final String deviceDisplayName) {
+    @JsonProperty(value = "DeviceFeatures", required = true)
+    private HashMap<Integer, DeviceFeature> deviceFeatures;
+
+    public Device(final int deviceIndex, final String deviceName,
+                  final HashMap<Integer, DeviceFeature> deviceFeatures, final int deviceMessageTimingGap,
+                  final String deviceDisplayName) {
         this.deviceName = deviceName;
         this.deviceIndex = deviceIndex;
-        this.deviceMessages = deviceMessages;
+        this.deviceFeatures = deviceFeatures;
         this.deviceMessageTimingGap = deviceMessageTimingGap;
         this.deviceDisplayName = deviceDisplayName;
     }
 
     @SuppressWarnings("unused")
-    private DeviceMessageInfo() {
+    private Device() {
         this.deviceName = "";
         this.deviceIndex = -1;
-        this.deviceMessages = new ArrayList<>();
+        this.deviceFeatures = new HashMap<>();
         this.deviceMessageTimingGap = null;
         this.deviceDisplayName = "";
     }
 
-    public long getDeviceIndex() {
+    public int getDeviceIndex() {
         return deviceIndex;
     }
 
-    public void setDeviceIndex(final long deviceIndex) {
+    public void setDeviceIndex(final int deviceIndex) {
         this.deviceIndex = deviceIndex;
     }
 
@@ -78,11 +75,11 @@ public final class DeviceMessageInfo {
         this.deviceDisplayName = deviceDisplayName;
     }
 
-    public ArrayList<DeviceMessage> getDeviceMessages() {
-        return deviceMessages;
+    public HashMap<Integer, DeviceFeature> getDeviceFeatures() {
+        return deviceFeatures;
     }
 
-    public void setDeviceMessages(final ArrayList<DeviceMessage> deviceMessages) {
-        this.deviceMessages = deviceMessages;
+    public void setDeviceFeatures(final HashMap<Integer, DeviceFeature> deviceFeatures) {
+        this.deviceFeatures = deviceFeatures;
     }
 }

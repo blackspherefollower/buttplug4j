@@ -2,7 +2,6 @@ package io.github.blackspherefollower.buttplug4j.connectors.jetty.websocket.clie
 
 import io.github.blackspherefollower.buttplug4j.client.ButtplugClientDevice;
 import io.github.blackspherefollower.buttplug4j.client.ButtplugDeviceException;
-
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 

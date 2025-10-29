@@ -3,9 +3,11 @@ package io.github.blackspherefollower.buttplug4j.protocol;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.StreamReadFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectMapper.DefaultTypeResolverBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper.DefaultTyping;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.jsontype.TypeResolverBuilder;
 
 import java.util.Arrays;
@@ -16,7 +18,9 @@ public final class ButtplugJsonMessageParser {
     private final ObjectMapper mapper;
 
     public ButtplugJsonMessageParser() {
-        mapper = new ObjectMapper();
+        mapper = JsonMapper.builder()
+                .enable(StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION)
+                .build();
         TypeResolverBuilder<?> typer = DefaultTypeResolverBuilder.construct(DefaultTyping.JAVA_LANG_OBJECT,
                 this.mapper.getPolymorphicTypeValidator());
         typer = typer.init(JsonTypeInfo.Id.NAME, null);
