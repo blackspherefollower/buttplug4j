@@ -1,7 +1,10 @@
 package io.github.blackspherefollower.buttplug4j.client;
 
 import io.github.blackspherefollower.buttplug4j.protocol.ButtplugMessage;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.*;
+import io.github.blackspherefollower.buttplug4j.protocol.messages.Device;
+import io.github.blackspherefollower.buttplug4j.protocol.messages.DeviceFeature;
+import io.github.blackspherefollower.buttplug4j.protocol.messages.OutputCmd;
+import io.github.blackspherefollower.buttplug4j.protocol.messages.StopDeviceCmd;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -60,11 +63,6 @@ public class ButtplugClientDevice {
     public Future<ButtplugMessage> sendOutputCommand(int featureIndex, OutputCmd.IOutputCommand outputCommand) {
         OutputCmd cmd = new OutputCmd(client.getNextMsgId(), deviceIndex, featureIndex);
         cmd.setCommand(outputCommand);
-        return client.sendMessage(cmd);
-    }
-
-    public Future<ButtplugMessage> sendInputCommand(int featureIndex, final String inputType, final InputCommandType inputCommand) {
-        InputCmd cmd = new InputCmd(client.getNextMsgId(), deviceIndex, featureIndex, inputType, inputCommand);
         return client.sendMessage(cmd);
     }
 

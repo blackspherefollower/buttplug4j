@@ -2,8 +2,6 @@ package io.github.blackspherefollower.buttplug4j.client;
 
 import io.github.blackspherefollower.buttplug4j.protocol.ButtplugMessage;
 import io.github.blackspherefollower.buttplug4j.protocol.messages.DeviceFeature;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.InputCmd;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.InputCommandType;
 import io.github.blackspherefollower.buttplug4j.protocol.messages.OutputCmd;
 
 import java.util.HashMap;
@@ -72,10 +70,6 @@ public class ButtplugClientDeviceFeature {
         }
     }
 
-    public boolean HasVibrate() {
-        return output.get("Vibrate") != null;
-    }
-
     public Future<ButtplugMessage> Vibrate(final int vibrate) throws ButtplugDeviceFeatureException {
         CheckStepRange("Vibrate", vibrate);
         return device.sendOutputCommand(featureIndex, new OutputCmd.Vibrate(vibrate));
@@ -83,10 +77,6 @@ public class ButtplugClientDeviceFeature {
 
     public Future<ButtplugMessage> VibrateFloat(final float vibrate) throws ButtplugDeviceFeatureException {
         return device.sendOutputCommand(featureIndex, new OutputCmd.Vibrate(GetStepFromFloat("Vibrate", vibrate)));
-    }
-
-    public boolean HasRotate() {
-        return output.get("Rotate") != null;
     }
 
     public Future<ButtplugMessage> Rotate(final int rotate) throws ButtplugDeviceFeatureException {
@@ -98,10 +88,6 @@ public class ButtplugClientDeviceFeature {
         return device.sendOutputCommand(featureIndex, new OutputCmd.Rotate(GetStepFromFloat("Rotate", rotate)));
     }
 
-    public boolean HasConstrict() {
-        return output.get("Constrict") != null;
-    }
-
     public Future<ButtplugMessage> Constrict(final int constrict) throws ButtplugDeviceFeatureException {
         CheckStepRange("Constrict", constrict);
         return device.sendOutputCommand(featureIndex, new OutputCmd.Constrict(constrict));
@@ -109,10 +95,6 @@ public class ButtplugClientDeviceFeature {
 
     public Future<ButtplugMessage> ConstrictFloat(final float constrict) throws ButtplugDeviceFeatureException {
         return device.sendOutputCommand(featureIndex, new OutputCmd.Constrict(GetStepFromFloat("Constrict", constrict)));
-    }
-
-    public boolean HasSpray() {
-        return output.get("Spray") != null;
     }
 
     public Future<ButtplugMessage> Spray(final int spray) throws ButtplugDeviceFeatureException {
@@ -124,10 +106,6 @@ public class ButtplugClientDeviceFeature {
         return device.sendOutputCommand(featureIndex, new OutputCmd.Spray(GetStepFromFloat("Spray", spray)));
     }
 
-    public boolean HasPosition() {
-        return output.get("Position") != null;
-    }
-
     public Future<ButtplugMessage> Position(final int position) throws ButtplugDeviceFeatureException {
         CheckStepRange("Position", position);
         return device.sendOutputCommand(featureIndex, new OutputCmd.Position(position));
@@ -135,10 +113,6 @@ public class ButtplugClientDeviceFeature {
 
     public Future<ButtplugMessage> PositionFloat(final float position) throws ButtplugDeviceFeatureException {
         return device.sendOutputCommand(featureIndex, new OutputCmd.Position(GetStepFromFloat("Position", position)));
-    }
-
-    public boolean HasPositionWithDuration() {
-        return output.get("PositionWithDuration") != null;
     }
 
     public Future<ButtplugMessage> PositionWithDuration(final int position, final int duration) throws ButtplugDeviceFeatureException {
@@ -150,10 +124,6 @@ public class ButtplugClientDeviceFeature {
         return device.sendOutputCommand(featureIndex, new OutputCmd.PositionWithDuration(GetStepFromFloat("PositionWithDuration", position), duration));
     }
 
-    public boolean HasLed() {
-        return output.get("Led") != null;
-    }
-
     public Future<ButtplugMessage> Led(final int led) throws ButtplugDeviceFeatureException {
         CheckStepRange("Led", led);
         return device.sendOutputCommand(featureIndex, new OutputCmd.Led(led));
@@ -161,10 +131,6 @@ public class ButtplugClientDeviceFeature {
 
     public Future<ButtplugMessage> LedFloat(final float led) throws ButtplugDeviceFeatureException {
         return device.sendOutputCommand(featureIndex, new OutputCmd.Led(GetStepFromFloat("Led", led)));
-    }
-
-    public boolean HasOscillate() {
-        return output.get("Oscillate") != null;
     }
 
     public Future<ButtplugMessage> Oscillate(final int oscillate) throws ButtplugDeviceFeatureException {
@@ -176,10 +142,6 @@ public class ButtplugClientDeviceFeature {
         return device.sendOutputCommand(featureIndex, new OutputCmd.Oscillate(GetStepFromFloat("Oscillate", oscillate)));
     }
 
-    public boolean HasTemperature() {
-        return output.get("Temperature") != null;
-    }
-
     public Future<ButtplugMessage> Temperature(final int temperature) throws ButtplugDeviceFeatureException {
         CheckStepRange("Temperature", temperature);
         return device.sendOutputCommand(featureIndex, new OutputCmd.Temperature(temperature));
@@ -187,30 +149,6 @@ public class ButtplugClientDeviceFeature {
 
     public Future<ButtplugMessage> TemperatureFloat(final float temperature) throws ButtplugDeviceFeatureException {
         return device.sendOutputCommand(featureIndex, new OutputCmd.Temperature(GetStepFromFloat("Temperature", temperature)));
-    }
-
-    private void CheckInput(final String type) throws ButtplugDeviceFeatureException {
-        if (input.get(type) == null) {
-            throw new ButtplugDeviceFeatureException(type);
-        }
-    }
-
-    public boolean HasBattery() {
-        return input.get("Battery") != null;
-    }
-
-    public Future<ButtplugMessage> ReadBattery() throws ButtplugDeviceFeatureException {
-        CheckInput("Battery");
-        return device.sendInputCommand(featureIndex, "Battery", InputCommandType.READ);
-    }
-
-    public boolean HasRssi() {
-        return input.get("Rssi") != null;
-    }
-
-    public Future<ButtplugMessage> ReadRssi() throws ButtplugDeviceFeatureException {
-        CheckInput("Rssi");
-        return device.sendInputCommand(featureIndex, "Rssi", InputCommandType.READ);
     }
 
     public String getDescription() {
