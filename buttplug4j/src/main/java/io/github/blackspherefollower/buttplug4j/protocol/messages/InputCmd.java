@@ -6,7 +6,7 @@ import io.github.blackspherefollower.buttplug4j.protocol.ButtplugDeviceMessage;
 public class InputCmd extends ButtplugDeviceMessage {
 
     @JsonProperty(value = "FeatureIndex", required = true)
-    private int featureIndex;
+    private long featureIndex;
 
     @JsonProperty(value = "InputType", required = true)
     private String inputType;
@@ -14,7 +14,7 @@ public class InputCmd extends ButtplugDeviceMessage {
     @JsonProperty(value = "InputCommand", required = true)
     private InputCommandType inputCommand;
 
-    public InputCmd(int id, final long deviceIndex, final int featureIndex, final String inputType, final InputCommandType inputCommand) {
+    public InputCmd(int id, final long deviceIndex, final long featureIndex, final String inputType, final InputCommandType inputCommand) {
         super(id, deviceIndex);
         this.featureIndex = featureIndex;
         this.inputType = inputType;
@@ -29,11 +29,11 @@ public class InputCmd extends ButtplugDeviceMessage {
     }
 
 
-    public int getFeatureIndex() {
+    public long getFeatureIndex() {
         return featureIndex;
     }
 
-    public void setFeatureIndex(int featureIndex) {
+    public void setFeatureIndex(long featureIndex) {
         this.featureIndex = featureIndex;
     }
 
