@@ -1,12 +1,13 @@
 package io.github.blackspherefollower.buttplug4j.protocol.messages;
 
-import dev.harrel.jsonschema.Error;
 import dev.harrel.jsonschema.Validator;
 import dev.harrel.jsonschema.ValidatorFactory;
+import io.github.blackspherefollower.buttplug4j.protocol.ButtplugDeviceMessage;
 import io.github.blackspherefollower.buttplug4j.protocol.ButtplugJsonMessageParser;
 import io.github.blackspherefollower.buttplug4j.protocol.ButtplugMessage;
 import io.github.blackspherefollower.buttplug4j.protocol.ButtplugProtocolException;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedInputStream;
@@ -17,10 +18,9 @@ import java.net.URL;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class ServerInfoTest {
+public class InputReadingTest {
 
     static String schema = null;
 
@@ -33,17 +33,48 @@ public class ServerInfoTest {
     }
 
     @Test
-    public void test() throws IOException, ButtplugProtocolException {
-        String testStr = "[{\"ServerInfo\":{\"Id\":1,\"ProtocolVersionMajor\":4,\"ProtocolVersionMinor\":0,\"MaxPingTime\":500,\"ServerName\":\"Websocket Server\"}}]";
+    public void testInputReadingCreation() {
+        InputReading reading = new InputReading(1, 0, 0);
+        
+        assertEquals(1, reading.getId());
+        assertEquals(0, reading.getDeviceIndex());
+        assertNotNull(reading);
+    }
+
+    @Test
+    public void testInputReadingInheritance() {
+        InputReading reading = new InputReading(1, 0, 0);
+
+        assertInstanceOf(ButtplugDeviceMessage.class, reading);
+    }
+
+    @Test
+    public void testInputDataInterfaces() {
+        // Test that InputData interface classes exist
+        InputReading.BatteryData batteryData = new InputReading.BatteryData();
+        InputReading.RssiData rssiData = new InputReading.RssiData();
+        InputReading.ButtonData buttonData = new InputReading.ButtonData();
+        InputReading.PresureData presureData = new InputReading.PresureData();
+
+        assertInstanceOf(InputReading.BatteryData.class, batteryData);
+        assertInstanceOf(InputReading.RssiData.class, rssiData);
+        assertInstanceOf(InputReading.ButtonData.class, buttonData);
+        assertInstanceOf(InputReading.PresureData.class, presureData);
+    }
+
+    @Test
+    @Disabled("See https://github.com/buttplugio/buttplug/issues/801")
+    public void testBatteryReading() throws ButtplugProtocolException {
+        String testStr = "[{\"InputReading\":{\"Id\":1,\"DeviceIndex\":0,\"FeatureIndex\":1,\"Data\":{\"Battery\":{\"Data\":100}}}}]";
 
         Validator.Result result = new ValidatorFactory().validate(schema, testStr);
-        assertTrue(result.isValid(), result.getErrors().stream().map(Error::getError).collect(Collectors.joining("\n")));
+        assertTrue(result.isValid(), result.getErrors().stream().map(error -> error.getError() + " - " + error.getInstanceLocation()).collect(Collectors.joining("\n")));
 
         ButtplugJsonMessageParser parser = new ButtplugJsonMessageParser();
         List<ButtplugMessage> msgs = parser.parseJson(testStr);
 
         assertEquals(1, msgs.size());
-        assertEquals(ServerInfo.class, msgs.get(0).getClass());
+        assertEquals(InputReading.BatteryData.class, msgs.get(0).getClass());
         assertEquals(1, msgs.get(0).getId(), 1);
         assertEquals(4, ((ServerInfo) msgs.get(0)).getProtocolVersionMajor());
         assertEquals(0, ((ServerInfo) msgs.get(0)).getProtocolVersionMinor());

@@ -243,7 +243,7 @@ public final class DeviceFeature {
             @JsonSubTypes.Type(value = DeviceFeature.PositionInput.class, name = "Position")
     })
     public static class InputDescriptor {
-        @JsonProperty(value = "InputCommandType", required = true)
+        @JsonProperty(value = "InputCommands", required = true)
         private ArrayList<InputCommandType> input;
 
         public InputDescriptor(ArrayList<InputCommandType> input) {

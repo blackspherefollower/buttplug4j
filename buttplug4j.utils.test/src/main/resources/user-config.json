@@ -1,0 +1,21 @@
+{
+  "version": {
+    "major": 4,
+    "minor": 0
+  },
+  "user_configs": {
+    "protocols": {
+      "lovense": {
+        "communication": [
+          {
+            "websocket": {
+              "name": "LVS-Fake"
+            }
+          }
+        ],
+        "configurations": []
+      }
+    },
+    "devices": []
+  }
+}
