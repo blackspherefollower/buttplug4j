@@ -15,17 +15,23 @@ dependencies {
     api 'org.eclipse.jetty.websocket:websocket-client:9.4.58.v20250814'
     api 'org.eclipse.jetty.websocket:websocket-api:9.4.58.v20250814'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.13.4'
+    testImplementation project(':buttplug4j.utils.test')
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.13.4'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.13.4'
 }
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(8)
+        languageVersion = JavaLanguageVersion.of(11)
     }
     withJavadocJar()
     withSourcesJar()
 }
+
+tasks.compileJava {
+    options.release.set(8)
+}
+
 checkstyle {
     configFile = file("${rootDir}/checkstyle.xml")
     showViolations = false

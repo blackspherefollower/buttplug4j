@@ -3,41 +3,56 @@ package io.github.blackspherefollower.buttplug4j.connectors.javax.websocket.serv
 import io.github.blackspherefollower.buttplug4j.client.ButtplugClient;
 import io.github.blackspherefollower.buttplug4j.client.ButtplugClientDevice;
 import io.github.blackspherefollower.buttplug4j.client.IConnectedEvent;
+import io.github.blackspherefollower.buttplug4j.client.IDeviceEvent;
 import io.github.blackspherefollower.buttplug4j.connectors.javax.websocket.common.ButtplugClientWSEndpoint;
+import io.github.blackspherefollower.buttplug4j.utils.test.IntifaceEngineWrapper;
+import io.github.blackspherefollower.buttplug4j.utils.test.WSDMClient;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.websocket.javax.server.config.JavaxWebSocketServletContainerInitializer;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpointConfig;
-import java.io.IOException;
 import java.net.URI;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ButtplugClientWSServerMockTest {
 
-    @Disabled
     @Test
     public void TestConnect() throws Exception {
-        ButtplugClientWSServerExample server = new ButtplugClientWSServerExample(54321);
-        server.join();
+        int lport = (int) (Math.random() * 63000) + 1025;
+        CompletableFuture<Boolean> testDone = new CompletableFuture<>();
+        ButtplugClientWSServerExample server = new ButtplugClientWSServerExample(lport, testDone);
+        Thread.sleep(500);
+
+        try (IntifaceEngineWrapper wrapper = new IntifaceEngineWrapper(lport)) {
+            Thread.sleep(500);
+            WSDMClient wsdev = new WSDMClient(new URI("ws://localhost:" + wrapper.dport), "LVS-Fake", "A9816725B");
+            testDone.get(10, TimeUnit.SECONDS);
+            server.join();
+            assertEquals(wsdev.messages.poll(), "Vibrate:10;");
+            assertEquals(wsdev.messages.poll(), "Vibrate:0;");
+        }
+
     }
 
-    class ButtplugClientWSServerExample {
+    static class ButtplugClientWSServerExample {
 
         private final Server server;
         private final ServerConnector connector;
 
-        public ButtplugClientWSServerExample(int port) throws Exception {
+        public ButtplugClientWSServerExample(int port, CompletableFuture<Boolean> testDone) throws Exception {
             server = new Server();
             connector = new ServerConnector(server);
             connector.setPort(port);
             server.addConnector(connector);
+            CompletableFuture<Boolean> firstDevice = new CompletableFuture<>();
 
             // Setup the basic application "context" for this application at "/"
             // This is also known as the handler tree (in jetty speak)
@@ -57,6 +72,17 @@ public class ButtplugClientWSServerMockTest {
                     public <T> T getEndpointInstance(Class<T> endpointClass) {
                         if (endpointClass == ButtplugClientWSEndpoint.class) {
                             ButtplugClientWSServer client = new ButtplugClientWSServer("Java WS Server Buttplug Client");
+                            client.setDeviceAdded(new IDeviceEvent() {
+                                                      @Override
+                                                      public void deviceAdded(ButtplugClientDevice dev) {
+                                                          firstDevice.complete(true);
+                                                      }
+
+                                                      @Override
+                                                      public void deviceRemoved(long index) {
+
+                                                      }
+                                                  });
                             client.setOnConnected(new IConnectedEvent() {
                                 @Override
                                 public void onConnected(ButtplugClient client) {
@@ -71,50 +97,20 @@ public class ButtplugClientWSServerMockTest {
 
                                             client.startScanning();
 
-                                            Thread.sleep(5000);
-                                            client.requestDeviceList();
-                                            for (
-                                                    ButtplugClientDevice dev : client.getDevices()) {
+                                            firstDevice.get(5, TimeUnit.SECONDS);
+                                            for (ButtplugClientDevice dev : client.getDevices()) {
                                                 if (dev.getScalarVibrateCount() > 0) {
-                                                    dev.sendScalarVibrateCmd(0.5).get();
+                                                    dev.sendScalarVibrateCmd(0.5F).get();
                                                 }
                                             }
 
-                                            Thread.sleep(1000);
-
-                                            assertTrue(client.stopAllDevices());
-
-                                            Thread.sleep(60000);
-                                            for (
-                                                    ButtplugClientDevice dev : client.getDevices()) {
-                                                if (dev.getScalarVibrateCount() > 0) {
-                                                    dev.sendScalarVibrateCmd(0.5).get();
-                                                }
-                                            }
-
-                                            Thread.sleep(1000);
-
-                                            assertTrue(client.stopAllDevices());
-
-                                            Thread.sleep(60000);
-                                            for (
-                                                    ButtplugClientDevice dev : client.getDevices()) {
-                                                if (dev.getScalarVibrateCount() > 0) {
-                                                    dev.sendScalarVibrateCmd(0.5).get();
-                                                }
-                                            }
-
-                                            Thread.sleep(1000);
+                                            Thread.sleep(100);
 
                                             assertTrue(client.stopAllDevices());
 
                                             client.disconnect();
-                                        } catch (ExecutionException e) {
-                                            throw new RuntimeException(e);
-                                        } catch (InterruptedException e) {
-                                            throw new RuntimeException(e);
-                                        } catch (IOException e) {
-                                            throw new RuntimeException(e);
+                                            server.stop();
+                                            testDone.complete(true);
                                         } catch (Exception e) {
                                             throw new RuntimeException(e);
                                         }
