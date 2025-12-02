@@ -34,7 +34,7 @@ public class ServerInfoTest {
 
     @Test
     public void test() throws IOException, ButtplugProtocolException {
-        String testStr = "[{\"ServerInfo\":{\"Id\":1,\"ProtocolMajorVersion\":4,\"ProtocolMinorVersion\":0,\"MaxPingTime\":500,\"ServerName\":\"Websocket Server\"}}]";
+        String testStr = "[{\"ServerInfo\":{\"Id\":1,\"ProtocolVersionMajor\":4,\"ProtocolVersionMinor\":0,\"MaxPingTime\":500,\"ServerName\":\"Websocket Server\"}}]";
 
         Validator.Result result = new ValidatorFactory().validate(schema, testStr);
         assertTrue(result.isValid(), result.getErrors().stream().map(Error::getError).collect(Collectors.joining("\n")));
@@ -45,8 +45,8 @@ public class ServerInfoTest {
         assertEquals(1, msgs.size());
         assertEquals(ServerInfo.class, msgs.get(0).getClass());
         assertEquals(1, msgs.get(0).getId(), 1);
-        assertEquals(4, ((ServerInfo) msgs.get(0)).getProtocolMajorVersion());
-        assertEquals(0, ((ServerInfo) msgs.get(0)).getProtocolMinorVersion());
+        assertEquals(4, ((ServerInfo) msgs.get(0)).getProtocolVersionMajor());
+        assertEquals(0, ((ServerInfo) msgs.get(0)).getProtocolVersionMinor());
         assertEquals(500, ((ServerInfo) msgs.get(0)).getMaxPingTime());
         assertEquals("Websocket Server", ((ServerInfo) msgs.get(0)).getServerName());
 

@@ -6,11 +6,11 @@ import io.github.blackspherefollower.buttplug4j.protocol.ButtplugMessage;
 
 public final class ServerInfo extends ButtplugMessage {
 
-    @JsonProperty(value = "ProtocolMajorVersion", required = true)
-    private int protocolMajorVersion;
+    @JsonProperty(value = "ProtocolVersionMajor", required = true)
+    private int protocolVersionMajor;
 
-    @JsonProperty(value = "ProtocolMinorVersion", required = true)
-    private int protocolMinorVersion;
+    @JsonProperty(value = "ProtocolVersionMinor", required = true)
+    private int protocolVersionMinor;
 
     @JsonProperty(value = "MaxPingTime", required = true)
     private long maxPingTime;
@@ -18,12 +18,12 @@ public final class ServerInfo extends ButtplugMessage {
     @JsonProperty(value = "ServerName", required = true)
     private String serverName;
 
-    public ServerInfo(final String serverName, final int protocolMajorVersion, final int protocolMinorVersion, final long maxPingTime, final int id) {
+    public ServerInfo(final String serverName, final int protocolVersionMajor, final int protocolVersionMinor, final long maxPingTime, final int id) {
         super(id);
 
         this.serverName = serverName;
-        this.protocolMajorVersion = protocolMajorVersion;
-        this.protocolMinorVersion = protocolMinorVersion;
+        this.protocolVersionMajor = protocolVersionMajor;
+        this.protocolVersionMinor = protocolVersionMinor;
         this.maxPingTime = maxPingTime;
     }
 
@@ -32,25 +32,25 @@ public final class ServerInfo extends ButtplugMessage {
         super(ButtplugConsts.DEFAULT_MSG_ID);
 
         this.serverName = "";
-        this.protocolMajorVersion = 4;
-        this.protocolMinorVersion = 0;
+        this.protocolVersionMajor = 4;
+        this.protocolVersionMinor = 0;
         this.maxPingTime = 0;
     }
 
-    public int getProtocolMajorVersion() {
-        return protocolMajorVersion;
+    public int getProtocolVersionMajor() {
+        return protocolVersionMajor;
     }
 
-    public void setProtocolMajorVersion(final int protocolMajorVersion) {
-        this.protocolMajorVersion = protocolMajorVersion;
+    public void setProtocolVersionMajor(final int protocolVersionMajor) {
+        this.protocolVersionMajor = protocolVersionMajor;
     }
 
-    public int getProtocolMinorVersion() {
-        return protocolMinorVersion;
+    public int getProtocolVersionMinor() {
+        return protocolVersionMinor;
     }
 
-    public void setProtocolMinorVersion(final int protocolMinorVersion) {
-        this.protocolMinorVersion = protocolMinorVersion;
+    public void setProtocolVersionMinor(final int protocolVersionMinor) {
+        this.protocolVersionMinor = protocolVersionMinor;
     }
 
     public long getMaxPingTime() {
