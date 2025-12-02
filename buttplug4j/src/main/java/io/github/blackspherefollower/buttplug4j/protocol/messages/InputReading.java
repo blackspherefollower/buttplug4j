@@ -15,23 +15,47 @@ public class InputReading extends ButtplugDeviceMessage {
         this.featureIndex = featureIndex;
     }
 
+    public InputData getData() {
+        return data;
+    }
+
+    public void setData(InputData data) {
+        this.data = data;
+    }
+
+    public int getFeatureIndex() {
+        return featureIndex;
+    }
+
+    public void setFeatureIndex(int featureIndex) {
+        this.featureIndex = featureIndex;
+    }
+
     public interface InputData {
     }
 
     static public class InputIntegerData {
         @JsonProperty(value = "Data", required = true)
         int value;
+
+        public int getValue() {
+            return value;
+        }
+
+        public void setValue(int value) {
+            this.value = value;
+        }
     }
 
-    static public class BatteryData implements InputData {
+    static public class BatteryData extends InputIntegerData {
     }
 
-    static public class RssiData implements InputData {
+    static public class RssiData extends InputIntegerData {
     }
 
-    static public class ButtonData implements InputData {
+    static public class ButtonData extends InputIntegerData {
     }
 
-    static public class PresureData implements InputData {
+    static public class PresureData extends InputIntegerData {
     }
 }

@@ -3,25 +3,36 @@ package io.github.blackspherefollower.buttplug4j.utils.test;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.blackspherefollower.buttplug4j.client.ButtplugClient;
+import io.github.blackspherefollower.buttplug4j.client.IConnectedEvent;
+import io.github.blackspherefollower.buttplug4j.protocol.ButtplugConsts;
+import io.github.blackspherefollower.buttplug4j.protocol.ButtplugMessage;
+import io.github.blackspherefollower.buttplug4j.protocol.ButtplugProtocolException;
+import io.github.blackspherefollower.buttplug4j.protocol.messages.Error;
+import org.eclipse.jetty.util.component.LifeCycle;
+import org.eclipse.jetty.websocket.api.Session;
+import org.eclipse.jetty.websocket.api.annotations.*;
+import org.eclipse.jetty.websocket.api.extensions.Frame;
+import org.eclipse.jetty.websocket.client.ClientUpgradeRequest;
+import org.eclipse.jetty.websocket.client.WebSocketClient;
 
 import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.WebSocket;
 import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.*;
 
+@WebSocket(maxTextMessageSize = 64 * 1024)
 public class WSDMClient {
 
-        private WebSocket client;
-        private final WSDHeader header;
+        private WebSocketClient client;
+        private Session session;
+        private WSDHeader header;
         public ConcurrentLinkedQueue<String> messages = new ConcurrentLinkedQueue<>();
-        private final CompletableFuture<Boolean> connected = new CompletableFuture<>();
+        private CompletableFuture<Boolean> connected = new CompletableFuture<>();
 
         public int battery = 100;
 
-        static class WSDHeader {
+        class WSDHeader {
             @JsonProperty("identifier")
             public String identifier;
             @JsonProperty("address")
@@ -34,82 +45,64 @@ public class WSDMClient {
             header = new WSDHeader();
             header.identifier = identifier;
             header.address = address;
+            client = new WebSocketClient();
 
-            HttpClient
-                    .newHttpClient()
-                    .newWebSocketBuilder()
-                    .buildAsync(url, new WebSocketClient(this))
-                    .join();
-            connected.get(10, TimeUnit.SECONDS);
-
+            client.start();
+            client.connect(this, url, new ClientUpgradeRequest()).get(2, TimeUnit.SECONDS);
+            connected.get(5, TimeUnit.SECONDS);
         }
 
-    private static class WebSocketClient implements WebSocket.Listener {
-        WSDMClient wsdmclient;
-        public WebSocketClient(WSDMClient wsdmclient) {this.wsdmclient = wsdmclient;}
+        protected void cleanup() {
 
-        @Override
-        public void onOpen(WebSocket webSocket) {
-            System.out.println("onOpen using subprotocol " + webSocket.getSubprotocol());
-            wsdmclient.onConnect(webSocket);
-            WebSocket.Listener.super.onOpen(webSocket);
+            if (session != null) {
+                session.close();
+            }
+
+            try {
+                LifeCycle.stop(client);
+            } catch (RuntimeException ignored) {
+            }
+            client = null;
         }
 
-        @Override
-        public CompletionStage<?> onText(WebSocket webSocket, CharSequence data, boolean last) {
-            System.out.println("onText received " + data);
-            wsdmclient.onMessage(data.toString());
-            return WebSocket.Listener.super.onText(webSocket, data, last);
-        }
-
-        @Override
-        public void onError(WebSocket webSocket, Throwable error) {
-            System.out.println("Bad day! " + webSocket.toString());
-            error.printStackTrace();
-            WebSocket.Listener.super.onError(webSocket, error);
-        }
-
-        @Override
-        public CompletionStage<?> onClose(WebSocket webSocket, int statusCode, String reason) {
-            System.out.println("onClose received " + statusCode + " " + reason);
-            wsdmclient.onClose(statusCode, reason);
-            return WebSocket.Listener.super.onClose(webSocket, statusCode, reason);
-        }
-
-        @Override
-        public CompletionStage<?> onBinary(WebSocket webSocket, ByteBuffer message, boolean last) {
-            System.out.println("onBinary received " + message);
-            wsdmclient.onMessage(StandardCharsets.UTF_8.decode(message).toString());
-            return WebSocket.Listener.super.onBinary(webSocket, message, last);
-        }
-    }
-
-
+        @OnWebSocketClose
         public void onClose(int statusCode, String reason) {
-            this.client = null;
+            this.session = null;
+            cleanup();
         }
 
-        public void onConnect(WebSocket client) {
-            this.client = client;
+        @OnWebSocketConnect
+        public void onConnect(Session session) {
+            this.session = session;
+
             // Don't block the WS thread
             new Thread(() -> {
                 try {
-                    client.sendText(new ObjectMapper().writeValueAsString(header), true).get(1, TimeUnit.SECONDS);
+                    session.getRemote().sendStringByFuture(new ObjectMapper().writeValueAsString(header)).get(1, TimeUnit.SECONDS);
                 } catch (JsonProcessingException | ExecutionException | InterruptedException |TimeoutException e) {
                     System.out.println("Failed to send header: " + e.getMessage());
                 }
             }).start();
         }
 
-        public void onMessage(final String message) {
+        @OnWebSocketFrame
+        public void onFrame(final Frame frame) {
+            if( frame.getType().isData()) {
+                System.out.println("Got frame: " + frame);
+                byte[] data = new byte[frame.getPayloadLength()];
+                        frame.getPayload().get(data);
+                onMessage(null, new String(data, StandardCharsets.UTF_8));
+            }
+        }
+
+        @OnWebSocketMessage
+        public void onMessage(final Session sess, final String message) {
             System.out.println("Got message: " + message);
             if(message.startsWith("DeviceType;")) {
                 new Thread(() -> {
                     try {
-                        sendMessage("Z:10:" + header.address + ";");
-                        if(!connected.isDone()) {
-                            connected.complete(true);
-                        }
+                        session.getRemote().sendBytesByFuture(ByteBuffer.wrap(("Z:10:" + header.address + ";").getBytes(StandardCharsets.UTF_8))).get(1, TimeUnit.SECONDS);
+                        connected.complete(true);
                     } catch (InterruptedException | ExecutionException | TimeoutException e) {
                         throw new RuntimeException(e);
                     }
@@ -120,7 +113,7 @@ public class WSDMClient {
             if(message.startsWith("Battery;")) {
                 new Thread(() -> {
                     try {
-                        sendMessage(battery + ";");
+                        session.getRemote().sendBytesByFuture(ByteBuffer.wrap((battery + ";").getBytes(StandardCharsets.UTF_8))).get(1, TimeUnit.SECONDS);
                         connected.complete(true);
                     } catch (InterruptedException | ExecutionException | TimeoutException e) {
                         throw new RuntimeException(e);
@@ -132,7 +125,12 @@ public class WSDMClient {
             messages.add(message);
         }
 
+        @OnWebSocketError
+        public void onWebSocketError(final Throwable cause) {
+            System.out.println("Got error: " + cause.getMessage());
+        }
+
         protected void sendMessage(final String msg) throws ExecutionException, InterruptedException, TimeoutException {
-            client.sendBinary(ByteBuffer.wrap(msg.getBytes(StandardCharsets.UTF_8)), true).get(1, TimeUnit.SECONDS);
+            session.getRemote().sendStringByFuture(msg).get(1, TimeUnit.SECONDS);
         }
     }
