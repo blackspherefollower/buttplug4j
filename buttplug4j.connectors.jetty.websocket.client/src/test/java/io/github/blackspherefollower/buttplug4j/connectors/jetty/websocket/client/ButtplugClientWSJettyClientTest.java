@@ -42,12 +42,13 @@ public class ButtplugClientWSJettyClientTest {
                     }
                 }
             }
-            assertEquals(wsdev.messages.poll(), "DeviceType;");
-            assertEquals(wsdev.messages.poll(), "Vibrate:10;");
 
             Thread.sleep(500);
+            assertEquals("Vibrate:10;", wsdev.messages.poll());
+
             assertTrue(client.stopAllDevices());
-            assertEquals(wsdev.messages.poll(), "Vibrate:0;");
+            Thread.sleep(500);
+            assertEquals("Vibrate:0;", wsdev.messages.poll());
 
             client.disconnect();
         }

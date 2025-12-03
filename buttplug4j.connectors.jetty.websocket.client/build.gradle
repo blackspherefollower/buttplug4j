@@ -22,11 +22,16 @@ dependencies {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(8)
+        languageVersion = JavaLanguageVersion.of(11)
     }
     withJavadocJar()
     withSourcesJar()
 }
+
+tasks.compileJava {
+    options.release.set(8)
+}
+
 checkstyle {
     configFile = file("${rootDir}/checkstyle.xml")
     showViolations = false

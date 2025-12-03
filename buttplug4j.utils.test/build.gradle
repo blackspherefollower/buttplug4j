@@ -12,14 +12,12 @@ repositories {
 
 dependencies {
     api project(":buttplug4j")
-    api 'org.eclipse.jetty.websocket:websocket-client:9.4.58.v20250814'
-    api 'org.eclipse.jetty.websocket:websocket-api:9.4.58.v20250814'
     api 'org.junit.jupiter:junit-jupiter:5.13.4'
 }
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(8)
+        languageVersion = JavaLanguageVersion.of(11)
     }
     withJavadocJar()
     withSourcesJar()
