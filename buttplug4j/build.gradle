@@ -14,17 +14,24 @@ dependencies {
     api 'com.fasterxml.jackson.core:jackson-annotations:2.19.2'
     api 'com.fasterxml.jackson.core:jackson-databind:2.19.2'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.13.4'
+    testImplementation 'dev.harrel:json-schema:1.8.2'
+    testImplementation 'org.mockito:mockito-core:5.20.0'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.13.4'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.13.4'
 }
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(8)
+        languageVersion = JavaLanguageVersion.of(11)
     }
     withJavadocJar()
     withSourcesJar()
 }
+
+tasks.compileJava {
+    options.release.set(8)
+}
+
 checkstyle {
     configFile = file("${rootDir}/checkstyle.xml")
     showViolations = false

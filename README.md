@@ -4,7 +4,6 @@
 
 Learn more about buttplug.io at https://buttplug.io
 
-
 ## Platform Support
 
 Buttplug Java should run on any 1.8 or later JRE (including Android).
@@ -19,6 +18,7 @@ library, so there's no need to add a separate dependency); see the 2
 dependency import examples below.
 
 For Gradle:
+
 ```groovy
 dependencies {
     implementation 'io.github.blackspherefollower:buttplug4j.connectors.jetty.websocket.client:3.1.180'
@@ -26,6 +26,7 @@ dependencies {
 ```
 
 For Maven:
+
 ```xml
 <dependencies>
     <dependency>
@@ -38,10 +39,9 @@ For Maven:
 
 For an all-in-one example project, please see https://github.com/blackspherefollower/buttplug4j-example
 
-In general, you'll want to create a `ButtplugClientWSClient` object in a scope where it will not get garbage collected 
+In general, you'll want to create a `ButtplugClientWSClient` object in a scope where it will not get garbage collected
 before you're done, add callbacks for error and event handling, then connect it to the address Intiface is listening
 on. Then you can scan for devices, iterate over them and send commands.
-
 
 ### Snapshots
 
@@ -51,6 +51,7 @@ repository: https://central.sonatype.com/repository/maven-snapshots
 Releases will be available from Maven Central.
 
 For Gradle:
+
 ```groovy
 repositories {
     maven {
@@ -59,11 +60,12 @@ repositories {
     }
 }
 dependencies {
-    implementation 'io.github.blackspherefollower:buttplug4j.connectors.jetty.websocket.client:3.1.+'
+    implementation 'io.github.blackspherefollower:buttplug4j.connectors.jetty.websocket.client:4.0.+'
 }
 ```
 
 For Maven:
+
 ```xml
 <repositories>
     <repository>
@@ -79,7 +81,7 @@ For Maven:
     <dependency>
         <groupId>io.github.blackspherefollower</groupId>
         <artifactId>buttplug4j.connectors.jetty.websocket.client</artifactId>
-        <version>[3.1-SNAPSHOT,)</version>
+        <version>[4.0-SNAPSHOT,)</version>
     </dependency>
 </dependencies>
 ```

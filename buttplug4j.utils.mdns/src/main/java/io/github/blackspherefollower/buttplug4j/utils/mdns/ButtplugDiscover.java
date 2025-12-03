@@ -12,52 +12,7 @@ import java.util.concurrent.ConcurrentSkipListSet;
 
 public final class ButtplugDiscover implements ServiceListener {
     private final ConcurrentHashMap<String, ConcurrentSkipListSet<URI>> servers = new ConcurrentHashMap<>();
-
-    public interface DiscovereyEventHandler {
-        public void FoundButtplug(String name, Set<URI> addresses);
-        public void LostButtplug(String name);
-    }
-
-    public void setDiscovereyEventHandler(DiscovereyEventHandler discovereyEventHandler) {
-        this.discovereyEventHandler = discovereyEventHandler;
-    }
-
     private DiscovereyEventHandler discovereyEventHandler = null;
-
-    @Override
-    public void serviceAdded(ServiceEvent event) {
-    }
-
-    @Override
-    public void serviceRemoved(ServiceEvent event) {
-        servers.remove(event.getInfo().getName());
-        if( discovereyEventHandler != null ) {
-            discovereyEventHandler.LostButtplug(event.getInfo().getName());
-        }
-    }
-
-    @Override
-    public void serviceResolved(ServiceEvent event) {
-
-        ConcurrentSkipListSet<URI> set = new ConcurrentSkipListSet<>();
-        for (Inet4Address addr : event.getInfo().getInet4Addresses()) {
-            try {
-                set.add(new URI("ws://" + addr.getHostAddress()+ ":" + event.getInfo().getPort()));
-            } catch (URISyntaxException e) {
-                // Log weirdness
-            }
-        };
-        ConcurrentSkipListSet<URI> set2 = servers.putIfAbsent(event.getName(), set);
-        if( set2 != null ) {
-            for( URI uri : set) {
-                set2.add(uri);
-            }
-        }
-
-        if( discovereyEventHandler != null ) {
-            discovereyEventHandler.FoundButtplug(event.getName(), set);
-        }
-    }
 
     public ButtplugDiscover(DiscovereyEventHandler discovereyEventHandler) {
         this.discovereyEventHandler = discovereyEventHandler;
@@ -70,6 +25,53 @@ public final class ButtplugDiscover implements ServiceListener {
         jmmdns.addServiceListener("_intiface_engine._tcp.local.", this);
     }
 
-    public ConcurrentHashMap<String, ConcurrentSkipListSet<URI>> GetServers() { return servers; }
+    public void setDiscovereyEventHandler(DiscovereyEventHandler discovereyEventHandler) {
+        this.discovereyEventHandler = discovereyEventHandler;
+    }
+
+    @Override
+    public void serviceAdded(ServiceEvent event) {
+    }
+
+    @Override
+    public void serviceRemoved(ServiceEvent event) {
+        servers.remove(event.getInfo().getName());
+        if (discovereyEventHandler != null) {
+            discovereyEventHandler.LostButtplug(event.getInfo().getName());
+        }
+    }
+
+    @Override
+    public void serviceResolved(ServiceEvent event) {
+
+        ConcurrentSkipListSet<URI> set = new ConcurrentSkipListSet<>();
+        for (Inet4Address addr : event.getInfo().getInet4Addresses()) {
+            try {
+                set.add(new URI("ws://" + addr.getHostAddress() + ":" + event.getInfo().getPort()));
+            } catch (URISyntaxException e) {
+                // Log weirdness
+            }
+        }
+        ConcurrentSkipListSet<URI> set2 = servers.putIfAbsent(event.getName(), set);
+        if (set2 != null) {
+            for (URI uri : set) {
+                set2.add(uri);
+            }
+        }
+
+        if (discovereyEventHandler != null) {
+            discovereyEventHandler.FoundButtplug(event.getName(), set);
+        }
+    }
+
+    public ConcurrentHashMap<String, ConcurrentSkipListSet<URI>> GetServers() {
+        return servers;
+    }
+
+    public interface DiscovereyEventHandler {
+        void FoundButtplug(String name, Set<URI> addresses);
+
+        void LostButtplug(String name);
+    }
 
 }

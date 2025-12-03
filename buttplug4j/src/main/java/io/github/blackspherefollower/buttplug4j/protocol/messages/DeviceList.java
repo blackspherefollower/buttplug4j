@@ -3,31 +3,30 @@ package io.github.blackspherefollower.buttplug4j.protocol.messages;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.blackspherefollower.buttplug4j.protocol.ButtplugConsts;
 import io.github.blackspherefollower.buttplug4j.protocol.ButtplugMessage;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.Parts.DeviceMessageInfo;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public final class DeviceList extends ButtplugMessage {
 
     @JsonProperty(value = "Devices", required = true)
-    private ArrayList<DeviceMessageInfo> devices;
+    private HashMap<Integer, Device> devices;
 
-    public DeviceList(final ArrayList<DeviceMessageInfo> devices, final long id) {
+    public DeviceList(final HashMap<Integer, Device> devices, final int id) {
         super(id);
-        this.setDevices(devices);
+        this.devices = devices;
     }
 
     @SuppressWarnings("unused")
     private DeviceList() {
         super(ButtplugConsts.DEFAULT_MSG_ID);
-        this.setDevices(new ArrayList<>());
+        this.setDevices(new HashMap<>());
     }
 
-    public ArrayList<DeviceMessageInfo> getDevices() {
+    public HashMap<Integer, Device> getDevices() {
         return devices;
     }
 
-    public void setDevices(final ArrayList<DeviceMessageInfo> devices) {
+    public void setDevices(final HashMap<Integer, Device> devices) {
         this.devices = devices;
     }
 }

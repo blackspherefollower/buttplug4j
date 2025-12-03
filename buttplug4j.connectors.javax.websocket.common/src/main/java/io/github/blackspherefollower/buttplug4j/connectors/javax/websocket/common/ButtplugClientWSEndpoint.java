@@ -93,7 +93,7 @@ public abstract class ButtplugClientWSEndpoint extends ButtplugClient {
         if (session == null) {
             Error err = new Error("Bad WS state!",
                     Error.ErrorClass.ERROR_UNKNOWN, ButtplugConsts.SYSTEM_MSG_ID);
-            if( getErrorReceived() != null) {
+            if (getErrorReceived() != null) {
                 getErrorReceived().errorReceived(err);
             }
             return CompletableFuture.completedFuture(err);
@@ -103,7 +103,7 @@ public abstract class ButtplugClientWSEndpoint extends ButtplugClient {
             session.getAsyncRemote().sendText(getParser().formatJson(msg)).get();
         } catch (Exception e) {
             Error err = new Error(e, msg.getId());
-            if( getErrorReceived() != null) {
+            if (getErrorReceived() != null) {
                 getErrorReceived().errorReceived(err);
             }
             return CompletableFuture.completedFuture(err);

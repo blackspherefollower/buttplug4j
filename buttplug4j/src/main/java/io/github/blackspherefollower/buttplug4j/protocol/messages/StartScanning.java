@@ -10,7 +10,7 @@ public final class StartScanning extends ButtplugMessage {
         super(ButtplugConsts.DEFAULT_MSG_ID);
     }
 
-    public StartScanning(final long id) {
+    public StartScanning(final int id) {
         super(id);
     }
 }

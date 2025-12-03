@@ -10,7 +10,7 @@ public final class Ping extends ButtplugMessage {
         super(ButtplugConsts.DEFAULT_MSG_ID);
     }
 
-    public Ping(final long id) {
+    public Ping(final int id) {
         super(id);
     }
 }

@@ -4,16 +4,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.blackspherefollower.buttplug4j.protocol.ButtplugConsts;
 import io.github.blackspherefollower.buttplug4j.protocol.ButtplugMessage;
 
-import static io.github.blackspherefollower.buttplug4j.protocol.ButtplugConsts.MESSAGE_VERSION;
+import static io.github.blackspherefollower.buttplug4j.protocol.ButtplugConsts.PROTOCOL_VERSION_MAJOR;
+import static io.github.blackspherefollower.buttplug4j.protocol.ButtplugConsts.PROTOCOL_VERSION_MINOR;
 
 public final class RequestServerInfo extends ButtplugMessage {
-    @JsonProperty(value = "MessageVersion", required = true)
-    private final long messageVersion = MESSAGE_VERSION;
+    @JsonProperty(value = "ProtocolVersionMajor", required = true)
+    private final long protocolVersionMajor = PROTOCOL_VERSION_MAJOR;
+
+    @JsonProperty(value = "ProtocolVersionMinor", required = true)
+    private final long protocolVersionMinor = PROTOCOL_VERSION_MINOR;
 
     @JsonProperty(value = "ClientName", required = true)
     private String clientName;
 
-    public RequestServerInfo(final String clientName, final long id) {
+    public RequestServerInfo(final String clientName, final int id) {
         super(id);
         this.setClientName(clientName);
     }
@@ -24,8 +28,12 @@ public final class RequestServerInfo extends ButtplugMessage {
         this.setClientName("");
     }
 
-    public long getMessageVersion() {
-        return messageVersion;
+    public long getProtocolVersionMajor() {
+        return protocolVersionMajor;
+    }
+
+    public long getProtocolVersionMinor() {
+        return protocolVersionMinor;
     }
 
     public String getClientName() {

@@ -42,7 +42,7 @@ public final class ButtplugClientWSClient extends ButtplugClientWSEndpoint {
 
         // Restore and echo down the line
         setOnConnected(stashCallback);
-        if(stashCallback != null )
+        if (stashCallback != null)
             stashCallback.onConnected(this);
     }
 

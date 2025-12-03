@@ -22,6 +22,7 @@ java {
     withJavadocJar()
     withSourcesJar()
 }
+
 checkstyle {
     configFile = file("${rootDir}/checkstyle.xml")
     showViolations = false
