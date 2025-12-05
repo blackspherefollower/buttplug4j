@@ -47,7 +47,7 @@ class OutputCmdTest {
         assertEquals(0, ((OutputCmd) msgs.get(0)).getDeviceIndex());
         assertEquals(0, ((OutputCmd) msgs.get(0)).getFeatureIndex());
         assertInstanceOf(OutputCmd.Vibrate.class, ((OutputCmd) msgs.get(0)).getCommand());
-        assertEquals(5, ((OutputCmd.Vibrate)((OutputCmd) msgs.get(0)).getCommand()).getValue());
+        assertEquals(5, ((OutputCmd.Vibrate) ((OutputCmd) msgs.get(0)).getCommand()).getValue());
 
         String jsonOut = parser.formatJson(msgs);
         assertEquals(testStr, jsonOut);
@@ -72,7 +72,7 @@ class OutputCmdTest {
         assertEquals(0, ((OutputCmd) msgs.get(0)).getDeviceIndex());
         assertEquals(0, ((OutputCmd) msgs.get(0)).getFeatureIndex());
         assertInstanceOf(OutputCmd.Rotate.class, ((OutputCmd) msgs.get(0)).getCommand());
-        assertEquals(5, ((OutputCmd.Rotate)((OutputCmd) msgs.get(0)).getCommand()).getValue());
+        assertEquals(5, ((OutputCmd.Rotate) ((OutputCmd) msgs.get(0)).getCommand()).getValue());
 
         String jsonOut = parser.formatJson(msgs);
         assertEquals(testStr, jsonOut);
@@ -97,7 +97,7 @@ class OutputCmdTest {
         assertEquals(0, ((OutputCmd) msgs.get(0)).getDeviceIndex());
         assertEquals(0, ((OutputCmd) msgs.get(0)).getFeatureIndex());
         assertInstanceOf(OutputCmd.Rotate.class, ((OutputCmd) msgs.get(0)).getCommand());
-        assertEquals(-5, ((OutputCmd.Rotate)((OutputCmd) msgs.get(0)).getCommand()).getValue());
+        assertEquals(-5, ((OutputCmd.Rotate) ((OutputCmd) msgs.get(0)).getCommand()).getValue());
 
         String jsonOut = parser.formatJson(msgs);
         assertEquals(testStr, jsonOut);
@@ -122,7 +122,7 @@ class OutputCmdTest {
         assertEquals(0, ((OutputCmd) msgs.get(0)).getDeviceIndex());
         assertEquals(0, ((OutputCmd) msgs.get(0)).getFeatureIndex());
         assertInstanceOf(OutputCmd.Position.class, ((OutputCmd) msgs.get(0)).getCommand());
-        assertEquals(5, ((OutputCmd.Position)((OutputCmd) msgs.get(0)).getCommand()).getValue());
+        assertEquals(5, ((OutputCmd.Position) ((OutputCmd) msgs.get(0)).getCommand()).getValue());
 
         String jsonOut = parser.formatJson(msgs);
         assertEquals(testStr, jsonOut);
@@ -147,7 +147,7 @@ class OutputCmdTest {
         assertEquals(0, ((OutputCmd) msgs.get(0)).getDeviceIndex());
         assertEquals(0, ((OutputCmd) msgs.get(0)).getFeatureIndex());
         assertInstanceOf(OutputCmd.Spray.class, ((OutputCmd) msgs.get(0)).getCommand());
-        assertEquals(5, ((OutputCmd.Spray)((OutputCmd) msgs.get(0)).getCommand()).getValue());
+        assertEquals(5, ((OutputCmd.Spray) ((OutputCmd) msgs.get(0)).getCommand()).getValue());
 
         String jsonOut = parser.formatJson(msgs);
         assertEquals(testStr, jsonOut);
@@ -172,7 +172,7 @@ class OutputCmdTest {
         assertEquals(0, ((OutputCmd) msgs.get(0)).getDeviceIndex());
         assertEquals(0, ((OutputCmd) msgs.get(0)).getFeatureIndex());
         assertInstanceOf(OutputCmd.Constrict.class, ((OutputCmd) msgs.get(0)).getCommand());
-        assertEquals(5, ((OutputCmd.Constrict)((OutputCmd) msgs.get(0)).getCommand()).getValue());
+        assertEquals(5, ((OutputCmd.Constrict) ((OutputCmd) msgs.get(0)).getCommand()).getValue());
 
         String jsonOut = parser.formatJson(msgs);
         assertEquals(testStr, jsonOut);
@@ -197,7 +197,7 @@ class OutputCmdTest {
         assertEquals(0, ((OutputCmd) msgs.get(0)).getDeviceIndex());
         assertEquals(0, ((OutputCmd) msgs.get(0)).getFeatureIndex());
         assertInstanceOf(OutputCmd.Oscillate.class, ((OutputCmd) msgs.get(0)).getCommand());
-        assertEquals(5, ((OutputCmd.Oscillate)((OutputCmd) msgs.get(0)).getCommand()).getValue());
+        assertEquals(5, ((OutputCmd.Oscillate) ((OutputCmd) msgs.get(0)).getCommand()).getValue());
 
         String jsonOut = parser.formatJson(msgs);
         assertEquals(testStr, jsonOut);
@@ -222,7 +222,7 @@ class OutputCmdTest {
         assertEquals(0, ((OutputCmd) msgs.get(0)).getDeviceIndex());
         assertEquals(0, ((OutputCmd) msgs.get(0)).getFeatureIndex());
         assertInstanceOf(OutputCmd.Temperature.class, ((OutputCmd) msgs.get(0)).getCommand());
-        assertEquals(5, ((OutputCmd.Temperature)((OutputCmd) msgs.get(0)).getCommand()).getValue());
+        assertEquals(5, ((OutputCmd.Temperature) ((OutputCmd) msgs.get(0)).getCommand()).getValue());
 
         String jsonOut = parser.formatJson(msgs);
         assertEquals(testStr, jsonOut);
@@ -247,7 +247,7 @@ class OutputCmdTest {
         assertEquals(0, ((OutputCmd) msgs.get(0)).getDeviceIndex());
         assertEquals(0, ((OutputCmd) msgs.get(0)).getFeatureIndex());
         assertInstanceOf(OutputCmd.Led.class, ((OutputCmd) msgs.get(0)).getCommand());
-        assertEquals(5, ((OutputCmd.Led)((OutputCmd) msgs.get(0)).getCommand()).getValue());
+        assertEquals(5, ((OutputCmd.Led) ((OutputCmd) msgs.get(0)).getCommand()).getValue());
 
         String jsonOut = parser.formatJson(msgs);
         assertEquals(testStr, jsonOut);
@@ -272,8 +272,8 @@ class OutputCmdTest {
         assertEquals(0, ((OutputCmd) msgs.get(0)).getDeviceIndex());
         assertEquals(0, ((OutputCmd) msgs.get(0)).getFeatureIndex());
         assertInstanceOf(OutputCmd.PositionWithDuration.class, ((OutputCmd) msgs.get(0)).getCommand());
-        assertEquals(5, ((OutputCmd.PositionWithDuration)((OutputCmd) msgs.get(0)).getCommand()).getPosition());
-        assertEquals(10, ((OutputCmd.PositionWithDuration)((OutputCmd) msgs.get(0)).getCommand()).getDuration());
+        assertEquals(5, ((OutputCmd.PositionWithDuration) ((OutputCmd) msgs.get(0)).getCommand()).getPosition());
+        assertEquals(10, ((OutputCmd.PositionWithDuration) ((OutputCmd) msgs.get(0)).getCommand()).getDuration());
 
         String jsonOut = parser.formatJson(msgs);
         assertEquals(testStr, jsonOut);

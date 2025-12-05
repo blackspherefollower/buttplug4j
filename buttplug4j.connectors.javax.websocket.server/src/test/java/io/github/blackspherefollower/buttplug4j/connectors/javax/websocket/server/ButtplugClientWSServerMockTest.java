@@ -11,14 +11,13 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.websocket.javax.server.config.JavaxWebSocketServletContainerInitializer;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpointConfig;
-import java.io.IOException;
 import java.net.URI;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -32,7 +31,7 @@ public class ButtplugClientWSServerMockTest {
         ButtplugClientWSServerExample server = new ButtplugClientWSServerExample(lport, testDone);
         Thread.sleep(500);
 
-        try (IntifaceEngineWrapper wrapper = new IntifaceEngineWrapper(lport) ) {
+        try (IntifaceEngineWrapper wrapper = new IntifaceEngineWrapper(lport)) {
             Thread.sleep(500);
             WSDMClient wsdev = new WSDMClient(new URI("ws://localhost:" + wrapper.dport), "LVS-Fake", "A9816725B");
             testDone.get(10, TimeUnit.SECONDS);
@@ -90,8 +89,8 @@ public class ButtplugClientWSServerMockTest {
 
                                             firstDevice.get(5, TimeUnit.SECONDS);
                                             for (ButtplugClientDevice dev : client.getDevices()) {
-                                                for(ButtplugClientDeviceFeature feat : dev.getDeviceFeatures().values()) {
-                                                    if( feat.HasVibrate() ) {
+                                                for (ButtplugClientDeviceFeature feat : dev.getDeviceFeatures().values()) {
+                                                    if (feat.HasVibrate()) {
                                                         feat.VibrateFloat(0.5F).get();
                                                     }
                                                 }

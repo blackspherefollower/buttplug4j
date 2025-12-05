@@ -35,7 +35,7 @@ public class InputReadingTest {
     @Test
     public void testInputReadingCreation() {
         InputReading reading = new InputReading(1, 0, 0);
-        
+
         assertEquals(1, reading.getId());
         assertEquals(0, reading.getDeviceIndex());
         assertNotNull(reading);

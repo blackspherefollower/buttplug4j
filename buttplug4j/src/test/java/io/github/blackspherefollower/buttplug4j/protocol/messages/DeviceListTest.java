@@ -82,7 +82,7 @@ public class DeviceListTest {
         assertEquals(0, dev2Features.get(0).getFeatureIndex());
         assertEquals("Stroker", dev2Features.get(0).getFeatureDescription());
         assertEquals(2, dev2Features.get(0).getOutput().size());
-        assertArrayEquals(new String[]{"Oscillate","PositionWithDuration"}, dev2Features.get(0).getOutput().stream().map(outputDescriptor -> outputDescriptor.getClass().getSimpleName()).toArray());
+        assertArrayEquals(new String[]{"Oscillate", "PositionWithDuration"}, dev2Features.get(0).getOutput().stream().map(outputDescriptor -> outputDescriptor.getClass().getSimpleName()).toArray());
         assertEquals(1, dev2Features.get(0).getInput().size());
         assertEquals(1, dev2Features.get(1).getFeatureIndex());
         assertArrayEquals(new String[]{"PositionInput"}, dev2Features.get(0).getInput().stream().map(inputDescriptor -> inputDescriptor.getClass().getSimpleName()).toArray());

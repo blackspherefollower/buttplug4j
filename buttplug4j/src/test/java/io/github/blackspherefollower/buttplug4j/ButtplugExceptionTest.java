@@ -1,8 +1,8 @@
-
 package io.github.blackspherefollower.buttplug4j;
 
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ButtplugExceptionTest {
 
@@ -11,7 +11,7 @@ public class ButtplugExceptionTest {
         String errorMessage = "Test error message";
         ButtplugException exception = new ButtplugException();
         exception.setMessage(errorMessage);
-        
+
         assertEquals(errorMessage, exception.getMessage());
     }
 }

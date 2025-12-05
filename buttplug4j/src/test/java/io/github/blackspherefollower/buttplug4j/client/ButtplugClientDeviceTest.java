@@ -1,4 +1,3 @@
-
 package io.github.blackspherefollower.buttplug4j.client;
 
 import io.github.blackspherefollower.buttplug4j.protocol.ButtplugMessage;
@@ -30,7 +29,7 @@ class ButtplugClientDeviceTest {
         mockClient = mock(ButtplugClient.class);
 
         HashMap<Integer, DeviceFeature> features = new HashMap<>();
-        
+
         // Feature 0: Vibrator
         DeviceFeature vibratorFeature = new DeviceFeature();
         vibratorFeature.setFeatureIndex(0);
@@ -39,7 +38,7 @@ class ButtplugClientDeviceTest {
         vibratorOutputs.add(new DeviceFeature.Vibrate(new int[]{0, 100}));
         vibratorFeature.setOutput(vibratorOutputs);
         features.put(0, vibratorFeature);
-        
+
         // Feature 1: Battery sensor
         DeviceFeature batteryFeature = new DeviceFeature();
         batteryFeature.setFeatureIndex(1);
@@ -52,14 +51,14 @@ class ButtplugClientDeviceTest {
         features.put(1, batteryFeature);
 
         // Create a test device with various features
-        testDevice = new Device(5, "Test Device",features, 100, "Display Name");
+        testDevice = new Device(5, "Test Device", features, 100, "Display Name");
 
         testDevice.setDeviceFeatures(features);
-        
+
         when(mockClient.getNextMsgId()).thenReturn(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
         when(mockClient.sendMessage(any(ButtplugMessage.class)))
                 .thenReturn(CompletableFuture.completedFuture(mock(ButtplugMessage.class)));
-        
+
         clientDevice = new ButtplugClientDevice(mockClient, testDevice);
     }
 
@@ -75,7 +74,7 @@ class ButtplugClientDeviceTest {
     void testConstructorWithNullDisplayName() {
         testDevice.setDeviceDisplayName(null);
         ButtplugClientDevice device = new ButtplugClientDevice(mockClient, testDevice);
-        
+
         assertEquals("Test Device", device.getDisplayName());
     }
 
@@ -83,14 +82,14 @@ class ButtplugClientDeviceTest {
     void testConstructorWithEmptyDisplayName() {
         testDevice.setDeviceDisplayName("");
         ButtplugClientDevice device = new ButtplugClientDevice(mockClient, testDevice);
-        
+
         assertEquals("Test Device", device.getDisplayName());
     }
 
     @Test
     void testGetDeviceFeatures() {
         Map<Integer, ButtplugClientDeviceFeature> features = clientDevice.getDeviceFeatures();
-        
+
         assertNotNull(features);
         assertEquals(2, features.size());
         assertTrue(features.containsKey(0));
@@ -102,7 +101,7 @@ class ButtplugClientDeviceTest {
     @Test
     void testSendStopDeviceCmd() {
         Future<ButtplugMessage> result = clientDevice.sendStopDeviceCmd();
-        
+
         assertNotNull(result);
         verify(mockClient).getNextMsgId();
         verify(mockClient).sendMessage(any(ButtplugMessage.class));
@@ -111,9 +110,9 @@ class ButtplugClientDeviceTest {
     @Test
     void testSendOutputCommand() {
         OutputCmd.Vibrate vibrateCommand = new OutputCmd.Vibrate(50);
-        
+
         Future<ButtplugMessage> result = clientDevice.sendOutputCommand(0, vibrateCommand);
-        
+
         assertNotNull(result);
         verify(mockClient).getNextMsgId();
         verify(mockClient).sendMessage(any(OutputCmd.class));
@@ -122,9 +121,9 @@ class ButtplugClientDeviceTest {
     @Test
     void testSendOutputCommandWithDifferentFeatureIndex() {
         OutputCmd.Vibrate vibrateCommand = new OutputCmd.Vibrate(75);
-        
+
         Future<ButtplugMessage> result = clientDevice.sendOutputCommand(1, vibrateCommand);
-        
+
         assertNotNull(result);
         verify(mockClient).getNextMsgId();
         verify(mockClient).sendMessage(any(OutputCmd.class));
@@ -134,7 +133,7 @@ class ButtplugClientDeviceTest {
     void testDeviceWithNoMessageTimingGap() {
         testDevice.setDeviceMessageTimingGap(null);
         ButtplugClientDevice device = new ButtplugClientDevice(mockClient, testDevice);
-        
+
         assertNull(device.getMessageTimingGap());
     }
 
@@ -142,7 +141,7 @@ class ButtplugClientDeviceTest {
     void testDeviceWithZeroMessageTimingGap() {
         testDevice.setDeviceMessageTimingGap(0);
         ButtplugClientDevice device = new ButtplugClientDevice(mockClient, testDevice);
-        
+
         assertEquals(Integer.valueOf(0), device.getMessageTimingGap());
     }
 
@@ -150,7 +149,7 @@ class ButtplugClientDeviceTest {
     void testDeviceWithNoFeatures() {
         testDevice.setDeviceFeatures(new HashMap<>());
         ButtplugClientDevice device = new ButtplugClientDevice(mockClient, testDevice);
-        
+
         Map<Integer, ButtplugClientDeviceFeature> features = device.getDeviceFeatures();
         assertNotNull(features);
         assertTrue(features.isEmpty());
@@ -160,7 +159,7 @@ class ButtplugClientDeviceTest {
     void testDeviceWithNullFeatures() {
         testDevice.setDeviceFeatures(null);
         ButtplugClientDevice device = new ButtplugClientDevice(mockClient, testDevice);
-        
+
         Map<Integer, ButtplugClientDeviceFeature> features = device.getDeviceFeatures();
         assertNotNull(features);
         assertTrue(features.isEmpty());
@@ -169,7 +168,7 @@ class ButtplugClientDeviceTest {
     @Test
     void testDeviceWithMultipleOutputFeatures() {
         HashMap<Integer, DeviceFeature> multiFeatures = new HashMap<>();
-        
+
         // Add multiple output features
         for (int i = 0; i < 5; i++) {
             DeviceFeature feature = new DeviceFeature();
@@ -180,13 +179,13 @@ class ButtplugClientDeviceTest {
             feature.setOutput(outputs);
             multiFeatures.put(i, feature);
         }
-        
+
         testDevice.setDeviceFeatures(multiFeatures);
         ButtplugClientDevice device = new ButtplugClientDevice(mockClient, testDevice);
-        
+
         Map<Integer, ButtplugClientDeviceFeature> features = device.getDeviceFeatures();
         assertEquals(5, features.size());
-        
+
         for (int i = 0; i < 5; i++) {
             assertTrue(features.containsKey(i));
             assertEquals("Feature " + i, features.get(i).getDescription());
@@ -196,7 +195,7 @@ class ButtplugClientDeviceTest {
     @Test
     void testDeviceWithMixedInputOutputFeatures() {
         HashMap<Integer, DeviceFeature> mixedFeatures = new HashMap<>();
-        
+
         // Output feature
         DeviceFeature outputFeature = new DeviceFeature();
         outputFeature.setFeatureIndex(0);
@@ -205,7 +204,7 @@ class ButtplugClientDeviceTest {
         outputs.add(new DeviceFeature.Rotate(new int[]{0, 50}));
         outputFeature.setOutput(outputs);
         mixedFeatures.put(0, outputFeature);
-        
+
         // Input feature
         DeviceFeature inputFeature = new DeviceFeature();
         inputFeature.setFeatureIndex(1);
@@ -216,7 +215,7 @@ class ButtplugClientDeviceTest {
         inputs.add(new DeviceFeature.Pressure(commands, new int[][]{{0, 0}, {0, 100}}));
         inputFeature.setInput(inputs);
         mixedFeatures.put(1, inputFeature);
-        
+
         // Both input and output feature
         DeviceFeature mixedFeature = new DeviceFeature();
         mixedFeature.setFeatureIndex(2);
@@ -224,10 +223,10 @@ class ButtplugClientDeviceTest {
         mixedFeature.setOutput(outputs);
         mixedFeature.setInput(inputs);
         mixedFeatures.put(2, mixedFeature);
-        
+
         testDevice.setDeviceFeatures(mixedFeatures);
         ButtplugClientDevice device = new ButtplugClientDevice(mockClient, testDevice);
-        
+
         Map<Integer, ButtplugClientDeviceFeature> features = device.getDeviceFeatures();
         assertEquals(3, features.size());
         assertEquals("Output Feature", features.get(0).getDescription());
@@ -261,7 +260,7 @@ class ButtplugClientDeviceTest {
         testDevice.setDeviceName(specialName);
         testDevice.setDeviceDisplayName(specialName);
         ButtplugClientDevice device = new ButtplugClientDevice(mockClient, testDevice);
-        
+
         assertEquals(specialName, device.getName());
         assertEquals(specialName, device.getDisplayName());
     }
@@ -270,7 +269,7 @@ class ButtplugClientDeviceTest {
     void testDeviceWithNegativeIndex() {
         testDevice.setDeviceIndex(-1);
         ButtplugClientDevice device = new ButtplugClientDevice(mockClient, testDevice);
-        
+
         assertEquals(-1, device.getDeviceIndex());
     }
 
@@ -278,7 +277,7 @@ class ButtplugClientDeviceTest {
     void testDeviceWithLargeIndex() {
         testDevice.setDeviceIndex(Integer.MAX_VALUE);
         ButtplugClientDevice device = new ButtplugClientDevice(mockClient, testDevice);
-        
+
         assertEquals(Integer.MAX_VALUE, device.getDeviceIndex());
     }
 
@@ -286,7 +285,7 @@ class ButtplugClientDeviceTest {
     void testDeviceWithLargeMessageTimingGap() {
         testDevice.setDeviceMessageTimingGap(Integer.MAX_VALUE);
         ButtplugClientDevice device = new ButtplugClientDevice(mockClient, testDevice);
-        
+
         assertEquals(Integer.valueOf(Integer.MAX_VALUE), device.getMessageTimingGap());
     }
 
@@ -295,11 +294,11 @@ class ButtplugClientDeviceTest {
         OutputCmd.Vibrate command1 = new OutputCmd.Vibrate(25);
         OutputCmd.Vibrate command2 = new OutputCmd.Vibrate(50);
         OutputCmd.Vibrate command3 = new OutputCmd.Vibrate(75);
-        
+
         Future<ButtplugMessage> result1 = clientDevice.sendOutputCommand(0, command1);
         Future<ButtplugMessage> result2 = clientDevice.sendOutputCommand(0, command2);
         Future<ButtplugMessage> result3 = clientDevice.sendOutputCommand(0, command3);
-        
+
         assertNotNull(result1);
         assertNotNull(result2);
         assertNotNull(result3);

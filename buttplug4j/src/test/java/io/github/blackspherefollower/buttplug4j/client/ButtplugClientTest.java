@@ -171,7 +171,7 @@ class ButtplugClientTest {
     @Test
     void testStartScanningAsync() {
         CompletableFuture<ButtplugMessage> future = (CompletableFuture<ButtplugMessage>) client.startScanningAsync();
-        
+
         assertNotNull(future);
         assertInstanceOf(StartScanning.class, client.lastSentMessage);
     }
@@ -179,7 +179,7 @@ class ButtplugClientTest {
     @Test
     void testStopScanningAsync() {
         CompletableFuture<ButtplugMessage> future = (CompletableFuture<ButtplugMessage>) client.stopScanningAsync();
-        
+
         assertNotNull(future);
         assertInstanceOf(StopScanning.class, client.lastSentMessage);
     }
@@ -187,7 +187,7 @@ class ButtplugClientTest {
     @Test
     void testStopAllDevicesAsync() {
         CompletableFuture<ButtplugMessage> future = (CompletableFuture<ButtplugMessage>) client.stopAllDevicesAsync();
-        
+
         assertNotNull(future);
         assertInstanceOf(StopAllDevices.class, client.lastSentMessage);
     }
@@ -196,7 +196,7 @@ class ButtplugClientTest {
     void testStartScanning() throws ExecutionException, InterruptedException, IOException {
         client.setNextResponse(new Ok(1));
         boolean result = client.startScanning();
-        
+
         assertTrue(result);
         assertInstanceOf(StartScanning.class, client.lastSentMessage);
     }
@@ -205,7 +205,7 @@ class ButtplugClientTest {
     void testStopScanning() throws ExecutionException, InterruptedException {
         client.setNextResponse(new Ok(1));
         boolean result = client.stopScanning();
-        
+
         assertTrue(result);
         assertInstanceOf(StopScanning.class, client.lastSentMessage);
     }
@@ -214,7 +214,7 @@ class ButtplugClientTest {
     void testStopAllDevices() throws ExecutionException, InterruptedException, IOException {
         client.setNextResponse(new Ok(1));
         boolean result = client.stopAllDevices();
-        
+
         assertTrue(result);
         assertInstanceOf(StopAllDevices.class, client.lastSentMessage);
     }
@@ -222,7 +222,7 @@ class ButtplugClientTest {
     @Test
     void testGetDevicesReturnsEmptyListInitially() {
         List<ButtplugClientDevice> devices = client.getDevices();
-        
+
         assertNotNull(devices);
         assertTrue(devices.isEmpty());
     }
@@ -231,7 +231,7 @@ class ButtplugClientTest {
     void testRequestDeviceList() throws ButtplugClientException, ExecutionException, InterruptedException {
 
         // Create test device
-        Device device = new Device(0,"Test Device",new HashMap<>(),100, "Display Name" );
+        Device device = new Device(0, "Test Device", new HashMap<>(), 100, "Display Name");
         HashMap<Integer, Device> devices = new HashMap<>();
         devices.put(0, device);
 
@@ -255,7 +255,7 @@ class ButtplugClientTest {
         assertEquals(1, client.getDevices().size());
         addedDevice.set(null);
 
-        Device device2 = new Device(1,"Test Device 2",new HashMap<>(),100, "Other" );
+        Device device2 = new Device(1, "Test Device 2", new HashMap<>(), 100, "Other");
         devices.put(1, device2);
 
         client.onMessage(Collections.singletonList(deviceList));
@@ -288,7 +288,7 @@ class ButtplugClientTest {
     @Test
     void testSendDeviceMessageWithValidDevice() throws Exception {
         // Add a device first
-        Device device = new Device(5,"Test Device",new HashMap<>(),100, "Display Name" );
+        Device device = new Device(5, "Test Device", new HashMap<>(), 100, "Display Name");
 
         HashMap<Integer, Device> devices = new HashMap<>();
         devices.put(5, device);
@@ -311,7 +311,7 @@ class ButtplugClientTest {
 
     @Test
     void testSendDeviceMessageWithInvalidDevice() {
-        Device device = new Device(999,"Invalid Device",new HashMap<>(),100, "" );
+        Device device = new Device(999, "Invalid Device", new HashMap<>(), 100, "");
 
 
         ButtplugClientDevice clientDevice = new ButtplugClientDevice(client, device);
@@ -328,7 +328,7 @@ class ButtplugClientTest {
     @Test
     void testDisconnect() {
         client.setConnectionState(ButtplugClient.ConnectionState.CONNECTED);
-        
+
         CompletableFuture<ButtplugMessage> future = new CompletableFuture<>();
         client.scheduleWait(10, future);
 
@@ -364,10 +364,10 @@ class ButtplugClientTest {
         client.doHandshake();
 
         assertEquals(ButtplugClient.ConnectionState.CONNECTED, client.getConnectionState());
-        
+
         // Wait a bit to see if ping timer fires
         Thread.sleep(300);
-        
+
         // Verify ping was sent
         boolean foundPing = false;
         for (ButtplugMessage msg : client.sentMessages) {
@@ -391,8 +391,8 @@ class ButtplugClientTest {
 
     @Test
     void testMultipleDevicesInDeviceList() throws Exception {
-        Device device1 = new Device(0,"Device 1",new HashMap<>(),100, "" );
-        Device device2 = new Device(1,"Device 2",new HashMap<>(),100, "" );
+        Device device1 = new Device(0, "Device 1", new HashMap<>(), 100, "");
+        Device device2 = new Device(1, "Device 2", new HashMap<>(), 100, "");
 
         HashMap<Integer, Device> devices = new HashMap<>();
         devices.put(0, device1);
@@ -437,7 +437,7 @@ class ButtplugClientTest {
         assertTrue(client.waitForOk(okFuture));
 
         CompletableFuture<ButtplugMessage> errorFuture = CompletableFuture.completedFuture(
-            new Error("Error", Error.ErrorClass.ERROR_UNKNOWN, 1)
+                new Error("Error", Error.ErrorClass.ERROR_UNKNOWN, 1)
         );
         assertFalse(client.waitForOk(errorFuture));
     }
@@ -447,10 +447,10 @@ class ButtplugClientTest {
      */
     private static class TestButtplugClient extends ButtplugClient {
         private final List<ButtplugMessage> messageQueue = new ArrayList<>();
-        private int queueIndex = 0;
         ButtplugMessage lastSentMessage;
         List<ButtplugMessage> sentMessages = new ArrayList<>();
         boolean cleanupCalled = false;
+        private int queueIndex = 0;
 
         public TestButtplugClient(String clientName) {
             super(clientName);
@@ -464,7 +464,7 @@ class ButtplugClientTest {
         protected CompletableFuture<ButtplugMessage> sendMessage(ButtplugMessage msg) {
             lastSentMessage = msg;
             sentMessages.add(msg);
-            
+
             CompletableFuture<ButtplugMessage> future = new CompletableFuture<>();
             scheduleWait(msg.getId(), future);
 
@@ -475,7 +475,7 @@ class ButtplugClientTest {
             } else {
                 onMessage(Collections.singletonList(new Ok(msg.getId())));
             }
-            
+
             return future;
         }
 

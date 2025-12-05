@@ -4,7 +4,8 @@ import io.github.blackspherefollower.buttplug4j.protocol.messages.Ok;
 import io.github.blackspherefollower.buttplug4j.protocol.messages.Ping;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class ButtplugMessageTest {
 
@@ -31,7 +32,7 @@ public class ButtplugMessageTest {
     public void testDifferentMessageTypes() {
         ButtplugMessage okMsg = new Ok(1);
         ButtplugMessage pingMsg = new Ping(2);
-        
+
         assertNotEquals(okMsg.getClass(), pingMsg.getClass());
         assertNotEquals(okMsg.getId(), pingMsg.getId());
     }

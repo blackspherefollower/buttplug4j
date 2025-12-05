@@ -2,7 +2,6 @@ package io.github.blackspherefollower.buttplug4j.client;
 
 import io.github.blackspherefollower.buttplug4j.protocol.ButtplugMessage;
 import io.github.blackspherefollower.buttplug4j.protocol.messages.DeviceFeature;
-import io.github.blackspherefollower.buttplug4j.protocol.messages.InputCmd;
 import io.github.blackspherefollower.buttplug4j.protocol.messages.InputCommandType;
 import io.github.blackspherefollower.buttplug4j.protocol.messages.OutputCmd;
 
