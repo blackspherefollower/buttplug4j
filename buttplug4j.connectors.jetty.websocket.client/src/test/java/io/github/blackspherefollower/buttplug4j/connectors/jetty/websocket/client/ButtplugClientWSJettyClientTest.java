@@ -3,16 +3,13 @@ package io.github.blackspherefollower.buttplug4j.connectors.jetty.websocket.clie
 import io.github.blackspherefollower.buttplug4j.client.ButtplugClientDevice;
 import io.github.blackspherefollower.buttplug4j.client.ButtplugClientDeviceFeature;
 import io.github.blackspherefollower.buttplug4j.client.ButtplugDeviceFeatureException;
-import io.github.blackspherefollower.buttplug4j.utils.test.WSDMClient;
-import io.github.blackspherefollower.buttplug4j.utils.test.IntifaceEngineWrapper;
 import io.github.blackspherefollower.buttplug4j.protocol.ButtplugMessage;
 import io.github.blackspherefollower.buttplug4j.protocol.messages.InputReading;
-
+import io.github.blackspherefollower.buttplug4j.utils.test.IntifaceEngineWrapper;
+import io.github.blackspherefollower.buttplug4j.utils.test.WSDMClient;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,7 +19,7 @@ public class ButtplugClientWSJettyClientTest {
 
     @Test
     public void TestConnect() throws Exception {
-        try(IntifaceEngineWrapper wrapper = new IntifaceEngineWrapper() ) {
+        try (IntifaceEngineWrapper wrapper = new IntifaceEngineWrapper()) {
             Thread.sleep(500);
             WSDMClient wsdev = new WSDMClient(new URI("ws://localhost:" + wrapper.dport), "LVS-Fake", "A9816725B");
             Thread.sleep(500);
@@ -57,7 +54,7 @@ public class ButtplugClientWSJettyClientTest {
     @Test
     @Disabled("See https://github.com/buttplugio/buttplug/issues/801")
     public void TestBattery() throws Exception {
-        try(IntifaceEngineWrapper wrapper = new IntifaceEngineWrapper() ) {
+        try (IntifaceEngineWrapper wrapper = new IntifaceEngineWrapper()) {
             Thread.sleep(500);
             WSDMClient wsdev = new WSDMClient(new URI("ws://localhost:" + wrapper.dport), "LVS-Fake", "A9816725B");
             Thread.sleep(500);

@@ -8,45 +8,97 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.WebSocket;
 import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.*;
 
 public class WSDMClient {
 
-        private WebSocket client;
-        private final WSDHeader header;
-        public ConcurrentLinkedQueue<String> messages = new ConcurrentLinkedQueue<>();
-        private final CompletableFuture<Boolean> connected = new CompletableFuture<>();
+    private final WSDHeader header;
+    private final CompletableFuture<Boolean> connected = new CompletableFuture<>();
+    public ConcurrentLinkedQueue<String> messages = new ConcurrentLinkedQueue<>();
+    public int battery = 100;
+    private WebSocket client;
 
-        public int battery = 100;
+    public WSDMClient(final URI url, final String identifier, final String address) throws Exception {
+        header = new WSDHeader();
+        header.identifier = identifier;
+        header.address = address;
 
-        static class WSDHeader {
-            @JsonProperty("identifier")
-            public String identifier;
-            @JsonProperty("address")
-            public String address;
-            @JsonProperty("version")
-            public int version = 0;
+        HttpClient
+                .newHttpClient()
+                .newWebSocketBuilder()
+                .buildAsync(url, new WebSocketClient(this))
+                .join();
+        connected.get(10, TimeUnit.SECONDS);
+
+    }
+
+    public void onClose(int statusCode, String reason) {
+        this.client = null;
+    }
+
+    public void onConnect(WebSocket client) {
+        this.client = client;
+        // Don't block the WS thread
+        new Thread(() -> {
+            try {
+                client.sendText(new ObjectMapper().writeValueAsString(header), true).get(1, TimeUnit.SECONDS);
+            } catch (JsonProcessingException | ExecutionException | InterruptedException | TimeoutException e) {
+                System.out.println("Failed to send header: " + e.getMessage());
+            }
+        }).start();
+    }
+
+    public void onMessage(final String message) {
+        System.out.println("Got message: " + message);
+        if (message.startsWith("DeviceType;")) {
+            new Thread(() -> {
+                try {
+                    sendMessage("Z:10:" + header.address + ";");
+                    if (!connected.isDone()) {
+                        connected.complete(true);
+                    }
+                } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }).start();
+            return;
         }
+        if (message.startsWith("Battery;")) {
+            new Thread(() -> {
+                try {
+                    sendMessage(battery + ";");
+                    connected.complete(true);
+                } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                    throw new RuntimeException(e);
+                }
 
-        public WSDMClient(final URI url, final String identifier, final String address) throws Exception {
-            header = new WSDHeader();
-            header.identifier = identifier;
-            header.address = address;
-
-            HttpClient
-                    .newHttpClient()
-                    .newWebSocketBuilder()
-                    .buildAsync(url, new WebSocketClient(this))
-                    .join();
-            connected.get(10, TimeUnit.SECONDS);
-
+            }).start();
+            return;
         }
+        messages.add(message);
+    }
+
+    protected void sendMessage(final String msg) throws ExecutionException, InterruptedException, TimeoutException {
+        client.sendBinary(ByteBuffer.wrap(msg.getBytes(StandardCharsets.UTF_8)), true).get(1, TimeUnit.SECONDS);
+    }
+
+    static class WSDHeader {
+        @JsonProperty("identifier")
+        public String identifier;
+        @JsonProperty("address")
+        public String address;
+        @JsonProperty("version")
+        public int version = 0;
+    }
 
     private static class WebSocketClient implements WebSocket.Listener {
         WSDMClient wsdmclient;
-        public WebSocketClient(WSDMClient wsdmclient) {this.wsdmclient = wsdmclient;}
+
+        public WebSocketClient(WSDMClient wsdmclient) {
+            this.wsdmclient = wsdmclient;
+        }
 
         @Override
         public void onOpen(WebSocket webSocket) {
@@ -83,56 +135,4 @@ public class WSDMClient {
             return WebSocket.Listener.super.onBinary(webSocket, message, last);
         }
     }
-
-
-        public void onClose(int statusCode, String reason) {
-            this.client = null;
-        }
-
-        public void onConnect(WebSocket client) {
-            this.client = client;
-            // Don't block the WS thread
-            new Thread(() -> {
-                try {
-                    client.sendText(new ObjectMapper().writeValueAsString(header), true).get(1, TimeUnit.SECONDS);
-                } catch (JsonProcessingException | ExecutionException | InterruptedException |TimeoutException e) {
-                    System.out.println("Failed to send header: " + e.getMessage());
-                }
-            }).start();
-        }
-
-        public void onMessage(final String message) {
-            System.out.println("Got message: " + message);
-            if(message.startsWith("DeviceType;")) {
-                new Thread(() -> {
-                    try {
-                        sendMessage("Z:10:" + header.address + ";");
-                        if(!connected.isDone()) {
-                            connected.complete(true);
-                        }
-                    } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                }).start();
-                return;
-            }
-            if(message.startsWith("Battery;")) {
-                new Thread(() -> {
-                    try {
-                        sendMessage(battery + ";");
-                        connected.complete(true);
-                    } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                }).start();
-                return;
-            }
-            messages.add(message);
-        }
-
-        protected void sendMessage(final String msg) throws ExecutionException, InterruptedException, TimeoutException {
-            client.sendBinary(ByteBuffer.wrap(msg.getBytes(StandardCharsets.UTF_8)), true).get(1, TimeUnit.SECONDS);
-        }
-    }
+}

@@ -1,4 +1,3 @@
-
 package io.github.blackspherefollower.buttplug4j.client;
 
 import io.github.blackspherefollower.buttplug4j.protocol.ButtplugMessage;
@@ -25,12 +24,12 @@ class ButtplugClientDeviceFeatureTest {
     @BeforeEach
     void setup() {
         mockDevice = mock(ButtplugClientDevice.class);
-        
+
         // Create a test feature with various output types
         testFeature = new DeviceFeature();
         testFeature.setFeatureIndex(0);
         testFeature.setFeatureDescription("Test Feature");
-        
+
         ArrayList<DeviceFeature.OutputDescriptor> outputs = new ArrayList<>();
         outputs.add(new DeviceFeature.Vibrate(new int[]{0, 100}));
         outputs.add(new DeviceFeature.Rotate(new int[]{0, 50}));
@@ -41,10 +40,10 @@ class ButtplugClientDeviceFeatureTest {
         outputs.add(new DeviceFeature.Led(new int[]{0, 255}));
         outputs.add(new DeviceFeature.Temperature(new int[]{0, 30}));
         testFeature.setOutput(outputs);
-        
+
         ArrayList<DeviceFeature.InputDescriptor> inputs = new ArrayList<>();
         testFeature.setInput(inputs);
-        
+
         clientFeature = new ButtplugClientDeviceFeature(mockDevice, testFeature);
     }
 
@@ -57,9 +56,9 @@ class ButtplugClientDeviceFeatureTest {
     void testVibrateWithValidStep() throws Exception {
         CompletableFuture<ButtplugMessage> future = CompletableFuture.completedFuture(mock(ButtplugMessage.class));
         when(mockDevice.sendOutputCommand(anyInt(), any(OutputCmd.IOutputCommand.class))).thenReturn(future);
-        
+
         Future<ButtplugMessage> result = clientFeature.Vibrate(50);
-        
+
         assertNotNull(result);
         ArgumentCaptor<OutputCmd.IOutputCommand> captor = ArgumentCaptor.forClass(OutputCmd.IOutputCommand.class);
         verify(mockDevice).sendOutputCommand(eq(0), captor.capture());
@@ -77,9 +76,9 @@ class ButtplugClientDeviceFeatureTest {
     void testVibrateFloatWithValidValue() throws Exception {
         CompletableFuture<ButtplugMessage> future = CompletableFuture.completedFuture(mock(ButtplugMessage.class));
         when(mockDevice.sendOutputCommand(anyInt(), any(OutputCmd.IOutputCommand.class))).thenReturn(future);
-        
+
         Future<ButtplugMessage> result = clientFeature.VibrateFloat(0.5f);
-        
+
         assertNotNull(result);
         ArgumentCaptor<OutputCmd.IOutputCommand> captor = ArgumentCaptor.forClass(OutputCmd.IOutputCommand.class);
         verify(mockDevice).sendOutputCommand(eq(0), captor.capture());
@@ -91,13 +90,13 @@ class ButtplugClientDeviceFeatureTest {
     void testVibrateFloatWithBoundaryValues() throws Exception {
         CompletableFuture<ButtplugMessage> future = CompletableFuture.completedFuture(mock(ButtplugMessage.class));
         when(mockDevice.sendOutputCommand(anyInt(), any(OutputCmd.IOutputCommand.class))).thenReturn(future);
-        
+
         // Test minimum value
         clientFeature.VibrateFloat(0.0f);
         ArgumentCaptor<OutputCmd.IOutputCommand> captor = ArgumentCaptor.forClass(OutputCmd.IOutputCommand.class);
         verify(mockDevice).sendOutputCommand(eq(0), captor.capture());
         assertEquals(0, ((OutputCmd.Vibrate) captor.getValue()).getValue());
-        
+
         // Test maximum value
         reset(mockDevice);
         when(mockDevice.sendOutputCommand(anyInt(), any(OutputCmd.IOutputCommand.class))).thenReturn(future);
@@ -116,9 +115,9 @@ class ButtplugClientDeviceFeatureTest {
     void testRotateWithValidStep() throws Exception {
         CompletableFuture<ButtplugMessage> future = CompletableFuture.completedFuture(mock(ButtplugMessage.class));
         when(mockDevice.sendOutputCommand(anyInt(), any(OutputCmd.IOutputCommand.class))).thenReturn(future);
-        
+
         Future<ButtplugMessage> result = clientFeature.Rotate(25);
-        
+
         assertNotNull(result);
         ArgumentCaptor<OutputCmd.IOutputCommand> captor = ArgumentCaptor.forClass(OutputCmd.IOutputCommand.class);
         verify(mockDevice).sendOutputCommand(eq(0), captor.capture());
@@ -130,9 +129,9 @@ class ButtplugClientDeviceFeatureTest {
     void testRotateFloatWithValidValue() throws Exception {
         CompletableFuture<ButtplugMessage> future = CompletableFuture.completedFuture(mock(ButtplugMessage.class));
         when(mockDevice.sendOutputCommand(anyInt(), any(OutputCmd.IOutputCommand.class))).thenReturn(future);
-        
+
         Future<ButtplugMessage> result = clientFeature.RotateFloat(0.5f);
-        
+
         assertNotNull(result);
         ArgumentCaptor<OutputCmd.IOutputCommand> captor = ArgumentCaptor.forClass(OutputCmd.IOutputCommand.class);
         verify(mockDevice).sendOutputCommand(eq(0), captor.capture());
@@ -144,9 +143,9 @@ class ButtplugClientDeviceFeatureTest {
     void testConstrictWithValidStep() throws Exception {
         CompletableFuture<ButtplugMessage> future = CompletableFuture.completedFuture(mock(ButtplugMessage.class));
         when(mockDevice.sendOutputCommand(anyInt(), any(OutputCmd.IOutputCommand.class))).thenReturn(future);
-        
+
         Future<ButtplugMessage> result = clientFeature.Constrict(5);
-        
+
         assertNotNull(result);
         ArgumentCaptor<OutputCmd.IOutputCommand> captor = ArgumentCaptor.forClass(OutputCmd.IOutputCommand.class);
         verify(mockDevice).sendOutputCommand(eq(0), captor.capture());
@@ -158,9 +157,9 @@ class ButtplugClientDeviceFeatureTest {
     void testConstrictFloatWithValidValue() throws Exception {
         CompletableFuture<ButtplugMessage> future = CompletableFuture.completedFuture(mock(ButtplugMessage.class));
         when(mockDevice.sendOutputCommand(anyInt(), any(OutputCmd.IOutputCommand.class))).thenReturn(future);
-        
+
         Future<ButtplugMessage> result = clientFeature.ConstrictFloat(0.5f);
-        
+
         assertNotNull(result);
         ArgumentCaptor<OutputCmd.IOutputCommand> captor = ArgumentCaptor.forClass(OutputCmd.IOutputCommand.class);
         verify(mockDevice).sendOutputCommand(eq(0), captor.capture());
@@ -172,9 +171,9 @@ class ButtplugClientDeviceFeatureTest {
     void testSprayWithValidStep() throws Exception {
         CompletableFuture<ButtplugMessage> future = CompletableFuture.completedFuture(mock(ButtplugMessage.class));
         when(mockDevice.sendOutputCommand(anyInt(), any(OutputCmd.IOutputCommand.class))).thenReturn(future);
-        
+
         Future<ButtplugMessage> result = clientFeature.Spray(3);
-        
+
         assertNotNull(result);
         ArgumentCaptor<OutputCmd.IOutputCommand> captor = ArgumentCaptor.forClass(OutputCmd.IOutputCommand.class);
         verify(mockDevice).sendOutputCommand(eq(0), captor.capture());
@@ -186,9 +185,9 @@ class ButtplugClientDeviceFeatureTest {
     void testSprayFloatWithValidValue() throws Exception {
         CompletableFuture<ButtplugMessage> future = CompletableFuture.completedFuture(mock(ButtplugMessage.class));
         when(mockDevice.sendOutputCommand(anyInt(), any(OutputCmd.IOutputCommand.class))).thenReturn(future);
-        
+
         Future<ButtplugMessage> result = clientFeature.SprayFloat(0.6f);
-        
+
         assertNotNull(result);
         ArgumentCaptor<OutputCmd.IOutputCommand> captor = ArgumentCaptor.forClass(OutputCmd.IOutputCommand.class);
         verify(mockDevice).sendOutputCommand(eq(0), captor.capture());
@@ -200,9 +199,9 @@ class ButtplugClientDeviceFeatureTest {
     void testPositionWithValidStep() throws Exception {
         CompletableFuture<ButtplugMessage> future = CompletableFuture.completedFuture(mock(ButtplugMessage.class));
         when(mockDevice.sendOutputCommand(anyInt(), any(OutputCmd.IOutputCommand.class))).thenReturn(future);
-        
+
         Future<ButtplugMessage> result = clientFeature.Position(15);
-        
+
         assertNotNull(result);
         ArgumentCaptor<OutputCmd.IOutputCommand> captor = ArgumentCaptor.forClass(OutputCmd.IOutputCommand.class);
         verify(mockDevice).sendOutputCommand(eq(0), captor.capture());
@@ -214,9 +213,9 @@ class ButtplugClientDeviceFeatureTest {
     void testPositionFloatWithValidValue() throws Exception {
         CompletableFuture<ButtplugMessage> future = CompletableFuture.completedFuture(mock(ButtplugMessage.class));
         when(mockDevice.sendOutputCommand(anyInt(), any(OutputCmd.IOutputCommand.class))).thenReturn(future);
-        
+
         Future<ButtplugMessage> result = clientFeature.PositionFloat(0.8f);
-        
+
         assertNotNull(result);
         ArgumentCaptor<OutputCmd.IOutputCommand> captor = ArgumentCaptor.forClass(OutputCmd.IOutputCommand.class);
         verify(mockDevice).sendOutputCommand(eq(0), captor.capture());
@@ -228,13 +227,13 @@ class ButtplugClientDeviceFeatureTest {
     void testPositionWithDurationWithValidStep() throws Exception {
         CompletableFuture<ButtplugMessage> future = CompletableFuture.completedFuture(mock(ButtplugMessage.class));
         when(mockDevice.sendOutputCommand(anyInt(), any(OutputCmd.IOutputCommand.class))).thenReturn(future);
-        
+
         // Add PositionWithDuration to the feature
         testFeature.getOutput().add(new DeviceFeature.PositionWithDuration(new int[]{0, 25}, new int[]{0, 1000}));
         clientFeature = new ButtplugClientDeviceFeature(mockDevice, testFeature);
-        
+
         Future<ButtplugMessage> result = clientFeature.PositionWithDuration(15, 500);
-        
+
         assertNotNull(result);
         ArgumentCaptor<OutputCmd.IOutputCommand> captor = ArgumentCaptor.forClass(OutputCmd.IOutputCommand.class);
         verify(mockDevice).sendOutputCommand(eq(0), captor.capture());
@@ -247,13 +246,13 @@ class ButtplugClientDeviceFeatureTest {
     void testPositionWithDurationFloatWithValidValue() throws Exception {
         CompletableFuture<ButtplugMessage> future = CompletableFuture.completedFuture(mock(ButtplugMessage.class));
         when(mockDevice.sendOutputCommand(anyInt(), any(OutputCmd.IOutputCommand.class))).thenReturn(future);
-        
+
         // Add PositionWithDuration to the feature
         testFeature.getOutput().add(new DeviceFeature.PositionWithDuration(new int[]{0, 25}, new int[]{0, 1000}));
         clientFeature = new ButtplugClientDeviceFeature(mockDevice, testFeature);
-        
+
         Future<ButtplugMessage> result = clientFeature.PositionWithDurationFloat(0.8f, 500);
-        
+
         assertNotNull(result);
         ArgumentCaptor<OutputCmd.IOutputCommand> captor = ArgumentCaptor.forClass(OutputCmd.IOutputCommand.class);
         verify(mockDevice).sendOutputCommand(eq(0), captor.capture());
@@ -266,9 +265,9 @@ class ButtplugClientDeviceFeatureTest {
     void testLedWithValidStep() throws Exception {
         CompletableFuture<ButtplugMessage> future = CompletableFuture.completedFuture(mock(ButtplugMessage.class));
         when(mockDevice.sendOutputCommand(anyInt(), any(OutputCmd.IOutputCommand.class))).thenReturn(future);
-        
+
         Future<ButtplugMessage> result = clientFeature.Led(128);
-        
+
         assertNotNull(result);
         ArgumentCaptor<OutputCmd.IOutputCommand> captor = ArgumentCaptor.forClass(OutputCmd.IOutputCommand.class);
         verify(mockDevice).sendOutputCommand(eq(0), captor.capture());
@@ -280,9 +279,9 @@ class ButtplugClientDeviceFeatureTest {
     void testLedFloatWithValidValue() throws Exception {
         CompletableFuture<ButtplugMessage> future = CompletableFuture.completedFuture(mock(ButtplugMessage.class));
         when(mockDevice.sendOutputCommand(anyInt(), any(OutputCmd.IOutputCommand.class))).thenReturn(future);
-        
+
         Future<ButtplugMessage> result = clientFeature.LedFloat(0.5f);
-        
+
         assertNotNull(result);
         ArgumentCaptor<OutputCmd.IOutputCommand> captor = ArgumentCaptor.forClass(OutputCmd.IOutputCommand.class);
         verify(mockDevice).sendOutputCommand(eq(0), captor.capture());
@@ -294,9 +293,9 @@ class ButtplugClientDeviceFeatureTest {
     void testOscillateWithValidStep() throws Exception {
         CompletableFuture<ButtplugMessage> future = CompletableFuture.completedFuture(mock(ButtplugMessage.class));
         when(mockDevice.sendOutputCommand(anyInt(), any(OutputCmd.IOutputCommand.class))).thenReturn(future);
-        
+
         Future<ButtplugMessage> result = clientFeature.Oscillate(10);
-        
+
         assertNotNull(result);
         ArgumentCaptor<OutputCmd.IOutputCommand> captor = ArgumentCaptor.forClass(OutputCmd.IOutputCommand.class);
         verify(mockDevice).sendOutputCommand(eq(0), captor.capture());
@@ -308,9 +307,9 @@ class ButtplugClientDeviceFeatureTest {
     void testOscillateFloatWithValidValue() throws Exception {
         CompletableFuture<ButtplugMessage> future = CompletableFuture.completedFuture(mock(ButtplugMessage.class));
         when(mockDevice.sendOutputCommand(anyInt(), any(OutputCmd.IOutputCommand.class))).thenReturn(future);
-        
+
         Future<ButtplugMessage> result = clientFeature.OscillateFloat(0.5f);
-        
+
         assertNotNull(result);
         ArgumentCaptor<OutputCmd.IOutputCommand> captor = ArgumentCaptor.forClass(OutputCmd.IOutputCommand.class);
         verify(mockDevice).sendOutputCommand(eq(0), captor.capture());
@@ -322,9 +321,9 @@ class ButtplugClientDeviceFeatureTest {
     void testTemperatureWithValidStep() throws Exception {
         CompletableFuture<ButtplugMessage> future = CompletableFuture.completedFuture(mock(ButtplugMessage.class));
         when(mockDevice.sendOutputCommand(anyInt(), any(OutputCmd.IOutputCommand.class))).thenReturn(future);
-        
+
         Future<ButtplugMessage> result = clientFeature.Temperature(15);
-        
+
         assertNotNull(result);
         ArgumentCaptor<OutputCmd.IOutputCommand> captor = ArgumentCaptor.forClass(OutputCmd.IOutputCommand.class);
         verify(mockDevice).sendOutputCommand(eq(0), captor.capture());
@@ -336,9 +335,9 @@ class ButtplugClientDeviceFeatureTest {
     void testTemperatureFloatWithValidValue() throws Exception {
         CompletableFuture<ButtplugMessage> future = CompletableFuture.completedFuture(mock(ButtplugMessage.class));
         when(mockDevice.sendOutputCommand(anyInt(), any(OutputCmd.IOutputCommand.class))).thenReturn(future);
-        
+
         Future<ButtplugMessage> result = clientFeature.TemperatureFloat(0.5f);
-        
+
         assertNotNull(result);
         ArgumentCaptor<OutputCmd.IOutputCommand> captor = ArgumentCaptor.forClass(OutputCmd.IOutputCommand.class);
         verify(mockDevice).sendOutputCommand(eq(0), captor.capture());
@@ -354,9 +353,9 @@ class ButtplugClientDeviceFeatureTest {
         limitedFeature.setFeatureDescription("Limited Feature");
         limitedFeature.setOutput(new ArrayList<>());
         limitedFeature.setInput(new ArrayList<>());
-        
+
         ButtplugClientDeviceFeature limited = new ButtplugClientDeviceFeature(mockDevice, limitedFeature);
-        
+
         assertThrows(ButtplugDeviceFeatureException.class, () -> limited.Vibrate(50));
     }
 

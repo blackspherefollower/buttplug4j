@@ -43,7 +43,7 @@ public final class Pair<A, B> {
         }
         return ((Pair<?, ?>) o).a.equals(a) && ((Pair<?, ?>) o).b.equals(b);
     }
-    
+
     @Override
     public int hashCode() {
         return a.hashCode() ^ b.hashCode();
