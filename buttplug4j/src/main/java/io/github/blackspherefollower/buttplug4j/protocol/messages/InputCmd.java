@@ -8,10 +8,10 @@ public class InputCmd extends ButtplugDeviceMessage {
     @JsonProperty(value = "FeatureIndex", required = true)
     private int featureIndex;
 
-    @JsonProperty(value = "InputType", required = true)
+    @JsonProperty(value = "Type", required = true)
     private String inputType;
 
-    @JsonProperty(value = "InputCommand", required = true)
+    @JsonProperty(value = "Command", required = true)
     private InputCommandType inputCommand;
 
     public InputCmd(int id, final long deviceIndex, final int featureIndex, final String inputType, final InputCommandType inputCommand) {

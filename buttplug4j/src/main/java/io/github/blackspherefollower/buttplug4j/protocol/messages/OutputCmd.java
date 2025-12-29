@@ -61,6 +61,9 @@ public class OutputCmd extends ButtplugDeviceMessage {
         protected ValueCommand(int value) {
             this.value = value;
         }
+        protected ValueCommand() {
+            this.value = 0;
+        }
 
         public int getValue() {
             return value;
@@ -151,28 +154,18 @@ public class OutputCmd extends ButtplugDeviceMessage {
         }
     }
 
-    public static class PositionWithDuration implements IOutputCommand {
-        @JsonProperty(value = "Position", required = true)
-        private int position;
+    public static class PositionWithDuration extends ValueCommand {
         @JsonProperty(value = "Duration", required = true)
         private int duration;
 
-        public PositionWithDuration(int position, int duration) {
-            this.position = position;
+        public PositionWithDuration(int value, int duration) {
+            super(value);
             this.duration = duration;
         }
 
         public PositionWithDuration() {
-            this.position = 0;
+            super();
             this.duration = 0;
-        }
-
-        public int getPosition() {
-            return position;
-        }
-
-        public void setPosition(int position) {
-            this.position = position;
         }
 
         public int getDuration() {
