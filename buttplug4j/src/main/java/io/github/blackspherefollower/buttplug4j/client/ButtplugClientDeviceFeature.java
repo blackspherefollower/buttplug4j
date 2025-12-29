@@ -43,7 +43,7 @@ public class ButtplugClientDeviceFeature {
             steps *= value;
             return (int) Math.floor(steps);
         } else if (desc instanceof DeviceFeature.PositionWithDuration) {
-            double steps = ((DeviceFeature.PositionWithDuration) desc).getPosition()[1];
+            double steps = ((DeviceFeature.PositionWithDuration) desc).getValue()[1];
             steps *= value;
             return (int) Math.floor(steps);
         } else {
@@ -58,11 +58,6 @@ public class ButtplugClientDeviceFeature {
         }
         if (desc instanceof DeviceFeature.SteppedOutputDescriptor) {
             int steps = ((DeviceFeature.SteppedOutputDescriptor) desc).getValue()[1];
-            if (value > steps || value < 0) {
-                throw new ButtplugDeviceFeatureException("Range error");
-            }
-        } else if (desc instanceof DeviceFeature.PositionWithDuration) {
-            int steps = ((DeviceFeature.PositionWithDuration) desc).getPosition()[1];
             if (value > steps || value < 0) {
                 throw new ButtplugDeviceFeatureException("Range error");
             }

@@ -189,28 +189,18 @@ public final class DeviceFeature {
         }
     }
 
-    public static class PositionWithDuration implements OutputDescriptor {
-        @JsonProperty(value = "Position", required = true)
-        private int[] position;
+    public static class PositionWithDuration extends SteppedOutputDescriptor {
         @JsonProperty(value = "Duration", required = true)
         private int[] duration;
 
-        public PositionWithDuration(int[] position, int[] duration) {
-            this.position = position;
+        public PositionWithDuration(int[] value, int[] duration) {
+            super(value);
             this.duration = duration;
         }
 
         public PositionWithDuration() {
-            this.position = new int[]{0, 0};
+            super(new int[]{0, 0});
             this.duration = new int[]{0, 0};
-        }
-
-        public int[] getPosition() {
-            return position;
-        }
-
-        public void setPosition(int[] position) {
-            this.position = position;
         }
 
         public int[] getDuration() {
@@ -230,7 +220,7 @@ public final class DeviceFeature {
                 return false;
             }
             PositionWithDuration that = (PositionWithDuration) o;
-            return java.util.Arrays.equals(position, that.position) && java.util.Arrays.equals(duration, that.duration);
+            return java.util.Arrays.equals(getValue(), that.getValue()) && java.util.Arrays.equals(duration, that.duration);
         }
     }
 
@@ -243,7 +233,7 @@ public final class DeviceFeature {
             @JsonSubTypes.Type(value = DeviceFeature.PositionInput.class, name = "Position")
     })
     public static class InputDescriptor {
-        @JsonProperty(value = "InputCommands", required = true)
+        @JsonProperty(value = "Command", required = true)
         private ArrayList<InputCommandType> input;
 
         public InputDescriptor(ArrayList<InputCommandType> input) {
@@ -260,7 +250,7 @@ public final class DeviceFeature {
     }
 
     public static class RangedInputDescriptor extends InputDescriptor {
-        @JsonProperty(value = "ValueRange", required = true)
+        @JsonProperty(value = "Value", required = true)
         private int[][] valueRange;
 
         public RangedInputDescriptor(ArrayList<InputCommandType> input, int[][] valueRange) {

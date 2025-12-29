@@ -34,7 +34,7 @@ public class InputCmdTest {
 
     @Test
     public void testInputCmdSubscribe() throws IOException, ButtplugProtocolException {
-        String testStr = "[{\"InputCmd\":{\"Id\":1,\"DeviceIndex\":0,\"FeatureIndex\":0,\"InputType\":\"Battery\",\"InputCommand\":\"Subscribe\"}}]";
+        String testStr = "[{\"InputCmd\":{\"Id\":1,\"DeviceIndex\":0,\"FeatureIndex\":0,\"Type\":\"Battery\",\"Command\":\"Subscribe\"}}]";
 
         Validator.Result result = new ValidatorFactory().validate(schema, testStr);
         assertTrue(result.isValid(), result.getErrors().stream().map(Error::getError).collect(Collectors.joining("\n")));
@@ -59,7 +59,7 @@ public class InputCmdTest {
 
     @Test
     public void testInputCmdUnsubscribe() throws IOException, ButtplugProtocolException {
-        String testStr = "[{\"InputCmd\":{\"Id\":2,\"DeviceIndex\":1,\"FeatureIndex\":1,\"InputType\":\"RSSI\",\"InputCommand\":\"Unsubscribe\"}}]";
+        String testStr = "[{\"InputCmd\":{\"Id\":2,\"DeviceIndex\":1,\"FeatureIndex\":1,\"Type\":\"RSSI\",\"Command\":\"Unsubscribe\"}}]";
 
         Validator.Result result = new ValidatorFactory().validate(schema, testStr);
         assertTrue(result.isValid(), result.getErrors().stream().map(Error::getError).collect(Collectors.joining("\n")));
@@ -84,7 +84,7 @@ public class InputCmdTest {
 
     @Test
     public void testInputCmdRead() throws IOException, ButtplugProtocolException {
-        String testStr = "[{\"InputCmd\":{\"Id\":3,\"DeviceIndex\":0,\"FeatureIndex\":0,\"InputType\":\"Button\",\"InputCommand\":\"Read\"}}]";
+        String testStr = "[{\"InputCmd\":{\"Id\":3,\"DeviceIndex\":0,\"FeatureIndex\":0,\"Type\":\"Button\",\"Command\":\"Read\"}}]";
 
         Validator.Result result = new ValidatorFactory().validate(schema, testStr);
         assertTrue(result.isValid(), result.getErrors().stream().map(Error::getError).collect(Collectors.joining("\n")));

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -52,7 +53,6 @@ public class ButtplugClientWSJettyClientTest {
     }
 
     @Test
-    @Disabled("See https://github.com/buttplugio/buttplug/issues/801")
     public void TestBattery() throws Exception {
         try (IntifaceEngineWrapper wrapper = new IntifaceEngineWrapper()) {
             Thread.sleep(500);
@@ -68,7 +68,7 @@ public class ButtplugClientWSJettyClientTest {
             for (ButtplugClientDevice dev : client.getDevices()) {
                 for (ButtplugClientDeviceFeature feat : dev.getDeviceFeatures().values()) {
                     if (feat.HasBattery()) {
-                        ButtplugMessage res = feat.ReadBattery().get();
+                        ButtplugMessage res = feat.ReadBattery().get(2, TimeUnit.SECONDS);
                         if (res instanceof InputReading && ((InputReading) res).getData() instanceof InputReading.BatteryData) {
                             InputReading.BatteryData reading = (InputReading.BatteryData) ((InputReading) res).getData();
                             int battery = reading.getValue();

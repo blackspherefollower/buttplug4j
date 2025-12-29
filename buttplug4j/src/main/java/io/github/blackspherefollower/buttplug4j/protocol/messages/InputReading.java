@@ -1,18 +1,24 @@
 package io.github.blackspherefollower.buttplug4j.protocol.messages;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.github.blackspherefollower.buttplug4j.protocol.ButtplugDeviceMessage;
 
 public class InputReading extends ButtplugDeviceMessage {
 
     @JsonProperty(value = "FeatureIndex", required = true)
     private int featureIndex;
-    @JsonProperty(value = "Data", required = true)
+    @JsonProperty(value = "Reading", required = true)
     private InputData data;
 
     public InputReading(int id, long deviceIndex, int featureIndex) {
         super(id, deviceIndex);
         this.featureIndex = featureIndex;
+    }
+    public InputReading() {
+        super(-1, -1);
+        this.featureIndex = -1;
     }
 
     public InputData getData() {
@@ -31,11 +37,19 @@ public class InputReading extends ButtplugDeviceMessage {
         this.featureIndex = featureIndex;
     }
 
-    public interface InputData {
+    @JsonTypeInfo(include = JsonTypeInfo.As.WRAPPER_OBJECT, use = JsonTypeInfo.Id.NAME)
+    @JsonSubTypes({
+            @JsonSubTypes.Type(value = BatteryData.class, name = "Battery"),
+            @JsonSubTypes.Type(value = RssiData.class, name = "RSSI"),
+            @JsonSubTypes.Type(value = ButtonData.class, name = "Button"),
+            @JsonSubTypes.Type(value = PresureData.class, name = "Pressure"),
+            @JsonSubTypes.Type(value = Position.class, name = "Position"),
+    })
+    public static class InputData {
     }
 
-    static public class InputIntegerData {
-        @JsonProperty(value = "Data", required = true)
+    static public class InputIntegerData extends InputData {
+        @JsonProperty(value = "Value", required = true)
         int value;
 
         public int getValue() {
@@ -57,5 +71,7 @@ public class InputReading extends ButtplugDeviceMessage {
     }
 
     static public class PresureData extends InputIntegerData {
+    }
+    static public class Position extends InputIntegerData {
     }
 }
