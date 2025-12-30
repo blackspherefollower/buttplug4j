@@ -67,7 +67,7 @@ public class InputReadingTest {
         String testStr = "[{\"InputReading\":{\"Id\":10,\"DeviceIndex\":0,\"FeatureIndex\":1,\"Reading\":{\"Battery\":{\"Value\":100}}}}]";
 
         Validator.Result result = new ValidatorFactory().validate(schema, testStr);
-        //assertTrue(result.isValid(), result.getErrors().stream().map(error -> error.getError() + " - " + error.getInstanceLocation()).collect(Collectors.joining("\n")));
+        assertTrue(result.isValid(), result.getErrors().stream().map(error -> error.getError() + " - " + error.getInstanceLocation()).collect(Collectors.joining("\n")));
 
         ButtplugJsonMessageParser parser = new ButtplugJsonMessageParser();
         List<ButtplugMessage> msgs = parser.parseJson(testStr);
