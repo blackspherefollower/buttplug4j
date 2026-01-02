@@ -41,22 +41,35 @@ public class ErrorTest {
         ButtplugJsonMessageParser parser = new ButtplugJsonMessageParser();
         List<ButtplugMessage> msgs = parser.parseJson(testStr);
 
-        assertEquals(msgs.size(), 1);
-        assertEquals(msgs.get(0).getClass(),
-                Error.class);
-        assertEquals(msgs.get(0).getId(), 7);
+        assertEquals(1, msgs.size());
+        assertEquals(Error.class,
+                msgs.get(0).getClass());
+        assertEquals(7, msgs.get(0).getId());
         assertEquals(
-                ((Error) msgs.get(0)).getErrorMessage(),
-                "TestError");
+                "TestError",
+                ((Error) msgs.get(0)).getErrorMessage());
         assertEquals(
-                ((Error) msgs.get(0)).getErrorCode(),
-                Error.ErrorClass.ERROR_DEVICE);
+                Error.ErrorClass.ERROR_DEVICE,
+                ((Error) msgs.get(0)).getErrorCode());
 
         String jsonOut = parser.formatJson(msgs);
         assertEquals(testStr, jsonOut);
 
         jsonOut = parser.formatJson(msgs.get(0));
         assertEquals(testStr, jsonOut);
+    }
+
+    @Test
+    public void testException() throws IOException, ButtplugProtocolException {
+        Error e = new Error(new Exception("TestError"), 7);
+
+        assertEquals(7, e.getId());
+        assertEquals(
+                "TestError",
+                e.getException().getMessage());
+        assertEquals(
+                Error.ErrorClass.ERROR_UNKNOWN,
+                e.getErrorCode());
     }
 
 }

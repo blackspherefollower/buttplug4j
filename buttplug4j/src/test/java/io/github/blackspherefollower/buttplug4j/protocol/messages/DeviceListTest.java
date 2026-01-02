@@ -33,7 +33,7 @@ public class DeviceListTest {
 
     @Test
     public void test() throws IOException, ButtplugProtocolException {
-        String testStr = "[{\"DeviceList\":{\"Id\":5,\"Devices\":{\"0\":{\"DeviceIndex\":0,\"DeviceName\":\"Test Vibrator\",\"DeviceMessageTimingGap\":100,\"DeviceFeatures\":{\"0\":{\"FeatureIndex\":0,\"FeatureDescription\":\"Clitoral Stimulator\",\"Output\":{\"Vibrate\":{\"Value\":[0,20]}}},\"1\":{\"FeatureIndex\":1,\"FeatureDescription\":\"Insertable Stimulator\",\"Output\":{\"Vibrate\":{\"Value\":[0,20]}}},\"2\":{\"FeatureIndex\":2,\"FeatureDescription\":\"Battery\",\"Input\":{\"Battery\":{\"Command\":[\"Read\"],\"Value\":[[0,0],[0,100]]}}}}},\"2\":{\"DeviceIndex\":2,\"DeviceName\":\"Test Stroker\",\"DeviceMessageTimingGap\":100,\"DeviceDisplayName\":\"User set name\",\"DeviceFeatures\":{\"0\":{\"FeatureIndex\":0,\"FeatureDescription\":\"Stroker\",\"Output\":{\"Oscillate\":{\"Value\":[0,20]},\"PositionWithDuration\":{\"Value\":[0,100],\"Duration\":[0,2000]}},\"Input\":{\"Position\":{\"Command\":[\"Subscribe\",\"Read\"],\"Value\":[[0,0],[0,100]]}}},\"1\":{\"FeatureIndex\":1,\"FeatureDescription\":\"Bluetooth Radio RSSI\",\"Input\":{\"RSSI\":{\"Command\":[\"Read\"],\"Value\":[[-10,0],[-100,0]]}}}}}}}}]";
+        String testStr = "[{\"DeviceList\":{\"Id\":5,\"Devices\":{\"0\":{\"DeviceIndex\":0,\"DeviceName\":\"Test Vibrator\",\"DeviceMessageTimingGap\":100,\"DeviceFeatures\":{\"0\":{\"FeatureIndex\":0,\"FeatureDescription\":\"Clitoral Stimulator\",\"Output\":{\"Vibrate\":{\"Value\":[0,20]}}},\"1\":{\"FeatureIndex\":1,\"FeatureDescription\":\"Insertable Stimulator\",\"Output\":{\"Vibrate\":{\"Value\":[0,20]}}},\"2\":{\"FeatureIndex\":2,\"FeatureDescription\":\"Battery\",\"Input\":{\"Battery\":{\"Command\":[\"Read\"],\"Value\":[[0,0],[0,100]]}}}}},\"2\":{\"DeviceIndex\":2,\"DeviceName\":\"Test Stroker\",\"DeviceMessageTimingGap\":100,\"DeviceDisplayName\":\"User set name\",\"DeviceFeatures\":{\"0\":{\"FeatureIndex\":0,\"FeatureDescription\":\"Stroker\",\"Output\":{\"Oscillate\":{\"Value\":[0,20]},\"PositionWithDuration\":{\"Value\":[0,100],\"Duration\":[0,2000]}},\"Input\":{\"Position\":{\"Command\":[\"Subscribe\",\"Read\"],\"Value\":[[0,0],[0,100]]}}},\"1\":{\"FeatureIndex\":1,\"FeatureDescription\":\"Bluetooth Radio RSSI\",\"Input\":{\"Rssi\":{\"Command\":[\"Read\"],\"Value\":[[-10,0],[-100,0]]}}}}}}}}]";
 
         Validator.Result result = new ValidatorFactory().validate(schema, testStr);
         assertTrue(result.isValid(), result.getErrors().stream().map(error -> error.getError() + " - " + error.getInstanceLocation()).collect(Collectors.joining("\n")));
@@ -91,6 +91,69 @@ public class DeviceListTest {
         assertEquals(1, dev2Features.get(1).getInput().size());
         assertArrayEquals(new String[]{"Rssi"}, dev2Features.get(1).getInput().stream().map(inputDescriptor -> inputDescriptor.getClass().getSimpleName()).toArray());
 
+
+        String jsonOut = parser.formatJson(msgs);
+        assertEquals(testStr, jsonOut);
+
+        jsonOut = parser.formatJson(msgs.get(0));
+        assertEquals(testStr, jsonOut);
+    }
+
+    @Test
+    public void testObsure() throws IOException, ButtplugProtocolException {
+        String testStr = "[{\"DeviceList\":{\"Id\":5,\"Devices\":{\"0\":{\"DeviceIndex\":0,\"DeviceName\":\"Test Everything\",\"DeviceMessageTimingGap\":100,\"DeviceDisplayName\":\"Everything\",\"DeviceFeatures\":{" +
+                "\"0\":{\"FeatureIndex\":0,\"FeatureDescription\":\"Example Vibrate\",\"Output\":{\"Vibrate\":{\"Value\":[0,20]}}}," +
+                "\"1\":{\"FeatureIndex\":1,\"FeatureDescription\":\"Example Rotate\",\"Output\":{\"Rotate\":{\"Value\":[-20,20]}}}," +
+                "\"2\":{\"FeatureIndex\":2,\"FeatureDescription\":\"Example Oscillate\",\"Output\":{\"Oscillate\":{\"Value\":[0,20]}}}," +
+                "\"3\":{\"FeatureIndex\":3,\"FeatureDescription\":\"Example Constrict\",\"Output\":{\"Constrict\":{\"Value\":[0,20]}}}," +
+                "\"4\":{\"FeatureIndex\":4,\"FeatureDescription\":\"Example Temperature\",\"Output\":{\"Temperature\":{\"Value\":[0,20]}}}," +
+                "\"5\":{\"FeatureIndex\":5,\"FeatureDescription\":\"Example Spray\",\"Output\":{\"Spray\":{\"Value\":[0,1]}}}," +
+                "\"6\":{\"FeatureIndex\":6,\"FeatureDescription\":\"Example Led\",\"Output\":{\"Led\":{\"Value\":[0,255]}}}," +
+                "\"7\":{\"FeatureIndex\":7,\"FeatureDescription\":\"Example Position\",\"Output\":{\"Position\":{\"Value\":[0,255]}}}," +
+                "\"8\":{\"FeatureIndex\":8,\"FeatureDescription\":\"Example PositionWithDuration\",\"Output\":{\"PositionWithDuration\":{\"Value\":[0,255],\"Duration\":[0,2000]}}}," +
+                "\"9\":{\"FeatureIndex\":9,\"FeatureDescription\":\"Example Button\",\"Input\":{\"Button\":{\"Command\":[\"Read\"],\"Value\":[[0,0],[0,1]]}}}," +
+                "\"10\":{\"FeatureIndex\":10,\"FeatureDescription\":\"Example Pressure\",\"Input\":{\"Pressure\":{\"Command\":[\"Read\"],\"Value\":[[0,0],[0,100]]}}}," +
+                "\"11\":{\"FeatureIndex\":11,\"FeatureDescription\":\"Example Rssi\",\"Input\":{\"Rssi\":{\"Command\":[\"Read\"],\"Value\":[[0,0],[0,100]]}}}," +
+                "\"12\":{\"FeatureIndex\":12,\"FeatureDescription\":\"Example Battery\",\"Input\":{\"Battery\":{\"Command\":[\"Read\"],\"Value\":[[0,0],[0,100]]}}}" +
+                "}}}}}]";
+
+        Validator.Result result = new ValidatorFactory().validate(schema, testStr);
+        assertTrue(result.isValid(), result.getErrors().stream().map(error -> error.getError() + " - " + error.getInstanceLocation()).collect(Collectors.joining("\n")));
+
+        ButtplugJsonMessageParser parser = new ButtplugJsonMessageParser();
+        List<ButtplugMessage> msgs = parser.parseJson(testStr);
+
+        assertEquals(1, msgs.size());
+        assertEquals(DeviceList.class, msgs.get(0).getClass());
+        assertEquals(5, msgs.get(0).getId());
+        assertEquals(1, ((DeviceList) msgs.get(0)).getDevices().size());
+
+        HashMap<Integer, Device> devs = ((DeviceList) msgs.get(0)).getDevices();
+        assertNotNull(devs.get(0));
+        assertEquals(0, devs.get(0).getDeviceIndex());
+        assertEquals("Test Everything", devs.get(0).getDeviceName());
+        assertEquals("Everything", devs.get(0).getDeviceDisplayName());
+        assertEquals(100, devs.get(0).getDeviceMessageTimingGap());
+        HashMap<Integer, DeviceFeature> dev0Features = devs.get(0).getDeviceFeatures();
+        assertEquals(13, dev0Features.size());
+
+        String[] outputNames = new String[]{"Vibrate", "Rotate", "Oscillate", "Constrict", "Temperature", "Spray", "Led", "Position", "PositionWithDuration"};
+        for (int i = 0; i < outputNames.length; i++) {
+            assertEquals(i, dev0Features.get(i).getFeatureIndex());
+            assertEquals("Example "+outputNames[i], dev0Features.get(i).getFeatureDescription());
+            assertEquals(1, dev0Features.get(i).getOutput().size());
+            assertArrayEquals(new String[]{outputNames[i]}, dev0Features.get(i).getOutput().stream().map(outputDescriptor -> outputDescriptor.getClass().getSimpleName()).toArray());
+            assertNull(dev0Features.get(0).getInput());
+        }
+
+        String[] inputNames = new String[]{"Button", "Pressure", "Rssi", "Battery"};
+        for (int i = 0; i < inputNames.length; i++) {
+            assertEquals(i+outputNames.length, dev0Features.get(i+outputNames.length).getFeatureIndex());
+            assertEquals("Example "+inputNames[i], dev0Features.get(i+outputNames.length).getFeatureDescription());
+            assertNull(dev0Features.get(i+outputNames.length).getOutput());
+            assertEquals(1, dev0Features.get(i+outputNames.length).getInput().size());
+            assertArrayEquals(new String[]{inputNames[i]}, dev0Features.get(i+outputNames.length).getInput().stream().map(inputDescriptor -> inputDescriptor.getClass().getSimpleName()).toArray());
+        }
 
         String jsonOut = parser.formatJson(msgs);
         assertEquals(testStr, jsonOut);

@@ -39,10 +39,10 @@ public class InputReading extends ButtplugDeviceMessage {
 
     @JsonTypeInfo(include = JsonTypeInfo.As.WRAPPER_OBJECT, use = JsonTypeInfo.Id.NAME)
     @JsonSubTypes({
-            @JsonSubTypes.Type(value = BatteryData.class, name = "Battery"),
-            @JsonSubTypes.Type(value = RssiData.class, name = "RSSI"),
-            @JsonSubTypes.Type(value = ButtonData.class, name = "Button"),
-            @JsonSubTypes.Type(value = PresureData.class, name = "Pressure"),
+            @JsonSubTypes.Type(value = Battery.class, name = "Battery"),
+            @JsonSubTypes.Type(value = Rssi.class, name = "Rssi"),
+            @JsonSubTypes.Type(value = Button.class, name = "Button"),
+            @JsonSubTypes.Type(value = Presure.class, name = "Pressure"),
             @JsonSubTypes.Type(value = Position.class, name = "Position"),
     })
     public static class InputData {
@@ -61,17 +61,18 @@ public class InputReading extends ButtplugDeviceMessage {
         }
     }
 
-    static public class BatteryData extends InputIntegerData {
+    static public class Battery extends InputIntegerData {
     }
 
-    static public class RssiData extends InputIntegerData {
+    static public class Rssi extends InputIntegerData {
     }
 
-    static public class ButtonData extends InputIntegerData {
+    static public class Button extends InputIntegerData {
     }
 
-    static public class PresureData extends InputIntegerData {
+    static public class Presure extends InputIntegerData {
     }
+
     static public class Position extends InputIntegerData {
     }
 }

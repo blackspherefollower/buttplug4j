@@ -66,8 +66,8 @@ public class ButtplugWSClientMockTest {
                 for (ButtplugClientDeviceFeature feat : dev.getDeviceFeatures().values()) {
                     if (feat.HasBattery()) {
                         ButtplugMessage res = feat.ReadBattery().get(2, TimeUnit.SECONDS);
-                        if (res instanceof InputReading && ((InputReading) res).getData() instanceof InputReading.BatteryData) {
-                            InputReading.BatteryData reading = (InputReading.BatteryData) ((InputReading) res).getData();
+                        if (res instanceof InputReading && ((InputReading) res).getData() instanceof InputReading.Battery) {
+                            InputReading.Battery reading = (InputReading.Battery) ((InputReading) res).getData();
                             int battery = reading.getValue();
                             System.out.println("Battery is " + battery);
                             assertTrue(battery >= 0);

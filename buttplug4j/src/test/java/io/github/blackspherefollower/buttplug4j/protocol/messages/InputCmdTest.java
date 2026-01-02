@@ -102,4 +102,12 @@ public class InputCmdTest {
         jsonOut = parser.formatJson(msgs.get(0));
         assertEquals(testStr, jsonOut);
     }
+
+    @Test
+    public void testInputCmdReadInternal() throws IOException, ButtplugProtocolException {
+        InputCmd cmd = new InputCmd(1, 0, 0, "Battery", InputCommandType.READ);
+
+        assertEquals(InputCommandType.READ, cmd.getInputCommand());
+        assertEquals("Battery", cmd.getInputType());
+    }
 }

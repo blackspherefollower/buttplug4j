@@ -51,15 +51,17 @@ public class InputReadingTest {
     @Test
     public void testInputDataInterfaces() {
         // Test that InputData interface classes exist
-        InputReading.BatteryData batteryData = new InputReading.BatteryData();
-        InputReading.RssiData rssiData = new InputReading.RssiData();
-        InputReading.ButtonData buttonData = new InputReading.ButtonData();
-        InputReading.PresureData presureData = new InputReading.PresureData();
+        InputReading.Battery batteryData = new InputReading.Battery();
+        InputReading.Rssi rssiData = new InputReading.Rssi();
+        InputReading.Button buttonData = new InputReading.Button();
+        InputReading.Presure presureData = new InputReading.Presure();
+        InputReading.Position positionData = new InputReading.Position();
 
-        assertInstanceOf(InputReading.BatteryData.class, batteryData);
-        assertInstanceOf(InputReading.RssiData.class, rssiData);
-        assertInstanceOf(InputReading.ButtonData.class, buttonData);
-        assertInstanceOf(InputReading.PresureData.class, presureData);
+        assertInstanceOf(InputReading.Battery.class, batteryData);
+        assertInstanceOf(InputReading.Rssi.class, rssiData);
+        assertInstanceOf(InputReading.Button.class, buttonData);
+        assertInstanceOf(InputReading.Presure.class, presureData);
+        assertInstanceOf(InputReading.Position.class, positionData);
     }
 
     @Test
@@ -77,8 +79,108 @@ public class InputReadingTest {
         assertEquals(10, msgs.get(0).getId());
         assertEquals(0, ((InputReading) msgs.get(0)).getDeviceIndex());
         assertEquals(1, ((InputReading) msgs.get(0)).getFeatureIndex());
-        assertEquals(InputReading.BatteryData.class, ((InputReading) msgs.get(0)).getData().getClass());
-        assertEquals(100, ((InputReading.BatteryData)((InputReading) msgs.get(0)).getData()).getValue());
+        assertEquals(InputReading.Battery.class, ((InputReading) msgs.get(0)).getData().getClass());
+        assertEquals(100, ((InputReading.Battery)((InputReading) msgs.get(0)).getData()).getValue());
+
+        String jsonOut = parser.formatJson(msgs);
+        assertEquals(testStr, jsonOut);
+
+        jsonOut = parser.formatJson(msgs.get(0));
+        assertEquals(testStr, jsonOut);
+    }
+
+    @Test
+    public void testRSSIReading() throws ButtplugProtocolException {
+        String testStr = "[{\"InputReading\":{\"Id\":10,\"DeviceIndex\":0,\"FeatureIndex\":1,\"Reading\":{\"Rssi\":{\"Value\":-10}}}}]";
+
+        Validator.Result result = new ValidatorFactory().validate(schema, testStr);
+        assertTrue(result.isValid(), result.getErrors().stream().map(error -> error.getError() + " - " + error.getInstanceLocation()).collect(Collectors.joining("\n")));
+
+        ButtplugJsonMessageParser parser = new ButtplugJsonMessageParser();
+        List<ButtplugMessage> msgs = parser.parseJson(testStr);
+
+        assertEquals(1, msgs.size());
+        assertEquals(InputReading.class, msgs.get(0).getClass());
+        assertEquals(10, msgs.get(0).getId());
+        assertEquals(0, ((InputReading) msgs.get(0)).getDeviceIndex());
+        assertEquals(1, ((InputReading) msgs.get(0)).getFeatureIndex());
+        assertEquals(InputReading.Rssi.class, ((InputReading) msgs.get(0)).getData().getClass());
+        assertEquals(-10, ((InputReading.Rssi)((InputReading) msgs.get(0)).getData()).getValue());
+
+        String jsonOut = parser.formatJson(msgs);
+        assertEquals(testStr, jsonOut);
+
+        jsonOut = parser.formatJson(msgs.get(0));
+        assertEquals(testStr, jsonOut);
+    }
+
+    @Test
+    public void testPressureReading() throws ButtplugProtocolException {
+        String testStr = "[{\"InputReading\":{\"Id\":10,\"DeviceIndex\":0,\"FeatureIndex\":1,\"Reading\":{\"Pressure\":{\"Value\":50}}}}]";
+
+        Validator.Result result = new ValidatorFactory().validate(schema, testStr);
+        assertTrue(result.isValid(), result.getErrors().stream().map(error -> error.getError() + " - " + error.getInstanceLocation()).collect(Collectors.joining("\n")));
+
+        ButtplugJsonMessageParser parser = new ButtplugJsonMessageParser();
+        List<ButtplugMessage> msgs = parser.parseJson(testStr);
+
+        assertEquals(1, msgs.size());
+        assertEquals(InputReading.class, msgs.get(0).getClass());
+        assertEquals(10, msgs.get(0).getId());
+        assertEquals(0, ((InputReading) msgs.get(0)).getDeviceIndex());
+        assertEquals(1, ((InputReading) msgs.get(0)).getFeatureIndex());
+        assertEquals(InputReading.Presure.class, ((InputReading) msgs.get(0)).getData().getClass());
+        assertEquals(50, ((InputReading.Presure)((InputReading) msgs.get(0)).getData()).getValue());
+
+        String jsonOut = parser.formatJson(msgs);
+        assertEquals(testStr, jsonOut);
+
+        jsonOut = parser.formatJson(msgs.get(0));
+        assertEquals(testStr, jsonOut);
+    }
+
+    @Test
+    public void testButtonReading() throws ButtplugProtocolException {
+        String testStr = "[{\"InputReading\":{\"Id\":10,\"DeviceIndex\":0,\"FeatureIndex\":1,\"Reading\":{\"Button\":{\"Value\":1}}}}]";
+
+        Validator.Result result = new ValidatorFactory().validate(schema, testStr);
+        assertTrue(result.isValid(), result.getErrors().stream().map(error -> error.getError() + " - " + error.getInstanceLocation()).collect(Collectors.joining("\n")));
+
+        ButtplugJsonMessageParser parser = new ButtplugJsonMessageParser();
+        List<ButtplugMessage> msgs = parser.parseJson(testStr);
+
+        assertEquals(1, msgs.size());
+        assertEquals(InputReading.class, msgs.get(0).getClass());
+        assertEquals(10, msgs.get(0).getId());
+        assertEquals(0, ((InputReading) msgs.get(0)).getDeviceIndex());
+        assertEquals(1, ((InputReading) msgs.get(0)).getFeatureIndex());
+        assertEquals(InputReading.Button.class, ((InputReading) msgs.get(0)).getData().getClass());
+        assertEquals(1, ((InputReading.Button)((InputReading) msgs.get(0)).getData()).getValue());
+
+        String jsonOut = parser.formatJson(msgs);
+        assertEquals(testStr, jsonOut);
+
+        jsonOut = parser.formatJson(msgs.get(0));
+        assertEquals(testStr, jsonOut);
+    }
+
+    @Test
+    public void testPositionReading() throws ButtplugProtocolException {
+        String testStr = "[{\"InputReading\":{\"Id\":10,\"DeviceIndex\":0,\"FeatureIndex\":1,\"Reading\":{\"Position\":{\"Value\":25}}}}]";
+
+        Validator.Result result = new ValidatorFactory().validate(schema, testStr);
+        assertTrue(result.isValid(), result.getErrors().stream().map(error -> error.getError() + " - " + error.getInstanceLocation()).collect(Collectors.joining("\n")));
+
+        ButtplugJsonMessageParser parser = new ButtplugJsonMessageParser();
+        List<ButtplugMessage> msgs = parser.parseJson(testStr);
+
+        assertEquals(1, msgs.size());
+        assertEquals(InputReading.class, msgs.get(0).getClass());
+        assertEquals(10, msgs.get(0).getId());
+        assertEquals(0, ((InputReading) msgs.get(0)).getDeviceIndex());
+        assertEquals(1, ((InputReading) msgs.get(0)).getFeatureIndex());
+        assertEquals(InputReading.Position.class, ((InputReading) msgs.get(0)).getData().getClass());
+        assertEquals(25, ((InputReading.Position)((InputReading) msgs.get(0)).getData()).getValue());
 
         String jsonOut = parser.formatJson(msgs);
         assertEquals(testStr, jsonOut);

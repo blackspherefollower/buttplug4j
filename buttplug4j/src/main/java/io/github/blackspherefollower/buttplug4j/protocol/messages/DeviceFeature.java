@@ -92,7 +92,7 @@ public final class DeviceFeature {
             return value;
         }
 
-        public void setStepCount(int[] value) {
+        public void setValue(int[] value) {
             this.value = value;
         }
 
@@ -227,7 +227,7 @@ public final class DeviceFeature {
     @JsonTypeInfo(include = JsonTypeInfo.As.WRAPPER_OBJECT, use = JsonTypeInfo.Id.NAME)
     @JsonSubTypes({
             @JsonSubTypes.Type(value = DeviceFeature.Battery.class, name = "Battery"),
-            @JsonSubTypes.Type(value = DeviceFeature.Rssi.class, name = "RSSI"),
+            @JsonSubTypes.Type(value = DeviceFeature.Rssi.class, name = "Rssi"),
             @JsonSubTypes.Type(value = DeviceFeature.Button.class, name = "Button"),
             @JsonSubTypes.Type(value = DeviceFeature.Pressure.class, name = "Pressure"),
             @JsonSubTypes.Type(value = DeviceFeature.PositionInput.class, name = "Position")
