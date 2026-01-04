@@ -11,7 +11,7 @@ repositories {
 }
 
 dependencies {
-    api 'org.jmdns:jmdns:3.6.1'
+    api 'org.jmdns:jmdns:3.6.3'
     api 'org.slf4j:slf4j-simple:2.0.17'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.13.4'
     testImplementation project(':buttplug4j.utils.test')
