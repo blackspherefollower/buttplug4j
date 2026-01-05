@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -193,7 +194,7 @@ class ButtplugClientTest {
     }
 
     @Test
-    void testStartScanning() throws ExecutionException, InterruptedException, IOException {
+    void testStartScanning() throws ExecutionException, InterruptedException, IOException, TimeoutException {
         client.setNextResponse(new Ok(1));
         boolean result = client.startScanning();
 
@@ -202,7 +203,7 @@ class ButtplugClientTest {
     }
 
     @Test
-    void testStopScanning() throws ExecutionException, InterruptedException {
+    void testStopScanning() throws ExecutionException, InterruptedException, TimeoutException {
         client.setNextResponse(new Ok(1));
         boolean result = client.stopScanning();
 
@@ -211,7 +212,7 @@ class ButtplugClientTest {
     }
 
     @Test
-    void testStopAllDevices() throws ExecutionException, InterruptedException, IOException {
+    void testStopAllDevices() throws ExecutionException, InterruptedException, IOException, TimeoutException {
         client.setNextResponse(new Ok(1));
         boolean result = client.stopAllDevices();
 
@@ -228,7 +229,7 @@ class ButtplugClientTest {
     }
 
     @Test
-    void testRequestDeviceList() throws ButtplugClientException, ExecutionException, InterruptedException {
+    void testRequestDeviceList() throws ButtplugClientException, ExecutionException, InterruptedException, TimeoutException {
 
         // Create test device
         Device device = new Device(0, "Test Device", new HashMap<>(), 100, "Display Name");
@@ -432,7 +433,7 @@ class ButtplugClientTest {
     }
 
     @Test
-    void testWaitForOk() throws ExecutionException, InterruptedException {
+    void testWaitForOk() throws ExecutionException, InterruptedException, TimeoutException {
         CompletableFuture<ButtplugMessage> okFuture = CompletableFuture.completedFuture(new Ok(1));
         assertTrue(client.waitForOk(okFuture));
 

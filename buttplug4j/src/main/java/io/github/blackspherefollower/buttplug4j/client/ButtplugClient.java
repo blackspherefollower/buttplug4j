@@ -9,10 +9,7 @@ import io.github.blackspherefollower.buttplug4j.protocol.messages.Error;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -157,7 +154,7 @@ public abstract class ButtplugClient {
         msgId.set(1);
 
         try {
-            ButtplugMessage res = sendMessage(new RequestServerInfo(clientName, getNextMsgId())).get();
+            ButtplugMessage res = sendMessage(new RequestServerInfo(clientName, getNextMsgId())).get(1, TimeUnit.MINUTES);
             if (res instanceof ServerInfo) {
                 if (((ServerInfo) res).getMaxPingTime() > 0) {
                     pingTimer = new Timer("pingTimer", true);
@@ -185,7 +182,7 @@ public abstract class ButtplugClient {
             } else {
                 throw new ButtplugClientException("Unexpected message returned: " + res.getClass().getName());
             }
-        } catch (ButtplugClientException | InterruptedException | ExecutionException e) {
+        } catch (ButtplugClientException | InterruptedException | ExecutionException | TimeoutException e) {
             if (getErrorReceived() != null) {
                 getErrorReceived().errorReceived(new Error(e));
             } else {
@@ -201,20 +198,20 @@ public abstract class ButtplugClient {
 
     }
 
-    private void onPingTimer() throws ButtplugClientException, ExecutionException, InterruptedException {
+    private void onPingTimer() throws ButtplugClientException, ExecutionException, InterruptedException, TimeoutException {
         try {
-            ButtplugMessage msg = sendMessage(new Ping(msgId.incrementAndGet())).get();
+            ButtplugMessage msg = sendMessage(new Ping(msgId.incrementAndGet())).get(1, TimeUnit.MINUTES);
             if (msg instanceof Error) {
                 throw new ButtplugClientException(((Error) msg).getErrorMessage());
             }
-        } catch (ButtplugClientException | InterruptedException | ExecutionException e) {
+        } catch (ButtplugClientException | InterruptedException | ExecutionException | TimeoutException e) {
             disconnect();
             throw e;
         }
     }
 
-    public final void requestDeviceList() throws ButtplugClientException, ExecutionException, InterruptedException {
-        Object res = sendMessage(new RequestDeviceList(msgId.incrementAndGet())).get();
+    public final void requestDeviceList() throws ButtplugClientException, ExecutionException, InterruptedException, TimeoutException {
+        Object res = sendMessage(new RequestDeviceList(msgId.incrementAndGet())).get(1, TimeUnit.MINUTES);
         if (res instanceof Error) {
             throw new ButtplugClientException(((Error) res).getErrorMessage());
         }
@@ -224,7 +221,7 @@ public abstract class ButtplugClient {
         return new ArrayList<>(this.devices.values());
     }
 
-    public final boolean startScanning() throws ExecutionException, InterruptedException, IOException {
+    public final boolean startScanning() throws ExecutionException, InterruptedException, IOException, TimeoutException {
         return waitForOk(startScanningAsync());
     }
 
@@ -232,7 +229,7 @@ public abstract class ButtplugClient {
         return sendMessage(new StartScanning(msgId.incrementAndGet()));
     }
 
-    public final boolean stopScanning() throws ExecutionException, InterruptedException {
+    public final boolean stopScanning() throws ExecutionException, InterruptedException, TimeoutException {
         return waitForOk(stopScanningAsync());
     }
 
@@ -240,7 +237,7 @@ public abstract class ButtplugClient {
         return sendMessage(new StopScanning(msgId.incrementAndGet()));
     }
 
-    public final boolean stopAllDevices() throws ExecutionException, InterruptedException, IOException {
+    public final boolean stopAllDevices() throws ExecutionException, InterruptedException, IOException, TimeoutException {
         return waitForOk(stopAllDevicesAsync());
     }
 
@@ -262,8 +259,8 @@ public abstract class ButtplugClient {
     }
 
     protected final boolean waitForOk(final Future<ButtplugMessage> msg)
-            throws ExecutionException, InterruptedException {
-        return msg.get() instanceof Ok;
+            throws ExecutionException, InterruptedException, TimeoutException {
+        return msg.get(1, TimeUnit.MINUTES) instanceof Ok;
     }
 
     protected abstract CompletableFuture<ButtplugMessage> sendMessage(ButtplugMessage msg);
