@@ -12,7 +12,7 @@ repositories {
 
 dependencies {
     api project(":buttplug4j")
-    api 'org.junit.jupiter:junit-jupiter:5.13.4'
+    api 'org.junit.jupiter:junit-jupiter:6.0.2'
 }
 
 java {
