@@ -102,4 +102,30 @@ public class InputCmdTest {
         jsonOut = parser.formatJson(msgs.get(0));
         assertEquals(testStr, jsonOut);
     }
+
+    @Test
+    public void testSettersAndGetters() {
+        InputCmd cmd = new InputCmd();
+        cmd.setId(10);
+        cmd.setDeviceIndex(20);
+        cmd.setFeatureIndex(30);
+        cmd.setInputType("Battery");
+        cmd.setInputCommand(InputCommandType.READ);
+
+        assertEquals(10, cmd.getId());
+        assertEquals(20, cmd.getDeviceIndex());
+        assertEquals(30, cmd.getFeatureIndex());
+        assertEquals("Battery", cmd.getInputType());
+        assertEquals(InputCommandType.READ, cmd.getInputCommand());
+    }
+
+    @Test
+    public void testConstructor() {
+        InputCmd cmd = new InputCmd(1, 2, 3, "Vibrate", InputCommandType.SUBSCRIBE);
+        assertEquals(1, cmd.getId());
+        assertEquals(2, cmd.getDeviceIndex());
+        assertEquals(3, cmd.getFeatureIndex());
+        assertEquals("Vibrate", cmd.getInputType());
+        assertEquals(InputCommandType.SUBSCRIBE, cmd.getInputCommand());
+    }
 }

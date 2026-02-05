@@ -16,6 +16,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -59,4 +60,31 @@ public class ErrorTest {
         assertEquals(testStr, jsonOut);
     }
 
+    @Test
+    public void testExceptionConstructors() {
+        Throwable ex = new RuntimeException("Test message");
+        Error err1 = new Error(ex);
+        assertEquals("Test message", err1.getErrorMessage());
+        assertEquals(Error.ErrorClass.ERROR_UNKNOWN, err1.getErrorCode());
+        assertEquals(ex, err1.getException());
+
+        Error err2 = new Error(ex, 123);
+        assertEquals("Test message", err2.getErrorMessage());
+        assertEquals(Error.ErrorClass.ERROR_UNKNOWN, err2.getErrorCode());
+        assertEquals(ex, err2.getException());
+        assertEquals(123, err2.getId());
+    }
+
+    @Test
+    public void testSettersAndGetters() {
+        Error err = new Error("msg", Error.ErrorClass.ERROR_INIT, 1);
+        err.setErrorMessage("new msg");
+        err.setErrorCode(Error.ErrorClass.ERROR_PING);
+        err.setId(456);
+
+        assertEquals("new msg", err.getErrorMessage());
+        assertEquals(Error.ErrorClass.ERROR_PING, err.getErrorCode());
+        assertEquals(456, err.getId());
+        assertNull(err.getException());
+    }
 }

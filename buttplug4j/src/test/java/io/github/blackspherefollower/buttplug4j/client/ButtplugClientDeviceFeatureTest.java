@@ -2,6 +2,7 @@ package io.github.blackspherefollower.buttplug4j.client;
 
 import io.github.blackspherefollower.buttplug4j.protocol.ButtplugMessage;
 import io.github.blackspherefollower.buttplug4j.protocol.messages.DeviceFeature;
+import io.github.blackspherefollower.buttplug4j.protocol.messages.InputCommandType;
 import io.github.blackspherefollower.buttplug4j.protocol.messages.OutputCmd;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -362,5 +363,91 @@ class ButtplugClientDeviceFeatureTest {
     @Test
     void testGetDescription() {
         assertEquals("Test Feature", clientFeature.getDescription());
+    }
+
+    @Test
+    void testHasMethods() {
+        assertTrue(clientFeature.HasVibrate());
+        assertTrue(clientFeature.HasRotate());
+        assertTrue(clientFeature.HasOscillate());
+        assertTrue(clientFeature.HasConstrict());
+        assertTrue(clientFeature.HasSpray());
+        assertTrue(clientFeature.HasPosition());
+        assertTrue(clientFeature.HasLed());
+        assertTrue(clientFeature.HasTemperature());
+        assertFalse(clientFeature.HasBattery());
+        assertFalse(clientFeature.HasRssi());
+        
+        // Add PositionWithDuration
+        testFeature.getOutput().add(new DeviceFeature.PositionWithDuration(new int[]{0, 25}, new int[]{0, 1000}));
+        clientFeature = new ButtplugClientDeviceFeature(mockDevice, testFeature);
+        assertTrue(clientFeature.HasPositionWithDuration());
+
+        // Add Battery
+        testFeature.getInput().add(new DeviceFeature.Battery(new ArrayList<>(), new int[][]{{0, 100}}));
+        clientFeature = new ButtplugClientDeviceFeature(mockDevice, testFeature);
+        assertTrue(clientFeature.HasBattery());
+
+        // Add RSSI
+        testFeature.getInput().add(new DeviceFeature.Rssi(new ArrayList<>(), new int[][]{{0, 100}}));
+        clientFeature = new ButtplugClientDeviceFeature(mockDevice, testFeature);
+        assertTrue(clientFeature.HasRssi());
+    }
+
+    @Test
+    void testReadMethods() throws Exception {
+        testFeature.getInput().add(new DeviceFeature.Battery(new ArrayList<>(), new int[][]{{0, 100}}));
+        testFeature.getInput().add(new DeviceFeature.Rssi(new ArrayList<>(), new int[][]{{0, 100}}));
+        clientFeature = new ButtplugClientDeviceFeature(mockDevice, testFeature);
+
+        CompletableFuture<ButtplugMessage> future = CompletableFuture.completedFuture(mock(ButtplugMessage.class));
+        when(mockDevice.sendInputCommand(anyInt(), anyString(), any(InputCommandType.class))).thenReturn(future);
+
+        assertNotNull(clientFeature.ReadBattery());
+        verify(mockDevice).sendInputCommand(eq(0), eq("Battery"), eq(InputCommandType.READ));
+
+        assertNotNull(clientFeature.ReadRssi());
+        verify(mockDevice).sendInputCommand(eq(0), eq("Rssi"), eq(InputCommandType.READ));
+    }
+
+    @Test
+    void testReadUnsupportedThrowsException() {
+        assertThrows(ButtplugDeviceFeatureException.class, () -> clientFeature.ReadBattery());
+        assertThrows(ButtplugDeviceFeatureException.class, () -> clientFeature.ReadRssi());
+    }
+
+    @Test
+    void testEqualsAndHashCode() {
+        ButtplugClientDeviceFeature same = new ButtplugClientDeviceFeature(mockDevice, testFeature);
+        
+        DeviceFeature differentFeature = new DeviceFeature();
+        differentFeature.setFeatureIndex(1);
+        differentFeature.setFeatureDescription("Test Feature");
+        ButtplugClientDeviceFeature differentFeatureObj = new ButtplugClientDeviceFeature(mockDevice, differentFeature);
+
+        assertEquals(clientFeature, clientFeature);
+        assertEquals(clientFeature, same);
+        assertNotEquals(clientFeature, differentFeatureObj);
+        assertNotEquals(clientFeature, null);
+        assertNotEquals(clientFeature, new Object());
+        
+        // Test with different outputs
+        DeviceFeature featureWithDifferentOutput = new DeviceFeature();
+        featureWithDifferentOutput.setFeatureIndex(0);
+        featureWithDifferentOutput.setFeatureDescription("Test Feature");
+        featureWithDifferentOutput.setOutput(new ArrayList<>());
+        ButtplugClientDeviceFeature featureWithDifferentOutputObj = new ButtplugClientDeviceFeature(mockDevice, featureWithDifferentOutput);
+        assertNotEquals(clientFeature, featureWithDifferentOutputObj);
+
+        // Test with different inputs
+        DeviceFeature featureWithDifferentInput = new DeviceFeature();
+        featureWithDifferentInput.setFeatureIndex(0);
+        featureWithDifferentInput.setFeatureDescription("Test Feature");
+        featureWithDifferentInput.setOutput(testFeature.getOutput());
+        ArrayList<DeviceFeature.InputDescriptor> differentInputs = new ArrayList<>();
+        differentInputs.add(new DeviceFeature.Battery());
+        featureWithDifferentInput.setInput(differentInputs);
+        ButtplugClientDeviceFeature featureWithDifferentInputObj = new ButtplugClientDeviceFeature(mockDevice, featureWithDifferentInput);
+        assertNotEquals(clientFeature, featureWithDifferentInputObj);
     }
 }

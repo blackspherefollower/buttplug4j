@@ -56,7 +56,7 @@ public class IntifaceEngineWrapper implements Closeable {
             }
         }
 
-        ArrayList<String> args = new ArrayList<>(Arrays.asList("intiface-engine", listen ? "--websocket-port" : "--websocket-client-address", listen ? String.valueOf(cport) : ("ws://127.0.0.1:" + String.valueOf(cport) + "/bob"), "--use-device-websocket-server", "--user-device-config-file", userConfig.toAbsolutePath().toString(), "--device-websocket-server-port", String.valueOf(dport), "--log", "TRACE", "--allow-v4-spec"));
+        ArrayList<String> args = new ArrayList<>(Arrays.asList("intiface-engine", listen ? "--websocket-port" : "--websocket-client-address", listen ? String.valueOf(cport) : ("ws://127.0.0.1:" + String.valueOf(cport) + "/bob"), "--use-device-websocket-server", "--user-device-config-file", userConfig.toAbsolutePath().toString(), "--device-websocket-server-port", String.valueOf(dport), "--log", "TRACE"));
         args.addAll(extraArgs);
         ProcessBuilder pb = new ProcessBuilder(args);
 

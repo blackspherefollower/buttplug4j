@@ -22,32 +22,16 @@ public final class ButtplugDiscover implements ServiceListener, Closeable {
         this.discovereyEventHandler = discovereyEventHandler;
         jmmdns = JmmDNS.Factory.getInstance();
         jmmdns.addServiceListener("_intiface_engine._tcp.local.", this);
-        try {
-            jmmdns.addServiceTypeListener(new ServiceTypeListener() {
-                @Override
-                public void serviceTypeAdded(ServiceEvent serviceEvent) {
-                    System.err.println("Added service type " + serviceEvent.getType());
-                }
-
-                @Override
-                public void subTypeForServiceTypeAdded(ServiceEvent serviceEvent) {
-                    System.err.println("Added sub type " + serviceEvent.getType());
-
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
+
     @Override
-    public void serviceAdded(ServiceEvent event) {
-        System.err.println("Added " + event.getName() + " " + event.getInfo().toString() + " " + event.getType());
+    public void serviceAdded(ServiceEvent serviceEvent) {
+        // Not used
     }
 
     @Override
     public void serviceRemoved(ServiceEvent event) {
-        System.err.println("Removed " + event.getName() + " " + event.getInfo().toString() + " " + event.getType());
         servers.remove(event.getInfo().getName());
         if (discovereyEventHandler != null) {
             discovereyEventHandler.LostButtplug(event.getInfo().getName());
@@ -56,8 +40,6 @@ public final class ButtplugDiscover implements ServiceListener, Closeable {
 
     @Override
     public void serviceResolved(ServiceEvent event) {
-        System.err.println("Resolved " + event.getName() + " " + event.getInfo().toString() + " " + event.getType());
-
         ConcurrentSkipListSet<URI> set = new ConcurrentSkipListSet<>();
         for (Inet4Address addr : event.getInfo().getInet4Addresses()) {
             try {

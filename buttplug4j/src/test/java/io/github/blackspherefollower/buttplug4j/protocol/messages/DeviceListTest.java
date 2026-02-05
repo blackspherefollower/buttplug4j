@@ -99,4 +99,26 @@ public class DeviceListTest {
         assertEquals(testStr, jsonOut);
     }
 
+    @Test
+    public void testSettersAndGetters() {
+        DeviceList deviceList = new DeviceList(new HashMap<>(), 1);
+        HashMap<Integer, Device> devices = new HashMap<>();
+        Device device = new Device(0, "name", new HashMap<>(), 100, "display");
+        devices.put(0, device);
+        deviceList.setDevices(devices);
+        assertEquals(devices, deviceList.getDevices());
+
+        device.setDeviceIndex(1);
+        device.setDeviceName("newName");
+        device.setDeviceMessageTimingGap(200);
+        device.setDeviceDisplayName("newDisplay");
+        HashMap<Integer, DeviceFeature> features = new HashMap<>();
+        device.setDeviceFeatures(features);
+
+        assertEquals(1, device.getDeviceIndex());
+        assertEquals("newName", device.getDeviceName());
+        assertEquals(200, device.getDeviceMessageTimingGap());
+        assertEquals("newDisplay", device.getDeviceDisplayName());
+        assertEquals(features, device.getDeviceFeatures());
+    }
 }

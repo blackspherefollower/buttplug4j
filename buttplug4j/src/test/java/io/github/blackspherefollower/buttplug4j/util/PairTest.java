@@ -38,9 +38,23 @@ public class PairTest {
         Pair<String, Integer> pair1 = new Pair<>("test", 42);
         Pair<String, Integer> pair2 = new Pair<>("test", 42);
         Pair<String, Integer> pair3 = new Pair<>("different", 42);
+        Pair<String, Integer> pair4 = new Pair<>("test", 43);
 
         assertEquals(pair1, pair2);
         assertNotEquals(pair1, pair3);
+        assertNotEquals(pair1, pair4);
+        assertNotEquals(pair1, null);
+        assertNotEquals(pair1, new Object());
+        
+        Pair<String, Integer> pair5 = new Pair<>(null, 42);
+        assertNotEquals(pair5, pair1);
+        Pair<String, Integer> pair6 = new Pair<>(null, 42);
+        assertEquals(pair5, pair6);
+
+        Pair<String, Integer> pair7 = new Pair<>("test", null);
+        assertNotEquals(pair7, pair1);
+        Pair<String, Integer> pair8 = new Pair<>("test", null);
+        assertEquals(pair7, pair8);
     }
 
     @Test

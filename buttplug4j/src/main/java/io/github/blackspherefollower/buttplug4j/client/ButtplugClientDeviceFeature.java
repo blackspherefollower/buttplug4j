@@ -228,7 +228,7 @@ public class ButtplugClientDeviceFeature {
             return false;
         }
         if (output != null) {
-            if (output.size() != that.output.size() || output.keySet().containsAll(that.output.keySet())) {
+            if (output.size() != that.output.size() || !output.keySet().equals(that.output.keySet())) {
                 return false;
             }
             for (String type : output.keySet()) {
@@ -238,7 +238,7 @@ public class ButtplugClientDeviceFeature {
             }
         }
         if (input != null) {
-            if (input.size() != that.input.size() || input.keySet().containsAll(that.input.keySet())) {
+            if (input.size() != that.input.size() || !input.keySet().equals(that.input.keySet())) {
                 return false;
             }
             for (String type : input.keySet()) {

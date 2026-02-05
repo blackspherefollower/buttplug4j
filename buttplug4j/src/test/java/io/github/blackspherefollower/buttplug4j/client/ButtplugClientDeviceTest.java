@@ -5,6 +5,7 @@ import io.github.blackspherefollower.buttplug4j.protocol.messages.Device;
 import io.github.blackspherefollower.buttplug4j.protocol.messages.DeviceFeature;
 import io.github.blackspherefollower.buttplug4j.protocol.messages.InputCommandType;
 import io.github.blackspherefollower.buttplug4j.protocol.messages.OutputCmd;
+import io.github.blackspherefollower.buttplug4j.protocol.messages.StopCmd;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -290,19 +291,26 @@ class ButtplugClientDeviceTest {
     }
 
     @Test
-    void testMultipleSendOutputCommandCalls() {
-        OutputCmd.Vibrate command1 = new OutputCmd.Vibrate(25);
-        OutputCmd.Vibrate command2 = new OutputCmd.Vibrate(50);
-        OutputCmd.Vibrate command3 = new OutputCmd.Vibrate(75);
+    void testSendStopDeviceCmdVariants() {
+        assertNotNull(clientDevice.sendStopDeviceCmd(true, false));
+        verify(mockClient).sendMessage(argThat(msg -> msg instanceof StopCmd && Boolean.TRUE.equals(((StopCmd)msg).getInputs()) && Boolean.FALSE.equals(((StopCmd)msg).getOutputs())));
 
-        Future<ButtplugMessage> result1 = clientDevice.sendOutputCommand(0, command1);
-        Future<ButtplugMessage> result2 = clientDevice.sendOutputCommand(0, command2);
-        Future<ButtplugMessage> result3 = clientDevice.sendOutputCommand(0, command3);
+        assertNotNull(clientDevice.sendStopDeviceCmd(2));
+        verify(mockClient).sendMessage(argThat(msg -> msg instanceof StopCmd && Integer.valueOf(2).equals(((StopCmd)msg).getFeatureIndex())));
 
-        assertNotNull(result1);
-        assertNotNull(result2);
-        assertNotNull(result3);
-        verify(mockClient, times(3)).getNextMsgId();
-        verify(mockClient, times(3)).sendMessage(any(OutputCmd.class));
+        assertNotNull(clientDevice.sendStopDeviceCmd(3, false, true));
+        verify(mockClient).sendMessage(argThat(msg -> msg instanceof StopCmd && Integer.valueOf(3).equals(((StopCmd)msg).getFeatureIndex()) && Boolean.FALSE.equals(((StopCmd)msg).getInputs()) && Boolean.TRUE.equals(((StopCmd)msg).getOutputs())));
+    }
+
+    @Test
+    void testEquals() {
+        ButtplugClientDevice same = new ButtplugClientDevice(mockClient, testDevice);
+        assertEquals(clientDevice, clientDevice);
+        assertEquals(clientDevice, same);
+        assertNotEquals(clientDevice, null);
+        assertNotEquals(clientDevice, new Object());
+
+        Device differentDevice = new Device(6, "Different", new HashMap<>(), 0, "Different");
+        assertNotEquals(clientDevice, new ButtplugClientDevice(mockClient, differentDevice));
     }
 }

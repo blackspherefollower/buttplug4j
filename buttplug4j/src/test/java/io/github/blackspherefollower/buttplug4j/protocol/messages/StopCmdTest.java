@@ -188,4 +188,49 @@ public class StopCmdTest {
         jsonOut = parser.formatJson(msgs.get(0));
         assertEquals(testStr, jsonOut);
     }
+
+    @Test
+    public void testSettersAndGetters() {
+        StopCmd msg = new StopCmd(1);
+        msg.setInputs(true);
+        msg.setOutputs(false);
+        msg.setDeviceIndex(5);
+        msg.setFeatureIndex(3);
+
+        assertEquals(1, msg.getId());
+        assertEquals(true, msg.getInputs());
+        assertEquals(false, msg.getOutputs());
+        assertEquals(5, msg.getDeviceIndex());
+        assertEquals(3, msg.getFeatureIndex());
+    }
+
+    @Test
+    public void testConstructors() {
+        StopCmd msg1 = new StopCmd(2, true, false);
+        assertEquals(2, msg1.getId());
+        assertEquals(true, msg1.getInputs());
+        assertEquals(false, msg1.getOutputs());
+
+        StopCmd msg2 = new StopCmd(3, 10);
+        assertEquals(3, msg2.getId());
+        assertEquals(10, msg2.getDeviceIndex());
+
+        StopCmd msg3 = new StopCmd(4, 11, false, true);
+        assertEquals(4, msg3.getId());
+        assertEquals(11, msg3.getDeviceIndex());
+        assertEquals(false, msg3.getInputs());
+        assertEquals(true, msg3.getOutputs());
+
+        StopCmd msg4 = new StopCmd(5, 12, 6);
+        assertEquals(5, msg4.getId());
+        assertEquals(12, msg4.getDeviceIndex());
+        assertEquals(6, msg4.getFeatureIndex());
+
+        StopCmd msg5 = new StopCmd(6, 13, 7, true, true);
+        assertEquals(6, msg5.getId());
+        assertEquals(13, msg5.getDeviceIndex());
+        assertEquals(7, msg5.getFeatureIndex());
+        assertEquals(true, msg5.getInputs());
+        assertEquals(true, msg5.getOutputs());
+    }
 }
