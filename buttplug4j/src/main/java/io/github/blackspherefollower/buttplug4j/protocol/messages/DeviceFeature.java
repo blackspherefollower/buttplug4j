@@ -1,5 +1,6 @@
 package io.github.blackspherefollower.buttplug4j.protocol.messages;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public final class DeviceFeature {
 
     @JsonProperty(value = "FeatureIndex", required = true)
@@ -23,11 +25,11 @@ public final class DeviceFeature {
     private String featureDescription;
     @JsonProperty(value = "Output", required = false)
     @JsonDeserialize(using = OutputDescriptorSetDeserialiser.class)
-    @JsonSerialize(using = OutputDescriptorSetSerialiser.class, include = JsonSerialize.Inclusion.NON_NULL)
+    @JsonSerialize(using = OutputDescriptorSetSerialiser.class)
     private ArrayList<OutputDescriptor> output;
     @JsonProperty(value = "Input", required = false)
     @JsonDeserialize(using = InputDescriptorSetDeserialiser.class)
-    @JsonSerialize(using = InputDescriptorSetSerialiser.class, include = JsonSerialize.Inclusion.NON_NULL)
+    @JsonSerialize(using = InputDescriptorSetSerialiser.class)
     private ArrayList<InputDescriptor> input;
 
     public DeviceFeature() {

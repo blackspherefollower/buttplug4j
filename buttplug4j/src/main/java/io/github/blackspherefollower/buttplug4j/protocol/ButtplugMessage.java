@@ -22,8 +22,7 @@ import io.github.blackspherefollower.buttplug4j.protocol.messages.Error;
         @JsonSubTypes.Type(value = InputReading.class, name = "InputReading"),
         @JsonSubTypes.Type(value = ServerInfo.class, name = "ServerInfo"),
         @JsonSubTypes.Type(value = StartScanning.class, name = "StartScanning"),
-        @JsonSubTypes.Type(value = StopAllDevices.class, name = "StopAllDevices"),
-        @JsonSubTypes.Type(value = StopDeviceCmd.class, name = "StopDeviceCmd"),
+        @JsonSubTypes.Type(value = StopCmd.class, name = "StopCmd"),
         @JsonSubTypes.Type(value = StopScanning.class, name = "StopScanning")
 })
 public abstract class ButtplugMessage {

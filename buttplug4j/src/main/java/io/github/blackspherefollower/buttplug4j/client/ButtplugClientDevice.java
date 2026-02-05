@@ -34,7 +34,19 @@ public class ButtplugClientDevice {
     }
 
     public final Future<ButtplugMessage> sendStopDeviceCmd() {
-        return client.sendMessage(new StopDeviceCmd(client.getNextMsgId(), getDeviceIndex()));
+        return client.sendMessage(new StopCmd(client.getNextMsgId(), getDeviceIndex()));
+    }
+
+    public final Future<ButtplugMessage> sendStopDeviceCmd(final boolean inputs, final boolean outputs) {
+        return client.sendMessage(new StopCmd(client.getNextMsgId(), getDeviceIndex(), inputs, outputs));
+    }
+
+    public final Future<ButtplugMessage> sendStopDeviceCmd(final int featureIndex) {
+        return client.sendMessage(new StopCmd(client.getNextMsgId(), getDeviceIndex(), featureIndex));
+    }
+
+    public final Future<ButtplugMessage> sendStopDeviceCmd(final int featureIndex, final boolean inputs, final boolean outputs) {
+        return client.sendMessage(new StopCmd(client.getNextMsgId(), getDeviceIndex(), featureIndex, inputs, outputs));
     }
 
     public final int getDeviceIndex() {

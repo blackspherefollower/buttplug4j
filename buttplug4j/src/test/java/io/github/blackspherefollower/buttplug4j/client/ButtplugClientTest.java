@@ -190,7 +190,7 @@ class ButtplugClientTest {
         CompletableFuture<ButtplugMessage> future = (CompletableFuture<ButtplugMessage>) client.stopAllDevicesAsync();
 
         assertNotNull(future);
-        assertInstanceOf(StopAllDevices.class, client.lastSentMessage);
+        assertInstanceOf(StopCmd.class, client.lastSentMessage);
     }
 
     @Test
@@ -217,7 +217,7 @@ class ButtplugClientTest {
         boolean result = client.stopAllDevices();
 
         assertTrue(result);
-        assertInstanceOf(StopAllDevices.class, client.lastSentMessage);
+        assertInstanceOf(StopCmd.class, client.lastSentMessage);
     }
 
     @Test
@@ -300,10 +300,10 @@ class ButtplugClientTest {
 
         // Now send a message to the device
         ButtplugClientDevice clientDevice = client.getDevices().get(0);
-        StopDeviceCmd stopCmd = new StopDeviceCmd(2, 5);
+        StopCmd stopCmd = new StopCmd(2, 5);
         client.setNextResponse(new Ok(2));
 
-        CompletableFuture<ButtplugMessage> result = client.sendDeviceMessage(clientDevice, stopCmd);
+        CompletableFuture<ButtplugMessage> result = client.sendMessage(stopCmd);
 
         assertNotNull(result);
         ButtplugMessage response = result.get();
@@ -316,9 +316,9 @@ class ButtplugClientTest {
 
 
         ButtplugClientDevice clientDevice = new ButtplugClientDevice(client, device);
-        StopDeviceCmd stopCmd = new StopDeviceCmd(1, 999);
+        OutputCmd outCmd = new OutputCmd(1, 999, 0);
 
-        CompletableFuture<ButtplugMessage> result = client.sendDeviceMessage(clientDevice, stopCmd);
+        CompletableFuture<ButtplugMessage> result = client.sendDeviceMessage(clientDevice, outCmd);
 
         assertTrue(result.isDone());
         assertInstanceOf(Error.class, result.getNow(null));
@@ -484,5 +484,31 @@ class ButtplugClientTest {
         protected void cleanup() {
             cleanupCalled = true;
         }
+    }
+
+    @Test
+    void testStopAllDevicesAsyncWithInputsOutputs() {
+        CompletableFuture<ButtplugMessage> future =
+                (CompletableFuture<ButtplugMessage>) client.stopAllDevicesAsync(true, false);
+
+        assertNotNull(future);
+        assertInstanceOf(StopCmd.class, client.lastSentMessage);
+
+        StopCmd stopCmd = (StopCmd) client.lastSentMessage;
+        assertEquals(Boolean.TRUE, stopCmd.getInputs());
+        assertEquals(Boolean.FALSE, stopCmd.getOutputs());
+    }
+
+    @Test
+    void testStopAllDevicesWithInputsOutputs() throws ExecutionException, InterruptedException, IOException, TimeoutException {
+        client.setNextResponse(new Ok(1));
+        boolean result = client.stopAllDevices(true, false);
+
+        assertTrue(result);
+        assertInstanceOf(StopCmd.class, client.lastSentMessage);
+
+        StopCmd stopCmd = (StopCmd) client.lastSentMessage;
+        assertEquals(Boolean.TRUE, stopCmd.getInputs());
+        assertEquals(Boolean.FALSE, stopCmd.getOutputs());
     }
 }

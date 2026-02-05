@@ -241,8 +241,16 @@ public abstract class ButtplugClient {
         return waitForOk(stopAllDevicesAsync());
     }
 
+    public final boolean stopAllDevices(final boolean inputs, final boolean outputs) throws ExecutionException, InterruptedException, IOException, TimeoutException {
+        return waitForOk(stopAllDevicesAsync(inputs, outputs));
+    }
+
     public final Future<ButtplugMessage> stopAllDevicesAsync() {
-        return sendMessage(new StopAllDevices(getNextMsgId()));
+        return sendMessage(new StopCmd(getNextMsgId()));
+    }
+
+    public final Future<ButtplugMessage> stopAllDevicesAsync(final boolean inputs, final boolean outputs) {
+        return sendMessage(new StopCmd(getNextMsgId(), inputs, outputs));
     }
 
     public final CompletableFuture<ButtplugMessage> sendDeviceMessage(
