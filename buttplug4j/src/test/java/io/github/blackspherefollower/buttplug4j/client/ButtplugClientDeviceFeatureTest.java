@@ -276,7 +276,7 @@ class ButtplugClientDeviceFeatureTest {
         ArgumentCaptor<OutputCmd.IOutputCommand> captor = ArgumentCaptor.forClass(OutputCmd.IOutputCommand.class);
         verify(mockDevice).runOutput(eq(0), captor.capture());
         assertInstanceOf(OutputCmd.Spray.class, captor.getValue());
-        assertEquals(3, ((OutputCmd.Spray) captor.getValue()).getValue());
+        assertEquals(4, ((OutputCmd.Spray) captor.getValue()).getValue());
     }
 
     @Test
@@ -304,7 +304,7 @@ class ButtplugClientDeviceFeatureTest {
         ArgumentCaptor<OutputCmd.IOutputCommand> captor = ArgumentCaptor.forClass(OutputCmd.IOutputCommand.class);
         verify(mockDevice).runOutput(eq(0), captor.capture());
         assertInstanceOf(OutputCmd.Position.class, captor.getValue());
-        assertEquals(20, ((OutputCmd.Position) captor.getValue()).getValue());
+        assertEquals(21, ((OutputCmd.Position) captor.getValue()).getValue());
     }
 
     @Test
@@ -341,7 +341,7 @@ class ButtplugClientDeviceFeatureTest {
         ArgumentCaptor<OutputCmd.IOutputCommand> captor = ArgumentCaptor.forClass(OutputCmd.IOutputCommand.class);
         verify(mockDevice).runOutput(eq(0), captor.capture());
         assertInstanceOf(OutputCmd.HwPositionWithDuration.class, captor.getValue());
-        assertEquals(20, ((OutputCmd.HwPositionWithDuration) captor.getValue()).getValue());
+        assertEquals(21, ((OutputCmd.HwPositionWithDuration) captor.getValue()).getValue());
         assertEquals(500, ((OutputCmd.HwPositionWithDuration) captor.getValue()).getDuration());
     }
 
@@ -370,7 +370,7 @@ class ButtplugClientDeviceFeatureTest {
         ArgumentCaptor<OutputCmd.IOutputCommand> captor = ArgumentCaptor.forClass(OutputCmd.IOutputCommand.class);
         verify(mockDevice).runOutput(eq(0), captor.capture());
         assertInstanceOf(OutputCmd.Led.class, captor.getValue());
-        assertEquals(127, ((OutputCmd.Led) captor.getValue()).getValue());
+        assertEquals(128, ((OutputCmd.Led) captor.getValue()).getValue());
     }
 
     @Test

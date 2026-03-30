@@ -118,7 +118,14 @@ public final class ButtplugClientDeviceFeature {
         if (desc instanceof DeviceFeature.SteppedOutputDescriptor) {
             double steps = ((DeviceFeature.SteppedOutputDescriptor) desc).getValue()[1];
             steps *= value;
-            return (int) Math.floor(steps);
+            
+            int result;
+            if (steps >= 0) {
+                result = (int) Math.ceil(steps);
+            } else {
+                result = (int) Math.floor(steps);
+            }
+            return result;
         } else {
             throw new ButtplugDeviceFeatureException(type);
         }
