@@ -15,7 +15,7 @@ dependencies {
     testImplementation 'org.eclipse.jetty.websocket:websocket-javax-server:10.0.26'
     testImplementation 'org.junit.jupiter:junit-jupiter:6.0.1'
     testImplementation project(':buttplug4j.utils.test')
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:6.0.1'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:6.0.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:6.0.1'
 }
 
